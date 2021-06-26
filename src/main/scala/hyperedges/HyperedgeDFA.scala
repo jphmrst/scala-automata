@@ -47,11 +47,9 @@ trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S] {
   *  @group Hyperedge
   */
 object HyperedgeDFA {
-  def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
-    using impl: HasBuilderWithInit[
-      SetType, MapType, HyperedgeDFAelements, HyperedgeDFA
-    ]
-  ) = impl.build[S,T](initialState)
+  def newBuilder[S, T](initialState: S)
+    (using impl: HasBuilderWithInit[HyperedgeDFAelements, ?, HyperedgeDFA]) =
+    impl.build[S,T](initialState)
 }
 
 /**

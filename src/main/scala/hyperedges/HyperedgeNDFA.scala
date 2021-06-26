@@ -44,9 +44,10 @@ trait IndexedHyperedgeNDFA[S,T,+ThisDFA <: IndexedHyperedgeDFA[Set[S],T]]
   *  @group Hyperedge
   */
 object HyperedgeNDFA {
-  def newBuilder[S, T, SetType[_], MapType[_,_]](
+  def newBuilder[S, T](
     using impl: HasBuilder[
-      SetType, MapType, HyperedgeNDFAelements,
+      HyperedgeNDFAelements,
+      ?,
       [X,Y] =>> HyperedgeNDFA[X, Y, IndexedHyperedgeDFA[Set[X], Y]]
     ]
   ) = impl.build[S,T]()

@@ -30,21 +30,19 @@ object Builders {
   type HyperedgeDFAelements[S, T]  = DFAelements[S, T]  | EHyperedgeBuilders[S]
   type HyperedgeNDFAelements[S, T] = NDFAelements[S, T] | EHyperedgeBuilders[S]
 
-  given HasBuilderWithInit[
-    HashSet, HashMap, HyperedgeDFAelements, HyperedgeDFA
-  ] with {
-    override def build[S,T](init: S): Builder[HyperedgeDFAelements[S, T],
-                                              HyperedgeDFA[S, T]] =
+  given HasBuilderWithInit
+    [HyperedgeDFAelements, HashHyperedgeDFABuilder, HyperedgeDFA]
+      with {
+    override def build[S,T](init: S): HashHyperedgeDFABuilder[S, T] =
       new HashHyperedgeDFABuilder[S, T](init)
   }
 
   given HasBuilder[
-    HashSet, HashMap, HyperedgeNDFAelements,
+    HyperedgeNDFAelements,
+    HashHyperedgeNDFABuilder,
     [X,Y] =>> HyperedgeNDFA[X, Y, IndexedHyperedgeDFA[Set[X], Y]]
   ] with {
-    override def build[S,T]():
-        Builder[HyperedgeNDFAelements[S, T],
-                HyperedgeNDFA[S, T, IndexedHyperedgeDFA[Set[S], T]]] =
+    override def build[S,T](): HashHyperedgeNDFABuilder[S,T] =
         new HashHyperedgeNDFABuilder[S, T]
   }
 }

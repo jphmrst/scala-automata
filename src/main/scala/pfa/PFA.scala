@@ -247,6 +247,6 @@ private[fa] trait PFAtraverser[-S,-T] {
   */
 object PFA {
   def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
-    using impl: HasBuilder[SetType, MapType, PFAelements, PFA]
+    using impl: HasBuilder[PFAelements, ?, PFA]
   ) = impl.build[S,T]()
 }

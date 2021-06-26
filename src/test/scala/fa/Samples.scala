@@ -38,7 +38,7 @@ object Samples extends App with Sampler {
    * Return a fresh copy of a sample DFA builder
    */
   def dfa1B: Builder[DFAelements[String,Int], DFA[String,Int]] = {
-    val builder = DFA.newBuilder[String, Int, HashSet, HashMap]("A")
+    val builder = DFA.newBuilder[String,Int]("A")
     builder += AddState[String,Int]("B")
     builder += AddState("C")
     builder += AddFinalState("D")

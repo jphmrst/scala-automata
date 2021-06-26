@@ -29,8 +29,7 @@ object Builders {
   type PFAelements[S, T] =
     SingleInitialStateBuilders[S] | ProbBuilders[S,T] | AnyBuilders[S,T]
 
-  given HasBuilder[HashSet, HashMap, PFAelements, PFA] with {
-    override def build[S,T](): Builder[PFAelements[S, T], PFA[S, T]] =
-        new HashPFABuilder[S, T]
+  given HasBuilder[PFAelements, HashPFABuilder, PFA] with {
+    override def build[S,T](): HashPFABuilder[S, T] = new HashPFABuilder[S, T]
   }
 }

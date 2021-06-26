@@ -260,8 +260,8 @@ object DFA {
     *
     * @group builderPattern
     */
-  given HasBuilderWithInit[HashSet, HashMap, DFAelements, DFA] with {
-    override def build[S,T](init: S): Builder[DFAelements[S, T], DFA[S, T]] =
+  given hashBd: HasBuilderWithInit[DFAelements, HashDFABuilder, DFA] with {
+    override def build[S,T](init: S): HashDFABuilder[S, T] =
         new HashDFABuilder[S, T](init)
   }
 
@@ -274,7 +274,17 @@ object DFA {
     *
     * @group builderPattern
     */
-  def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
-    using impl: HasBuilderWithInit[SetType, MapType, DFAelements, DFA]
+  def newBuilder[S, T](initialState: S) =
+    newBuilderFor[S, T, HashDFABuilder, DFA](initialState)
+
+  /** [[Builder]] pattern method for [[DFA]]s.
+    *
+    *  @tparam S The type of all states of the automaton
+    *  @tparam T The type of labels on transitions of the automaton
+    *
+    * @group builderPattern
+    */
+  def newBuilderFor[S, T, Bldr[X,Y] <: Builder[DFAelements[X,Y],Impl[X, Y]], Impl[X, Y] <: DFA[X,Y]](initialState: S)(
+    using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]
   ) = impl.build[S,T](initialState)
 }

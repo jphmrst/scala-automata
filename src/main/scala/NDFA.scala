@@ -134,7 +134,9 @@ object NDFA {
 
   def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
     using impl: HasBuilder[
-      SetType, MapType, NDFA.NDFAelements, [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
+      NDFA.NDFAelements,
+      ?,
+      [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
     ]
   ) = impl.build[S,T]()
 
@@ -150,12 +152,10 @@ object NDFA {
     MultipleInitialStateBuilders[S] | NDFABuilders[S,T] | NonProbBuilders[S,T]
      | AnyBuilders[S,T]
 
-  given HasBuilder[
-    HashSet, HashMap, NDFAelements, [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
+  given HasBuilder[NDFAelements, HashNDFABuilder, [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
   ] with {
-    override def build[S,T]():
-      Builder[NDFAelements[S, T], NDFA[S, T, IndexedDFA[Set[S], T]]] =
-        new HashNDFABuilder[S, T]
+    override def build[S,T](): HashNDFABuilder[S, T] =
+      new HashNDFABuilder[S, T]
   }
 }
 
