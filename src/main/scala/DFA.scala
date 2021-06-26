@@ -284,7 +284,10 @@ object DFA {
     *
     * @group builderPattern
     */
-  def newBuilderFor[S, T, Bldr[X,Y] <: Builder[DFAelements[X,Y],Impl[X, Y]], Impl[X, Y] <: DFA[X,Y]](initialState: S)(
-    using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]
-  ) = impl.build[S,T](initialState)
+  def newBuilderFor[
+    S, T,
+    Bldr[X,Y] <: Builder[DFAelements[X,Y],Impl[X, Y]],
+    Impl[X, Y] <: DFA[X,Y]
+  ](initialState: S)(using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]) =
+    impl.build[S,T](initialState)
 }
