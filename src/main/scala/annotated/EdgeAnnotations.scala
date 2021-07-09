@@ -16,15 +16,15 @@ import org.maraist.fa.{DFA, NDFA}
 import org.maraist.fa.NDFA.IndexedNDFA
 import org.maraist.fa.DFA.IndexedDFA
 
-/** Methods provided by nondeterministic finite automata (NDFAs)
-  *
-  * Trait specifying methods provided by all NDFAs, and providing
-  * default implementations for derivations from the core methods.
+/** Methods provided by an edge-annotated nondeterministic finite
+  * automata (NDFA).
   *
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
   * @tparam A The type of annotations on transitions
-  * @tparam K Type function/contructor producing the type of annota
+  * @tparam K Type function/contructor producing the type of
+  * annotation on DFAs from the type of annotation on NDFAs.
+  * @tparam D Type of DFA converted from this NDFA
   *
   * @group Annotated
   */
@@ -57,7 +57,15 @@ trait NDFAEdgeAnnotations
     annotation(src, dest).isDefined
 }
 
-/**
+/** Methods to be implemented by an edge-annotated NDFA builder.
+  *
+  * @tparam S The type of all states of the automaton
+  * @tparam T The type of labels on (non-epsilon) transitions of the
+  * automaton
+  * @tparam A The type of annotations on transitions
+  * @tparam K Type function/contructor producing the type of
+  * annotation on DFAs from the type of annotation on NDFAs.
+  * @tparam D Type of DFA converted from this NDFA
   *
   * @group Annotated
   */
@@ -87,7 +95,12 @@ trait NDFAEdgeAnnotationsBuilder
   def removeEAnnotation(src: S, dest: S): Unit
 }
 
-/**
+/** Methods to be implemented by an edge-annotated DFA.
+  *
+  * @tparam S The type of all states of the automaton
+  * @tparam T The type of labels on (non-epsilon) transitions of the
+  * automaton
+  * @tparam A The type of annotations on transitions
   *
   * @group Annotated
   */
@@ -100,7 +113,12 @@ trait DFAEdgeAnnotations[S,T,A] {
   def annotation(src: S, dest: S, label: T): Some[A]
 }
 
-/**
+/** Operations for converting NDFA to DFA annotations, and for
+  * combining pairs of annotations, when converting an annotated NDFA
+  * into an annotated DFA.
+  *
+  * @tparam A The type of annotations on transitions in the NDFA
+  * @tparam K Type function/contructor producing the type of annotation
   *
   * @group Annotated
   */
