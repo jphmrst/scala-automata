@@ -14,7 +14,6 @@ import org.maraist.fa.general.Builders.HasBuilder
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.IndexedNDFA
 import org.maraist.fa.hyperedges.Builders.HyperedgeNDFAelements
-import org.maraist.fa.general.Hyperedge
 
 /**
   *  @group Hyperedge
