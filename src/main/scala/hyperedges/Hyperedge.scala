@@ -23,9 +23,8 @@ trait Hyperedge[S] {
    *  {@link org.maraist.fa.NDFA#internalsToDOT} or
    *  {@link org.maraist.fa.DFA#internalsToDOT}
    *
-   * FIXME This method may be redundant and removable --- see commented-out
-   * call in HyperedgeDFA.internalsToDOT; are there other calls to this
-   * method?
+   * FIXME Call is commented-out in HyperedgeDFA.internalsToDOT, but
+   * still in use in HyperedgeNDFA?
    */
   protected def eHyperedgesToDOT(nodeLabeling:NodeLabeling[S],
                                  stateList:IndexedSeq[S],
