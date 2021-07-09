@@ -20,7 +20,7 @@ import org.maraist.fa.DFA.DFAtraverser
  * @tparam S The type of all states of the automaton
  * @tparam T The type of labels on (non-epsilon) transitions of the automaton
  *
- * @group Hyperedge
+ * @group DFA
  */
 class ArrayDFA[S,T](stateSeq: IndexedSeq[S],
                     initialStateIndex: Int, finalStateIndices: Set[Int],
