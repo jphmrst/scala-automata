@@ -37,7 +37,7 @@ trait NDFAEdgeAnnotations
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
     */
-  def annotation(src: S, dest: S, label: T): Some[A]
+  def annotation(src: S, dest: S, label: T): Option[A]
 
   /** Check whether there is an annotation on the transition from `src`
     * to `dest` labelled `label`.
@@ -48,7 +48,7 @@ trait NDFAEdgeAnnotations
   /** Return the annotation (if any) on the e-transition from `src` to
     * `dest`.
     */
-  def annotation(src: S, dest: S): Some[A]
+  def annotation(src: S, dest: S): Option[A]
 
   /** Check whether there is an annotation on the unlabeled transition
     * from `src` to `dest`.
@@ -110,7 +110,7 @@ trait DFAEdgeAnnotations[S,T,A] {
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
     */
-  def annotation(src: S, dest: S, label: T): Some[A]
+  def annotation(src: S, label: T): Option[A]
 }
 
 /** Operations for converting NDFA to DFA annotations, and for
