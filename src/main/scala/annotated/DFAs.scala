@@ -9,7 +9,9 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.annotated
-import org.maraist.fa.impl.AbstractArrayDFA
+import scala.collection.mutable.{HashMap, HashSet}
+import org.maraist.fa.DFA
+import org.maraist.fa.impl.{AbstractArrayDFA, AbstractHashDFABuilder}
 
 /** Implementation of a [[org.maraist.fa.DFA DFA]] using
  *  [[scala.collection.immutable.IndexedSeq `IndexedSeq`s]] and
@@ -64,3 +66,120 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   type Traverser = org.maraist.fa.DFA.DFAtraverser[S,T]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) = ???
 }
+
+// -----------------------------------------------------------------
+// DFA builder
+// -----------------------------------------------------------------
+
+abstract class AbstractHashEdgeAnnotatedDFABuilder
+  [S, T, A,
+    D <: AbstractEdgeAnnotatedArrayDFA[S,T,A],
+    K >: DFA.DFAelements[S,T]
+  ](initialState: S)
+    extends AbstractHashDFABuilder[S,T,D,K](initialState)
+    with DFAEdgeAnnotationsBuilder[S,T,A,D,K] {
+
+  val edgeAnnotations: HashMap[S, HashMap[T, A]] =
+    new HashMap[S, HashMap[T, A]]
+
+  def setAnnotation(src: S, label: T, annotation: A): Unit = {
+    val subhash: HashMap[T, A] = edgeAnnotations.get(src) match {
+      case Some(h) => h
+      case None => {
+        val h = new HashMap[T, A]
+        edgeAnnotations(src) = h
+        h
+      }
+    }
+    subhash(label) = annotation
+  }
+
+  def removeAnnotation(src: S, label: T): Unit =
+    edgeAnnotations.get(src) match {
+      case Some(subhash) => {
+        subhash.get(label) match {
+          case Some(_) => {
+            subhash -= label
+            if subhash.size == 0
+            then edgeAnnotations -= src
+          }
+          case None => { }
+        }
+      }
+      case None => { }
+    }
+
+  protected final def assembleDFA(
+    statesSeq: IndexedSeq[S],
+    initialIdx: Int,
+    finalStateIndices: HashSet[Int],
+    transitionsSeq: IndexedSeq[T],
+    idxLabels: Array[Array[Int]]
+  ): D = {
+
+    val edgeAnnotationsArray: Array[Array[Option[A]]] =
+      Array.fill[Option[A]](statesSeq.length, transitionsSeq.length)(None)
+
+    for (i <- 0 until statesSeq.length) {
+      val src = statesSeq(i)
+      val subhash = edgeAnnotations(src)
+
+      for(j <- 0 until transitionsSeq.length) {
+        val label = transitionsSeq(j)
+        subhash.get(label) match {
+          case Some(ann) => edgeAnnotationsArray(i)(j) = Some(ann)
+          case None => { }
+        }
+      }
+    }
+
+    assembleDFA(
+      statesSeq, initialIdx, finalStateIndices, transitionsSeq, idxLabels,
+      edgeAnnotationsArray
+    )
+  }
+
+  protected def assembleDFA(
+    statesSeq: IndexedSeq[S],
+    initialIdx: Int,
+    finalStateIndices: HashSet[Int],
+    transitionsSeq: IndexedSeq[T],
+    idxLabels: Array[Array[Int]],
+    edgeAnnotationsArray: Array[Array[Option[A]]]
+  ): D
+
+}
+
+// TODO Should not need to be abstract
+abstract class HashEdgeAnnotatedDFABuilder
+  [S, T, A, K >: DFA.DFAelements[S,T]](initialState: S)
+    extends AbstractHashEdgeAnnotatedDFABuilder[S, T, A,
+      EdgeAnnotatedArrayDFA[S, T, A], K](initialState) {
+
+  protected def assembleDFA(
+    statesSeq: IndexedSeq[S],
+    initialIdx: Int,
+    finalStateIndices: HashSet[Int],
+    transitionsSeq: IndexedSeq[T],
+    idxLabels: Array[Array[Int]],
+    edgeAnnotationsArray: Array[Array[Option[A]]]):
+      EdgeAnnotatedArrayDFA[S, T, A] =
+    new EdgeAnnotatedArrayDFA[S,T,A](
+      statesSeq,
+      initialIdx,
+      Set.from(finalStateIndices),
+      transitionsSeq,
+      idxLabels,
+      edgeAnnotationsArray
+    )
+
+  // TODO
+  protected def dotTraverser(
+    sb: StringBuilder, stateList: IndexedSeq[S]
+  ): Traverser = ???
+
+  // TODO
+  def annotation(src: S, label: T): Option[A] = ???
+
+}
+

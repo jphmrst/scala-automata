@@ -23,9 +23,13 @@ import org.maraist.fa.DFA.DFAelements
  *
  * @group DFA
  */
-abstract class AbstractHashDFABuilder[S,T, ThisDFA <: AbstractArrayDFA[S,T]](initialState: S)
+abstract class AbstractHashDFABuilder[
+  S, T,
+  ThisDFA <: AbstractArrayDFA[S,T],
+  K >: DFAelements[S,T]
+](initialState: S)
     extends SingleInitialStateMixin[S,T](initialState)
-      with DFABuilder[S,T, ThisDFA]
+      with DFABuilder[S,T, ThisDFA, K]
       with StateHashBuilderTrait[S,T] with FinalStateSetHashBuilderTrait[S,T] {
   private val transitionsMap = new HashMap[S,HashMap[T,S]]
 

@@ -23,8 +23,8 @@ import org.maraist.fa.impl.{AbstractHashDFABuilder}
   * @group Hyperedge
   */
 class HashHyperedgeDFABuilder[S, T](initialState: S)
-    extends AbstractHashDFABuilder[S, T, ArrayHyperedgeDFA[S, T]](initialState)
-    with HyperedgeDFABuilder[S, T, ArrayHyperedgeDFA[S, T]]
+    extends AbstractHashDFABuilder[S, T, ArrayHyperedgeDFA[S, T],HyperedgeDFAelements[S,T]](initialState)
+    with HyperedgeDFABuilder[S, T, ArrayHyperedgeDFA[S, T], HyperedgeDFAelements[S,T]]
     with Builder[HyperedgeDFAelements[S, T], HyperedgeDFA[S, T]]{
   val hyperedgeMap: HashMap[S,HashSet[Set[S]]] = new HashMap[S,HashSet[Set[S]]]
   def eHyperedgeTargets(s:S): Set[Set[S]] = hyperedgeMap.get(s) match {
@@ -64,7 +64,7 @@ class HashHyperedgeDFABuilder[S, T](initialState: S)
   /** Primary {@link scala.collection.mutable.Builder Builder} method
     * implementation.
     */
-  override def addOne(builder: HyperedgeDFAelements[S, T]): this.type = {
+  override def addOne(builder: HyperedgeDFAelements[S,T]): this.type = {
     builder match {
       case AddState(s) => addState(s)
       case RemoveState(state) => removeState(state)

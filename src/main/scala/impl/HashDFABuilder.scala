@@ -24,7 +24,7 @@ import org.maraist.fa.DFA.*
  *  @group DFA
  */
 class HashDFABuilder[S,T](initialState: S)
-    extends AbstractHashDFABuilder[S,T, AbstractArrayDFA[S,T]](initialState) {
+    extends AbstractHashDFABuilder[S,T,AbstractArrayDFA[S,T],DFAelements[S,T]](initialState) {
   type ThisDFA = ArrayDFA[S,T]
   type Traverser = DFAtraverser[S,T]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =

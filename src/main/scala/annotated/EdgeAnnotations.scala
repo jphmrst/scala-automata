@@ -12,7 +12,7 @@ package org.maraist.fa.annotated
 import scala.collection.mutable.{HashMap,HashSet,Queue}
 import org.maraist.graphviz.{Graphable,NodeLabeling,TransitionLabeling}
 import org.maraist.fa.general.Builders.HasBuilder
-import org.maraist.fa.{DFA, NDFA}
+import org.maraist.fa.{DFA, NDFA, DFABuilder, NDFABuilder}
 import org.maraist.fa.NDFA.IndexedNDFA
 import org.maraist.fa.DFA.IndexedDFA
 
@@ -70,9 +70,12 @@ trait NDFAEdgeAnnotations
   * @group Annotated
   */
 trait NDFAEdgeAnnotationsBuilder
-  [S, T, A, K[_], +D <: IndexedDFA[Set[S],T] & DFAEdgeAnnotations[S,T,K[A]]]
+  [S, T, A, K[_],
+    +D <: IndexedDFA[Set[S],T] & DFAEdgeAnnotations[S,T,K[A]],
+    +N <: NDFA[S,T,D] & NDFAEdgeAnnotations[S,T,A,K,D]
+  ]
     extends NDFAEdgeAnnotations[S, T, A, K, D] {
-  this: NDFA[S, T, D] =>
+  this: NDFABuilder[S, T, D, N] =>
 
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.
@@ -111,6 +114,34 @@ trait DFAEdgeAnnotations[S,T,A] {
     * `dest` labelled `label`.
     */
   def annotation(src: S, label: T): Option[A]
+}
+
+/** Methods to be implemented by an edge-annotated DFA builder.
+  *
+  * @tparam S The type of all states of the automaton
+  * @tparam T The type of labels on (non-epsilon) transitions of the
+  * automaton
+  * @tparam A The type of annotations on transitions
+  * @tparam D Type of DFA returned from this builder.  Should
+  * implement both the core [[DFA]] triat plus [[DFAEdgeAnnotations]].
+  *
+  * @group Annotated
+  */
+trait DFAEdgeAnnotationsBuilder[
+  S, T, A, +D <: DFA[S,T] & DFAEdgeAnnotations[S,T,A],
+  K >: DFA.DFAelements[S,T]]
+    extends DFAEdgeAnnotations[S, T, A] {
+  this: DFABuilder[S, T, D, K] =>
+
+  /** Set the annotation on the transition from `src` to `dest` labelled
+    * `label`.
+    */
+  def setAnnotation(src: S, label: T, annotation: A): Unit
+
+  /** Remove any annotation from the transition from `src` to `dest`
+    * labelled `label`.
+    */
+  def removeAnnotation(src: S, label: T): Unit
 }
 
 /** Operations for converting NDFA to DFA annotations, and for

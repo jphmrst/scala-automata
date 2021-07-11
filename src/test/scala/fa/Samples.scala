@@ -23,6 +23,7 @@ import org.maraist.fa.pfa.impl.HashPFABuilder
 import org.maraist.fa.hyperedges.
   {HyperedgeDFA, HyperedgeDFABuilder, HyperedgeNDFA, HyperedgeNDFABuilder,
     IndexedHyperedgeDFA}
+import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
 import org.maraist.fa.hyperedges.impl.
   {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
 import org.maraist.latex.{LaTeXdoc,Sampler}
@@ -100,7 +101,10 @@ object Samples extends App with Sampler {
   /**
    * Return a fresh copy of a sample DFA-with-hyperedge builder
    */
-  def hdfa3B: HyperedgeDFABuilder[String, Int, ArrayHyperedgeDFA[String,Int]] = {
+  def hdfa3B: HyperedgeDFABuilder[
+    String, Int, ArrayHyperedgeDFA[String,Int],
+    HyperedgeDFAelements[String,Int]
+  ] = {
     val builder = new HashHyperedgeDFABuilder[String,Int]("A")
     builder.addState("B")
     builder.addState("C")

@@ -20,8 +20,9 @@ import org.maraist.graphviz.{Graphable,GraphvizOptions,
   * @tparam ThisDFA The concrete type of DFA returned by this builder
   * @group DFA
   */
-trait DFABuilder[S, T, +ThisDFA <: DFA[S,T]] extends DFA[S,T]
-    with Builder[DFA.DFAelements[S,T], ThisDFA] {
+trait DFABuilder[S, T, +ThisDFA <: DFA[S,T], K >: DFA.DFAelements[S,T]]
+    extends DFA[S,T]
+    with Builder[K, ThisDFA] {
 
   /** Returns the (possibly immutable) [[org.maraist.fa.DFA DFA]]
     * described to this builder */

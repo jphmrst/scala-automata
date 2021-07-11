@@ -9,11 +9,12 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.fa.DFABuilder
+import org.maraist.fa.{DFA, DFABuilder}
 
 /**
   *  @group Hyperedge
   */
-trait HyperedgeDFABuilder[S, T, ThisDFA <: HyperedgeDFA[S,T]]
-    extends DFABuilder[S, T, ThisDFA]
+trait HyperedgeDFABuilder[S, T, ThisDFA <: HyperedgeDFA[S,T],
+  K >: DFA.DFAelements[S,T]]
+    extends DFABuilder[S, T, ThisDFA, K]
     with HyperedgeDFA[S, T] with HyperedgeBuilder[S]
