@@ -161,7 +161,7 @@ abstract class AbstractHashNDFABuilder
   /** Helper method for the [[scala.collection.mutable.Builder]]
     * implementation.
     */
-  protected def addBuilderElement(builder: NDFAelements[S, T]): Unit =
+  protected def addBuilderElement(builder: K): Unit =
     builder match {
       case e: InitialStateSetTraitElements[S, T] =>
         dispatchInitialStateSetTraitElements(e)

@@ -35,10 +35,4 @@ class HashNDFABuilder[S,T]
       statesSeq, initials, finals, transitionsSeq,
       labelsArray.map(_.map(_.toSet)),
       epsilonsArray.map(_.toSet))
-
-  /** Dispatch steps for a Builder-pattern implementation.  */
-  override def addOne(builder: NDFAelements[S,T]): this.type = {
-    addBuilderElement(builder)
-    this
-  }
 }

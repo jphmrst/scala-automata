@@ -53,6 +53,17 @@ trait NDFABuilder[
     */
   def clear(): Unit = throw new UnsupportedOperationException()
 
+  /** Helper method for the [[scala.collection.mutable.Builder]]
+    * implementation.
+    */
+  protected def addBuilderElement(builder: K): Unit
+
+  /** Dispatch steps for a Builder-pattern implementation.  */
+  final def addOne(builder: K): this.type = {
+    addBuilderElement(builder)
+    this
+  }
+
   /** Returns the (possibly immutable) [[org.maraist.fa.NDFA NDFA]]
     * described to this builder */
   def toNDFA: ThisNDFA
