@@ -10,6 +10,10 @@
 
 package org.maraist.fa.impl
 import scala.collection.mutable.{HashMap,HashSet}
+import org.maraist.fa.general.
+  {SingleInitialStateMixin, StateHashBuilderTrait,
+    FinalStateSetHashBuilderTrait, InitialStateSetTrait,
+    StateHashBuilderElements, FinalStateSetHashBuilderElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
 import org.maraist.fa.DFA.IndexedDFA
 
@@ -24,13 +28,11 @@ import org.maraist.fa.DFA.IndexedDFA
   */
 abstract class AbstractHashNDFABuilder[S, T, +ThisDFA <: IndexedDFA[Set[S],T],
                                        +ThisNDFA <: NDFA[S,T,ThisDFA]]
-extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
-  /** Set of the states */
-  val allStates:HashSet[S] = new HashSet[S]
-  /** Set of the initial states */
-  val initialStatesSet:HashSet[S] = new HashSet[S]
-  /** Set of the final states */
-  val finalStatesSet:HashSet[S] = new HashSet[S]
+    extends NDFABuilder[S, T, ThisDFA, ThisNDFA]
+    with StateHashBuilderTrait[S, T]
+    with FinalStateSetHashBuilderTrait[S, T]
+    with InitialStateSetTrait[S, T] {
+
   /** Maps from a state `s` and label `t` to the set of states at the
     * end of transitions starting from `s` and labeled `t` */
   val transitionsMap = new HashMap[S,HashMap[T,HashSet[S]]]
@@ -38,32 +40,18 @@ extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
     * &epsilon;-transitions starting from `s` */
   val epsilons:HashMap[S,HashSet[S]] = new HashMap[S,HashSet[S]]
 
-  def addState(s:S):Unit = allStates += s
-  def removeState(s:S):Unit = {
-    allStates -= s
-    initialStatesSet -= s
-    finalStatesSet -= s
+  private[fa] def deleteTransitionsFrom(s:S) = {
     transitionsMap -= s
-    epsilons -= s
     for(lmap <- transitionsMap.valuesIterator)
-      for(v <- lmap.valuesIterator) v -= s
+      for(v <- for(v <- lmap.keysIterator if (lmap(v).equals(s))) yield v)
+        lmap -= v
+    epsilons -= s
     for(v <- epsilons.valuesIterator) v -= s
   }
-  def addInitialState(s:S):Unit = {
-    allStates += s
-    initialStatesSet += s
-  }
-  def removeInitialState(s:S):Unit = initialStatesSet -= s
-  def addFinalState(s:S):Unit = {
-    allStates += s
-    finalStatesSet += s
-  }
-  def removeFinalState(s:S):Unit = finalStatesSet -= s
-  def setFinalState(s:S):Unit = finalStatesSet += s
-  def setInitialState(s:S):Unit = initialStatesSet += s
+
   def addTransition(s1:S, t:T, s2:S):Unit = {
-    allStates += s1
-    allStates += s2
+    addState(s1)
+    addState(s2)
     val submap:HashMap[T,HashSet[S]] =
       transitionsMap.getOrElseUpdate(s1,new HashMap[T,HashSet[S]])
     val subsubmap:HashSet[S] = submap.getOrElseUpdate(t, new HashSet[S])
@@ -71,8 +59,8 @@ extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
   }
   def addETransition(s1:S, s2:S):Unit = {
     // println("** " + s1 + " --> " + s2)
-    allStates += s1
-    allStates += s2
+    addState(s1)
+    addState(s2)
     val s1Set:HashSet[S] = epsilons.getOrElseUpdate(s1, new HashSet[S])
     s1Set += s2
   }
@@ -86,8 +74,6 @@ extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
     if (epsilons.contains(s1)) epsilons(s1) -= s2
   }
 
-  def size: Int = allStates.size
-  def states: Set[S] = allStates.toSet
   /** @inheritdoc
     *
     * This method is always calculated by traversing the `transitionsMap` map;
@@ -100,11 +86,6 @@ extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
         result += t
     result.toSet
   }
-  def initialStates: Set[S] = initialStatesSet.toSet
-  def finalStates: Set[S] = finalStatesSet.toSet
-  def isState(s:S):Boolean = allStates(s)
-  def isInitialState(s:S):Boolean = initialStatesSet(s)
-  def isFinalState(s:S):Boolean = finalStatesSet(s)
 
   def transitions(s:S, t:T): Set[S] = {
     if (transitionsMap.contains(s)) {
@@ -133,7 +114,7 @@ extends NDFABuilder[S,T,ThisDFA,ThisNDFA] {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val initials: HashSet[Int] = new HashSet[Int]
-    for(s <- initialStatesSet) initials += statesSeq.indexOf(s)
+    for(s <- initialStates) initials += statesSeq.indexOf(s)
     val finals: HashSet[Int] = new HashSet[Int]
     for(s <- finalStatesSet) finals += statesSeq.indexOf(s)
     val empty = new HashSet[Int]

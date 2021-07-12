@@ -32,10 +32,6 @@ trait NDFABuilder[S, T, +ThisDFA <: IndexedDFA[Set[S],T],
   def removeInitialState(s:S):Unit
   /** Adds a final state to the automaton */
   def addFinalState(s:S):Unit
-  /** Set a state which is already part of the automaton to be a final state. */
-  def setFinalState(s:S):Unit
-  /** Set a state which is already part of the automaton to be an initial state. */
-  def setInitialState(s:S):Unit
   /** Causes a state not to be considered a final state, but does
     * ''not'' remove it from the automaton */
   def removeFinalState(s:S):Unit

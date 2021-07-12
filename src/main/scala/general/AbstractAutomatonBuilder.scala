@@ -118,28 +118,28 @@ abstract class SingleInitialStateMixin[S,T](var initialState: S) {
   protected def dispatchSingleInitialStateMixinElement
     (elem: SingleInitialStateMixinElement[S, T]):
       Unit = elem match {
-    case AddState(s) => addState(s)
     case SetInitialState(s) => setInitialState(s)
   }
 }
 
-type SingleInitialStateMixinElement[S, T] = AddState[S,T] | SetInitialState[S]
+type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
 
 /**
   *
   * @group DFA
   */
 trait InitialStateSetTrait[S,T] {
-  private val initialStates = new HashSet[S]
+  private val initialStatesSet = new HashSet[S]
   def addState(s:S):Unit
   def addInitialState(s:S):Unit = {
     addState(s)
-    initialStates += s
+    initialStatesSet += s
   }
   def removeInitialState(s:S):Unit = {
-    initialStates -= s
+    initialStatesSet -= s
   }
-  def isInitialState(s:S):Boolean = initialStates.contains(s)
+  def isInitialState(s:S):Boolean = initialStatesSet.contains(s)
+  def initialStates: Set[S] = initialStatesSet.toSet
   private[fa] def deleteInitialState(s:S):Unit = {
     removeInitialState(s)
   }
@@ -147,12 +147,11 @@ trait InitialStateSetTrait[S,T] {
   protected def dispatchInitialStateSetTraitElements
     (elem: InitialStateSetTraitElements[S, T]):
       Unit = elem match {
-    case AddState(s) => addState(s)
     case AddInitialState(s) => AddInitialState(s)
     case RemoveInitialState(s) => RemoveInitialState(s)
   }
 }
 
 type InitialStateSetTraitElements[S, T] =
-  AddState[S,T] | AddInitialState[S] | RemoveInitialState[S]
+  AddInitialState[S] | RemoveInitialState[S]
 
