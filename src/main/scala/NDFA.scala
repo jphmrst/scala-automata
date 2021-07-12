@@ -62,12 +62,13 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
   /** Internal routine used by {@link #toDOT}.  Subclesses should
    *  override, but still call super.internalsToDOT, to extend the
    *  Graphviz representation of a NDFA */
-  protected def internalsToDOT(stateList:IndexedSeq[S],
-                               sb:StringBuilder,
-                               nodeLabeling:NodeLabeling[S] =
-                                 this.nodeLabeling,
-                               trLabeling:TransitionLabeling[T] =
-                                 this.transitionLabeling):Unit = {
+  protected def internalsToDOT(
+    stateList:IndexedSeq[S],
+    sb:StringBuilder,
+    nodeLabeling:NodeLabeling[S] = this.nodeLabeling,
+    trLabeling:TransitionLabeling[T] = this.transitionLabeling
+  ):Unit = {
+
     // Initial state
     sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
 
