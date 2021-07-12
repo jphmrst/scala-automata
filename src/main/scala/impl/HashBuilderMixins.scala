@@ -277,6 +277,15 @@ trait HashMapNondeterministicLabelledTransitionMixin[S, T]
     } else
       Set.empty[S]
   }
+
+  protected def dispatchNondeterministicLabelledTransitionMixinElements
+    (elem: NondeterministicLabelledTransitionMixinElements[S, T]):
+      Unit = elem match {
+    case AddTransition(state1, trans, state2) =>
+      addTransition(state1, trans, state2)
+    case RemoveTransition(state, trans, state2) =>
+      removeTransition(state, trans, state2)
+  }
 }
 
 type NondeterministicLabelledTransitionMixinElements[S, T] =
@@ -309,9 +318,16 @@ trait HashMapUnlabelledTransitionMixin[S]
     else
       Set.empty[S]
   }
+
+  protected def dispatchUnlabelledTransitionBuilderElements
+    (elem: UnlabelledTransitionBuilderElements[S]):
+      Unit = elem match {
+    case AddETransition(state1, state2)   => addETransition(state1, state2)
+    case RemoveETransition(state, state2) => removeETransition(state, state2)
+  }
 }
 
-type UnlabelledTransitionMixinElements[S, T] =
+type UnlabelledTransitionBuilderElements[S] =
   AddETransition[S] | RemoveETransition[S]
 
 

@@ -18,7 +18,8 @@ import org.maraist.fa.impl.
     FinalStateSetBuilderElement,
     HashFinalStateSetBuilderMixin,
     HashMapNondeterministicLabelledTransitionMixin,
-    NondeterministicLabelledTransitionMixinElements}
+    NondeterministicLabelledTransitionMixinElements,
+    UnlabelledTransitionBuilderElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
 import org.maraist.fa.NDFA.NDFAelements
 import org.maraist.fa.DFA.IndexedDFA
@@ -114,11 +115,9 @@ abstract class AbstractHashNDFABuilder
         dispatchStateBuilderElement(e)
       case e: FinalStateSetBuilderElement[S, T] =>
         dispatchFinalStateSetHashBuilderElement(e)
-      case AddTransition(state1, trans, state2) =>
-        addTransition(state1, trans, state2)
-      case RemoveTransition(state, trans, state2) =>
-        removeTransition(state, trans, state2)
-      case AddETransition(state1, state2) => addETransition(state1, state2)
-      case RemoveETransition(state, state2) => removeETransition(state, state2)
+      case e: UnlabelledTransitionBuilderElements[S] =>
+        dispatchUnlabelledTransitionBuilderElements(e)
+      case e: NondeterministicLabelledTransitionMixinElements[S, T] =>
+        dispatchNondeterministicLabelledTransitionMixinElements(e)
     }
 }
