@@ -58,6 +58,14 @@ trait SingleInitialStateHolder[S] extends InitialStateSetHolder[S] {
   def getInitialStates: Set[S] = Set(getInitialState)
 }
 
+trait IndexedSingleInitialStateHolder[S]
+    extends IndexedInitialStateSetHolder[S]
+    with SingleInitialStateHolder[S] {
+  this: IndexedStateHolder[S] =>
+  def initialStateIndex: Int
+  def initialStateIndices: Set[Int] = Set(initialStateIndex)
+}
+
 trait LabelsHolder[T] {
   /** Set of automaton transition labels */
   def labels: Iterable[T]

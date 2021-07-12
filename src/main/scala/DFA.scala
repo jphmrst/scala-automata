@@ -13,10 +13,11 @@ import scala.collection.mutable.{Builder, HashMap, HashSet}
 import org.maraist.graphviz.
   {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
-  {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
+  { StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
+    IndexedStateHolder, IndexedLabelsHolder, IndexedSingleInitialStateHolder,
     IndexedFinalStateSetHolder, SingleInitialStateHolder}
 import org.maraist.fa.general.
-  {Automaton, SingleInitialStateMixinElement,
+  {SingleInitialStateMixinElement,
     StateBuilderElement, FinalStateSetBuilderElement,
     DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.general.Builders.
@@ -32,13 +33,13 @@ import org.maraist.fa.impl.HashDFABuilder
  * @group DFA
  */
 trait DFA[S,T]
-    extends Automaton[S,T]
+    extends StateHolder[S]
+    with FinalStateSetHolder[S]
     with SingleInitialStateHolder[S]
+    with LabelsHolder[T]
     with Graphable[S,T] {
   type Traverser <: DFAtraverser[S,T]
 
-  /** The initial state of the automaton */
-  def getInitialState: S
   /** Returns the state, if any, into which the automaton could
    * transition starting from `s` via a transition labelled `t`.
    */
@@ -187,13 +188,10 @@ object DFA {
     */
   trait IndexedDFA[S,T]
       extends DFA[S,T]
-      with Automaton[S,T]
       with IndexedStateHolder[S]
       with IndexedLabelsHolder[T]
-      with IndexedInitialStateSetHolder[S]
+      with IndexedSingleInitialStateHolder[S]
       with IndexedFinalStateSetHolder[S] {
-    def initialStateIndex:Int
-    def initialStateIndices:Set[Int] = Set(initialStateIndex)
 
     def transitionIndex(si:Int, ti:Int): Option[Int]
 

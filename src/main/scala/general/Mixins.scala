@@ -19,7 +19,7 @@ import org.maraist.fa.traits.{
 }
 
 /** Mixin of builder routines pertaining to states for
- * [[org.maraist.fa.Automaton Automaton]]s using
+ * automata using
  * [[scala.collection.mutable.HashSet `HashSet`s]] and
  * [[scala.collection.mutable.HashMap `HashMap`s]].
  * @param initialState The initial state of the automaton.  This builder must
@@ -61,7 +61,7 @@ trait HashSetStateBuilderMixin[S,T]
 type StateBuilderElement[S, T] = AddState[S,T] | RemoveState[S,T]
 
 /** Implementation of builder routines pertaining to final states for
- * [[org.maraist.fa.Automaton Automaton]]s using
+ * automata using
  * [[scala.collection.mutable.HashSet `HashSet`s]] and
  * [[scala.collection.mutable.HashMap `HashMap`s]].
  * @param initialState The initial state of the automaton.  This builder must
@@ -102,7 +102,7 @@ type FinalStateSetBuilderElement[S, T] =
 
 /**
   * Mixin of builder routines for
-  * [[org.maraist.fa.Automaton Automaton]]s pertaining to the initial
+  * automata pertaining to the initial
   * state using [[scala.collection.mutable.HashSet `HashSet`s]] and
   * [[scala.collection.mutable.HashMap `HashMap`s]].
   * @param initialState The initial state of the automaton.  This builder must

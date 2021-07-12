@@ -14,7 +14,6 @@ import scala.collection.immutable.IndexedSeq
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
-import org.maraist.fa.general.Automaton
 import org.maraist.fa.traits.
   {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
     IndexedFinalStateSetHolder}
@@ -27,8 +26,7 @@ import org.maraist.fa.traits.
  * @group PFA
  */
 trait IndexedPFA[S,T]
-    extends Automaton[S,T]
-    with IndexedStateHolder[S]
+    extends IndexedStateHolder[S]
     with IndexedLabelsHolder[T]
     with IndexedInitialStateSetHolder[S]
     with IndexedFinalStateSetHolder[S]

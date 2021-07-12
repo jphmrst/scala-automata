@@ -12,11 +12,12 @@ package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
 import org.maraist.graphviz.{Graphable, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
-  {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
+  {StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
+    IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
     IndexedFinalStateSetHolder}
 import org.maraist.fa.general.Builders.{HasBuilder}
 import org.maraist.fa.general.
-  {Automaton, InitialStateSetTraitElements,
+  {InitialStateSetTraitElements,
     StateBuilderElement, FinalStateSetBuilderElement}
 import org.maraist.fa.general.Builders.{AddTransition, RemoveTransition}
 import org.maraist.fa.DFA.IndexedDFA
@@ -33,7 +34,11 @@ import org.maraist.fa.impl.{DOT,HashNDFABuilder}
   * @group NDFA
   */
 trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
-extends Automaton[S,T] with Graphable[S,T] {
+    extends StateHolder[S]
+    with FinalStateSetHolder[S]
+    with InitialStateSetHolder[S]
+    with LabelsHolder[T]
+    with Graphable[S,T] {
   /** Returns the set of state into which the automaton could transition
     * starting from `s` via a transition labelled `t`.  Does not
     * consider &epsilon;-transitions.
@@ -136,7 +141,10 @@ object NDFA {
     * @group NDFA
     */
   trait IndexedNDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
-      extends Automaton[S,T]
+      extends StateHolder[S]
+      with FinalStateSetHolder[S]
+      with InitialStateSetHolder[S]
+      with LabelsHolder[T]
       with IndexedStateHolder[S]
       with IndexedLabelsHolder[T]
       with IndexedInitialStateSetHolder[S]
