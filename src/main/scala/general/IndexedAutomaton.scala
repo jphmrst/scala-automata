@@ -12,6 +12,9 @@ package org.maraist.fa.general
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
+import org.maraist.fa.traits.
+  {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
+    IndexedFinalStateSetHolder}
 
 /** Trait of the basic usage operations of an automaton whose states and
  * transition labels can be referenced by an index number.
@@ -20,14 +23,9 @@ import org.maraist.graphviz.TransitionLabeling
  *  @tparam T The type of labels on transitions of the automaton
   *  @group General
  */
-trait IndexedAutomaton[S,T] extends Automaton[S,T] {
-  /** Returns a state by index */
-  def state(i:Int): S
-  override def states: IndexedSeq[S]
-  override def labels: IndexedSeq[T]
-  def labelIndex(t:T): Int
-  def label(i:Int): T
-  def indexOf(s:S): Int
-  def initialStateIndices: Set[Int]
-  def finalStateIndices: Set[Int]
-}
+trait IndexedAutomaton[S,T]
+    extends Automaton[S,T]
+    with IndexedStateHolder[S]
+    with IndexedLabelsHolder[T]
+    with IndexedInitialStateSetHolder[S]
+    with IndexedFinalStateSetHolder[S]
