@@ -84,3 +84,22 @@ trait DeterministicLabelledTransitionHolder[S, T] extends LabelsHolder[T] {
   def transition(s:S, t:T): Option[S]
 
 }
+
+trait NondeterministicLabelledTransitionHolder[S, T] extends LabelsHolder[T] {
+  /** Returns the (possibly empty) set of states into which the
+   * automaton could transition starting from `s` via a transition
+   * labelled `t`.
+   */
+  def transitions(s:S, t:T): Set[S]
+}
+
+trait IndexedNondeterministicLabelledTransitionHolder[S, T]
+    extends IndexedLabelsHolder[T]
+    with NondeterministicLabelledTransitionHolder[S, T]
+
+trait UnlabelledTransitionHolder[S] {
+  /** Returns the set of states into which the automaton could transition
+    * via a single &epsilon;-transition from `s`.
+    */
+  def eTransitions(s:S): Set[S]
+}

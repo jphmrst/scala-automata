@@ -15,7 +15,13 @@ import org.maraist.fa.elements.*
 import org.maraist.fa.traits.{
   StateAdder, StateHolder, StateBuilder,
   FinalStateSetHolder, FinalStateSetBuilder,
-  SingleInitialStateHolder, SingleInitialStateBuilder
+  SingleInitialStateHolder, SingleInitialStateBuilder,
+  DeterministicLabelledTransitionHolder,
+  DeterministicLabelledTransitionBuilder,
+  NondeterministicLabelledTransitionHolder,
+  NondeterministicLabelledTransitionBuilder,
+  UnlabelledTransitionHolder,
+  UnlabelledTransitionBuilder
 }
 
 /** Mixin of builder routines pertaining to states for
@@ -168,7 +174,9 @@ trait InitialStateSetTrait[S,T] {
 type InitialStateSetTraitElements[S, T] =
   AddInitialState[S] | RemoveInitialState[S]
 
-trait DeterministicLabelledTransitionMixin[S, T] {
+trait DeterministicLabelledTransitionMixin[S, T]
+    extends DeterministicLabelledTransitionHolder[S, T]
+    with DeterministicLabelledTransitionBuilder[S, T]{
   this: StateAdder[S] =>
 
   protected val transitionsMap = new HashMap[S,HashMap[T,S]]
@@ -221,7 +229,9 @@ trait DeterministicLabelledTransitionMixin[S, T] {
 type DeterministicLabelledTransitionMixinElement[S, T] =
   AddTransition[S, T] | RemoveTransition[S, T]
 
-trait NondeterministicLabelledTransitionMixin[S, T] {
+trait NondeterministicLabelledTransitionMixin[S, T]
+    extends NondeterministicLabelledTransitionHolder[S, T]
+    with NondeterministicLabelledTransitionBuilder[S, T] {
   this: StateAdder[S] =>
 
   /** Maps from a state `s` and label `t` to the set of states at the
@@ -271,3 +281,32 @@ trait NondeterministicLabelledTransitionMixin[S, T] {
 
 type NondeterministicLabelledTransitionMixinElements[S, T] =
   AddTransition[S, T] | RemoveTransition[S, T]
+
+trait UnlabelledTransitionMixin[S]
+    extends UnlabelledTransitionHolder[S]
+    with UnlabelledTransitionBuilder[S] {
+  this: StateAdder[S] =>
+
+  /** Maps from a state `s` to the set of states at the end of
+    * &epsilon;-transitions starting from `s` */
+  protected val epsilons: HashMap[S, HashSet[S]] = new HashMap[S, HashSet[S]]
+
+  def addETransition(s1:S, s2:S):Unit = {
+    // println("** " + s1 + " --> " + s2)
+    addState(s1)
+    addState(s2)
+    val s1Set:HashSet[S] = epsilons.getOrElseUpdate(s1, new HashSet[S])
+    s1Set += s2
+  }
+
+  def removeETransition(s1:S, s2:S):Unit = {
+    if (epsilons.contains(s1)) epsilons(s1) -= s2
+  }
+
+  def eTransitions(s:S): Set[S] = {
+    if (epsilons.contains(s))
+      epsilons(s).toSet
+    else
+      Set.empty[S]
+  }
+}

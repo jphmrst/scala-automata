@@ -12,9 +12,12 @@ package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
 import org.maraist.graphviz.{Graphable, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
-  {StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
+  {StateHolder, FinalStateSetHolder, InitialStateSetHolder,
+    LabelsHolder, NondeterministicLabelledTransitionHolder,
+    IndexedNondeterministicLabelledTransitionHolder,
     IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
-    IndexedFinalStateSetHolder}
+    IndexedFinalStateSetHolder,
+    UnlabelledTransitionHolder}
 import org.maraist.fa.elements.{HasBuilder, AddTransition, RemoveTransition}
 import org.maraist.fa.impl.
   {InitialStateSetTraitElements,
@@ -36,19 +39,13 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
     extends StateHolder[S]
     with FinalStateSetHolder[S]
     with InitialStateSetHolder[S]
-    with LabelsHolder[T]
+    with NondeterministicLabelledTransitionHolder[S, T]
+    with UnlabelledTransitionHolder[S]
     with Graphable[S,T] {
-  /** Returns the set of state into which the automaton could transition
-    * starting from `s` via a transition labelled `t`.  Does not
-    * consider &epsilon;-transitions.
-    */
-  def transitions(s:S, t:T): Set[S]
-  /** Returns the set of states into which the automaton could transition
-    * via a single &epsilon;-transition from `s`.
-    */
-  def eTransitions(s:S): Set[S]
+
   /** Converts this NDFA to a [[org.maraist.fa.DFA DFA]]. */
   def toDFA: ThisDFA
+
   override def toString():String = {
     val bld:StringBuilder = new StringBuilder
     for (st <- states) {
@@ -140,15 +137,11 @@ object NDFA {
     * @group NDFA
     */
   trait IndexedNDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
-      extends StateHolder[S]
-      with FinalStateSetHolder[S]
-      with InitialStateSetHolder[S]
-      with LabelsHolder[T]
+      extends NDFA[S,T,ThisDFA]
       with IndexedStateHolder[S]
-      with IndexedLabelsHolder[T]
+      with IndexedNondeterministicLabelledTransitionHolder[S, T]
       with IndexedInitialStateSetHolder[S]
       with IndexedFinalStateSetHolder[S]
-      with NDFA[S,T,ThisDFA]
 
   def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
     using impl: HasBuilder[

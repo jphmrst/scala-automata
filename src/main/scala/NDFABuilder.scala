@@ -41,10 +41,11 @@ trait NDFABuilder[
 
   /** Adds a transition labelled `t` from `s1` to `s2` */
   def addTransition(s1:S, t:T, s2:S): Unit
-  /** Adds an &epsilon;-transition from `s1` to `s2` */
-  def addETransition(s1:S, s2:S): Unit
   /** Removes any transition labelled `t` from `s1` to `s2` */
   def removeTransition(s1:S, t:T, s2:S): Unit
+
+  /** Adds an &epsilon;-transition from `s1` to `s2` */
+  def addETransition(s1:S, s2:S): Unit
   /** Removes any &epsilon;-transition from `s1` to `s2` */
   def removeETransition(s1:S, s2:S): Unit
 

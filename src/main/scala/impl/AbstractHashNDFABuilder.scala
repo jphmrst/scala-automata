@@ -42,11 +42,8 @@ abstract class AbstractHashNDFABuilder
     with HashSetStateBuilderMixin[S, T]
     with HashFinalStateSetBuilderMixin[S, T]
     with InitialStateSetTrait[S, T]
-    with NondeterministicLabelledTransitionMixin[S, T] {
-
-  /** Maps from a state `s` to the set of states at the end of
-    * &epsilon;-transitions starting from `s` */
-  val epsilons: HashMap[S, HashSet[S]] = new HashMap[S, HashSet[S]]
+    with NondeterministicLabelledTransitionMixin[S, T]
+    with UnlabelledTransitionMixin[S] {
 
   private[fa] def deleteTransitionsFrom(s:S) = {
     transitionsMap -= s
@@ -55,25 +52,6 @@ abstract class AbstractHashNDFABuilder
         lmap -= v
     epsilons -= s
     for(v <- epsilons.valuesIterator) v -= s
-  }
-
-  def addETransition(s1:S, s2:S):Unit = {
-    // println("** " + s1 + " --> " + s2)
-    addState(s1)
-    addState(s2)
-    val s1Set:HashSet[S] = epsilons.getOrElseUpdate(s1, new HashSet[S])
-    s1Set += s2
-  }
-
-  def removeETransition(s1:S, s2:S):Unit = {
-    if (epsilons.contains(s1)) epsilons(s1) -= s2
-  }
-
-  def eTransitions(s:S): Set[S] = {
-    if (epsilons.contains(s))
-      epsilons(s).toSet
-    else
-      Set.empty[S]
   }
 
   /** @deprecated */
