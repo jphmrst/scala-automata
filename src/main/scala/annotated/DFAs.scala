@@ -75,7 +75,7 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
 abstract class AbstractHashEdgeAnnotatedDFABuilder
   [S, T, A,
     D <: AbstractEdgeAnnotatedArrayDFA[S,T,A],
-    K >: DFA.DFAelements[S,T]
+    K >: DFA.DFAelements[S,T] <: Matchable
   ](initialState: S)
     extends AbstractHashDFABuilder[S,T,D,K](initialState)
     with DFAEdgeAnnotationsBuilder[S,T,A,D,K] {
@@ -182,15 +182,6 @@ extends AbstractHashEdgeAnnotatedDFABuilder[
 
   // TODO
   def annotation(src: S, label: T): Option[A] = ???
-
-
-  /** Primary {@link scala.collection.mutable.Builder Builder} method
-    * implementation.
-    */
-  override def addOne(builder: DFAelements[S, T]): this.type = {
-    addBuilderElement(builder)
-    this
-  }
 
   override protected def addBuilderElement(builder: DFAelements[S, T]): Unit =
     super.addBuilderElement(builder)

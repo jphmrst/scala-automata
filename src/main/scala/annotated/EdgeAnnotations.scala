@@ -129,7 +129,7 @@ trait DFAEdgeAnnotations[S,T,A] {
   */
 trait DFAEdgeAnnotationsBuilder[
   S, T, A, +D <: DFA[S,T] & DFAEdgeAnnotations[S,T,A],
-  K >: DFA.DFAelements[S,T]]
+  K >: DFA.DFAelements[S,T] <: Matchable]
     extends DFAEdgeAnnotations[S, T, A] {
   this: DFABuilder[S, T, D, K] =>
 

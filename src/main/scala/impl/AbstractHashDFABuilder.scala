@@ -31,7 +31,7 @@ import org.maraist.fa.DFA.*
 abstract class AbstractHashDFABuilder[
   S, T,
   ThisDFA <: AbstractArrayDFA[S,T],
-  K >: DFAelements[S,T]
+  K >: DFAelements[S,T] <: Matchable
 ](initialState: S)
     extends SingleInitialStateMixin[S,T](initialState)
     with DFABuilder[S,T, ThisDFA, K]
@@ -126,7 +126,7 @@ abstract class AbstractHashDFABuilder[
   /** Helper method for the [[scala.collection.mutable.Builder]]
     * implementation.
     */
-  protected def addBuilderElement(builder: DFAelements[S, T]): Unit =
+  protected def addBuilderElement(builder: K): Unit =
     builder match {
       case e: SingleInitialStateMixinElement[S, T] =>
         dispatchSingleInitialStateMixinElement(e)

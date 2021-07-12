@@ -15,6 +15,6 @@ import org.maraist.fa.{DFA, DFABuilder}
   *  @group Hyperedge
   */
 trait HyperedgeDFABuilder[S, T, ThisDFA <: HyperedgeDFA[S,T],
-  K >: DFA.DFAelements[S,T]]
+  K >: DFA.DFAelements[S,T] <: Matchable]
     extends DFABuilder[S, T, ThisDFA, K]
     with HyperedgeDFA[S, T] with HyperedgeBuilder[S]

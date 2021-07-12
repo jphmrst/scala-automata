@@ -20,7 +20,7 @@ import org.maraist.graphviz.{Graphable,GraphvizOptions,
   * @tparam ThisDFA The concrete type of DFA returned by this builder
   * @group DFA
   */
-trait DFABuilder[S, T, +ThisDFA <: DFA[S,T], K >: DFA.DFAelements[S,T]]
+trait DFABuilder[S, T, +ThisDFA <: DFA[S,T], K >: DFA.DFAelements[S,T] <: Matchable]
     extends DFA[S,T]
     with Builder[K, ThisDFA] {
 
@@ -52,6 +52,19 @@ trait DFABuilder[S, T, +ThisDFA <: DFA[S,T], K >: DFA.DFAelements[S,T]]
     * is not implemented at this time.
     */
   def clear(): Unit = throw new UnsupportedOperationException()
+
+  /** Helper method for the [[scala.collection.mutable.Builder]]
+    * implementation.
+    */
+  protected def addBuilderElement(builder: K): Unit
+
+  /** Primary {@link scala.collection.mutable.Builder Builder} method
+    * implementation.
+    */
+  final def addOne(builder: K): this.type = {
+    addBuilderElement(builder)
+    this
+  }
 
   /** @deprecated Use {@link #result} */
   def toDFA: ThisDFA

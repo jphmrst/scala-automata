@@ -38,12 +38,4 @@ class HashDFABuilder[S,T](initialState: S)
     new ArrayDFA[S,T](statesSeq, initialIdx, finalStateIndices.toSet,
                       transitionsSeq, idxLabels)
   }
-
-  /** Primary {@link scala.collection.mutable.Builder Builder} method
-    * implementation.
-    */
-  override def addOne(builder: DFAelements[S, T]): this.type = {
-    addBuilderElement(builder)
-    this
-  }
 }

@@ -61,21 +61,13 @@ class HashHyperedgeDFABuilder[S, T](initialState: S)
       hyperedgeIndicesMap.map({case (k, v) => (k, v.toSet)}).toMap)
   }
 
-  /** Primary {@link scala.collection.mutable.Builder Builder} method
+  /** Helper method for the [[scala.collection.mutable.Builder]]
     * implementation.
     */
-  override def addOne(builder: HyperedgeDFAelements[S,T]): this.type = {
+  protected override def addBuilderElement(builder: HyperedgeDFAelements[S,T]):
+      Unit =
     builder match {
-      case AddState(s): AddState[S, T] => addState(s)
-      case RemoveState(state) => removeState(state)
-      case AddFinalState(state) => addFinalState(state)
-      case RemoveFinalState(state) => removeFinalState(state)
-      case AddTransition(state1, trans, state2) =>
-        addTransition(state1, trans, state2)
-      case RemoveTransition(state, trans, state2) => removeTransition(state, trans)
-      case SetInitialState(state) => setInitialState(state)
       case AddEHyperedge(state, toStates) => addEHyperedge(state, toStates)
+      case _: DFAelements[S, T] => super.addBuilderElement(builder)
     }
-    this
-  }
 }
