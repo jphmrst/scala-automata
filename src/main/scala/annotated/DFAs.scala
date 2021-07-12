@@ -14,9 +14,7 @@ import org.maraist.fa.DFA
 import org.maraist.fa.DFA.DFAelements
 import org.maraist.fa.impl.{AbstractArrayDFA, AbstractHashDFABuilder}
 
-/** Implementation of a [[org.maraist.fa.DFA DFA]] using
- *  [[scala.collection.immutable.IndexedSeq `IndexedSeq`s]] and
- *  `Array`s.
+/** Implementation of a edge-annotated DFA.
  * @param initialStateIndex Index of the initial state of the automaton.
  * @param finalStateIndices Set of the indices of the final states of the
  * automaton

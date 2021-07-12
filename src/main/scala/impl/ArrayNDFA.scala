@@ -65,7 +65,6 @@ class ArrayNDFA[S,T](
     println("]")
   }
 
-  /** {@inheritdoc} */
   protected def assembleDFA(dfaStates:IndexedSeq[Set[S]],
                             initialStateIdx:Int,
                             dfaFinals:Set[Int],

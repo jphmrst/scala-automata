@@ -209,14 +209,14 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
 
   /**
    * This method is implemented by subclasses where
-   * {@org.maraist.fa.NDFA#ThisDFA ThisDFA} is concretized, to provide a DFA
-   * implementation of the specific type.
+   * [[org.maraist.fa.NDFA#ThisDFA ThisDFA]] is concretized, to
+   * provide a DFA implementation of the specific type.
    */
-  protected def assembleDFA(dfaStates:IndexedSeq[Set[S]],
-                            initialStateIdx:Int,
-                            dfaFinals:Set[Int],
-                            transitionsSeq:IndexedSeq[T],
-                            dfaTransitions:Array[Array[Int]],
-                            tracker:IndexSetsTracker,
-                            appearsIn:Array[Set[Int]]):ThisDFA
+  protected def assembleDFA(dfaStates: IndexedSeq[Set[S]],
+                            initialStateIdx: Int,
+                            dfaFinals: Set[Int],
+                            transitionsSeq: IndexedSeq[T],
+                            dfaTransitions: Array[Array[Int]],
+                            tracker: IndexSetsTracker,
+                            appearsIn: Array[Set[Int]]): ThisDFA
 }
