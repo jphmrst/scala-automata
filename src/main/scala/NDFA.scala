@@ -18,7 +18,9 @@ import org.maraist.fa.traits.
     IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
     IndexedFinalStateSetHolder,
     UnlabelledTransitionHolder}
-import org.maraist.fa.elements.{HasBuilder, AddTransition, RemoveTransition}
+import org.maraist.fa.elements.
+  {HasBuilder, AddTransition, RemoveTransition,
+    AddETransition, RemoveETransition}
 import org.maraist.fa.impl.
   {InitialStateSetTraitElements,
     StateBuilderElement, FinalStateSetBuilderElement}
@@ -151,10 +153,8 @@ object NDFA {
     ]
   ) = impl.build[S,T]()
 
-  case class AddETransition[S,T](state1: S, state2: S)
-  case class RemoveETransition[S,T](state1: S, state2: S)
   type NDFABuilders[S,T] = (
-    AddETransition[S,T] | RemoveETransition[S,T]
+    AddETransition[S] | RemoveETransition[S]
       | AddTransition[S,T]
       | RemoveTransition[S,T]
   )

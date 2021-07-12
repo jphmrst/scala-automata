@@ -174,7 +174,7 @@ trait InitialStateSetTrait[S,T] {
 type InitialStateSetTraitElements[S, T] =
   AddInitialState[S] | RemoveInitialState[S]
 
-trait DeterministicLabelledTransitionMixin[S, T]
+trait HashMapDeterministicLabelledTransitionMixin[S, T]
     extends DeterministicLabelledTransitionHolder[S, T]
     with DeterministicLabelledTransitionBuilder[S, T]{
   this: StateAdder[S] =>
@@ -229,7 +229,7 @@ trait DeterministicLabelledTransitionMixin[S, T]
 type DeterministicLabelledTransitionMixinElement[S, T] =
   AddTransition[S, T] | RemoveTransition[S, T]
 
-trait NondeterministicLabelledTransitionMixin[S, T]
+trait HashMapNondeterministicLabelledTransitionMixin[S, T]
     extends NondeterministicLabelledTransitionHolder[S, T]
     with NondeterministicLabelledTransitionBuilder[S, T] {
   this: StateAdder[S] =>
@@ -282,7 +282,7 @@ trait NondeterministicLabelledTransitionMixin[S, T]
 type NondeterministicLabelledTransitionMixinElements[S, T] =
   AddTransition[S, T] | RemoveTransition[S, T]
 
-trait UnlabelledTransitionMixin[S]
+trait HashMapUnlabelledTransitionMixin[S]
     extends UnlabelledTransitionHolder[S]
     with UnlabelledTransitionBuilder[S] {
   this: StateAdder[S] =>
@@ -310,3 +310,8 @@ trait UnlabelledTransitionMixin[S]
       Set.empty[S]
   }
 }
+
+type UnlabelledTransitionMixinElements[S, T] =
+  AddETransition[S] | RemoveETransition[S]
+
+

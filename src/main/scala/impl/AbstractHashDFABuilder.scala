@@ -15,7 +15,7 @@ import org.maraist.fa.impl.
   {SingleInitialStateMixin, HashSetStateBuilderMixin,
     SingleInitialStateMixinElement, HashFinalStateSetBuilderMixin,
     StateBuilderElement, FinalStateSetBuilderElement,
-    DeterministicLabelledTransitionMixin,
+    HashMapDeterministicLabelledTransitionMixin,
     DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.elements.*
 import org.maraist.fa.DFA.*
@@ -39,7 +39,7 @@ abstract class AbstractHashDFABuilder[
     with DFABuilder[S,T, ThisDFA, K]
     with HashSetStateBuilderMixin[S,T]
     with HashFinalStateSetBuilderMixin[S,T]
-    with DeterministicLabelledTransitionMixin[S, T] {
+    with HashMapDeterministicLabelledTransitionMixin[S, T] {
 
   import scala.util.control.NonLocalReturns.*
   def accepts(ts:Seq[T]): Boolean = returning {

@@ -29,3 +29,5 @@ case class RemoveInitialState[S](state: S)
 case class AddTransition[S,T](state1: S, trans: T, state2: S)
 case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
 
+case class AddETransition[S](state1: S, state2: S)
+case class RemoveETransition[S](state1: S, state2: S)

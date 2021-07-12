@@ -17,10 +17,10 @@ import org.maraist.fa.impl.
     InitialStateSetTraitElements,
     FinalStateSetBuilderElement,
     HashFinalStateSetBuilderMixin,
-    NondeterministicLabelledTransitionMixin,
+    HashMapNondeterministicLabelledTransitionMixin,
     NondeterministicLabelledTransitionMixinElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
-import org.maraist.fa.NDFA.{AddETransition, RemoveETransition, NDFAelements}
+import org.maraist.fa.NDFA.NDFAelements
 import org.maraist.fa.DFA.IndexedDFA
 import org.maraist.fa.elements.*
 
@@ -42,8 +42,8 @@ abstract class AbstractHashNDFABuilder
     with HashSetStateBuilderMixin[S, T]
     with HashFinalStateSetBuilderMixin[S, T]
     with InitialStateSetTrait[S, T]
-    with NondeterministicLabelledTransitionMixin[S, T]
-    with UnlabelledTransitionMixin[S] {
+    with HashMapNondeterministicLabelledTransitionMixin[S, T]
+    with HashMapUnlabelledTransitionMixin[S] {
 
   private[fa] def deleteTransitionsFrom(s:S) = {
     transitionsMap -= s
