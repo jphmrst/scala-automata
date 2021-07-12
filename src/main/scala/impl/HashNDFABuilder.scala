@@ -20,14 +20,17 @@ import org.maraist.fa.NDFA.*
   */
 class HashNDFABuilder[S,T]
     extends AbstractHashNDFABuilder[S,T,ArrayDFA[Set[S],T],ArrayNDFA[S,T]]
-    // with Builder[NDFAelements[S,T], NDFA[S,T,ArrayDFA[Set[S],T]]]
 {
 
   def toDFA: ArrayDFA[Set[S],T] = toNDFA.toDFA
-  protected def assembleNDFA(statesSeq:IndexedSeq[S], initials:Set[Int],
-                             finals:Set[Int], transitionsSeq: IndexedSeq[T],
-                             labelsArray:Array[Array[HashSet[Int]]],
-                             epsilonsArray:Array[HashSet[Int]]): ArrayNDFA[S,T] =
+  protected def assembleNDFA(
+    statesSeq: IndexedSeq[S],
+    initials: Set[Int],
+    finals: Set[Int],
+    transitionsSeq: IndexedSeq[T],
+    labelsArray: Array[Array[HashSet[Int]]],
+    epsilonsArray: Array[HashSet[Int]]
+  ): ArrayNDFA[S,T] =
     new ArrayNDFA[S,T](
       statesSeq, initials, finals, transitionsSeq,
       labelsArray.map(_.map(_.toSet)),
