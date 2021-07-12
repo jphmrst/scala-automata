@@ -10,11 +10,14 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet}
-import org.maraist.graphviz.{Graphable, GraphvizOptions,
-                             NodeLabeling, TransitionLabeling}
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
+import org.maraist.fa.traits.
+  {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
+    IndexedFinalStateSetHolder, SingleInitialStateHolder}
 import org.maraist.fa.general.
-  {Automaton, IndexedAutomaton, SingleInitialStateMixinElement,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+  {Automaton, SingleInitialStateMixinElement,
+    StateBuilderElement, FinalStateSetBuilderElement,
     DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.general.Builders.
   {HasBuilder, HasBuilderWithInit, AddTransition, RemoveTransition}
@@ -28,15 +31,14 @@ import org.maraist.fa.impl.HashDFABuilder
  *
  * @group DFA
  */
-trait DFA[S,T] extends Automaton[S,T] with Graphable[S,T] {
+trait DFA[S,T]
+    extends Automaton[S,T]
+    with SingleInitialStateHolder[S]
+    with Graphable[S,T] {
   type Traverser <: DFAtraverser[S,T]
 
   /** The initial state of the automaton */
-  def initialState: S
-  /** {@inheritDoc} For DFAs, this method returns a singleton set containing
-   * the result of {@link org.maraist.fa.DFA#initialState initialState}.
-   */
-  def initialStates: Set[S] = Set(initialState)
+  def getInitialState: S
   /** Returns the state, if any, into which the automaton could
    * transition starting from `s` via a transition labelled `t`.
    */
@@ -183,7 +185,13 @@ object DFA {
     *
     * @group DFA
     */
-  trait IndexedDFA[S,T] extends DFA[S,T] with IndexedAutomaton[S,T] {
+  trait IndexedDFA[S,T]
+      extends DFA[S,T]
+      with Automaton[S,T]
+      with IndexedStateHolder[S]
+      with IndexedLabelsHolder[T]
+      with IndexedInitialStateSetHolder[S]
+      with IndexedFinalStateSetHolder[S] {
     def initialStateIndex:Int
     def initialStateIndices:Set[Int] = Set(initialStateIndex)
 
@@ -241,8 +249,8 @@ object DFA {
     */
   type DFAelements[S, T] = (
     SingleInitialStateMixinElement[S,T]
-      | StateHashBuilderElements[S,T]
-      | FinalStateSetHashBuilderElements[S,T]
+      | StateBuilderElement[S,T]
+      | FinalStateSetBuilderElement[S,T]
       | DeterministicLabelledTransitionMixinElement[S, T]
   )
 

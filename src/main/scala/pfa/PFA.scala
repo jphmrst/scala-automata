@@ -13,9 +13,8 @@ import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
-import org.maraist.fa.general.
-  {Automaton, SingleInitialStateMixinElement,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements}
+import org.maraist.fa.traits.StateHolder
+import org.maraist.fa.general.{SingleInitialStateMixinElement}
 import org.maraist.fa.general.Builders.HasBuilder
 import org.maraist.fa.pfa.impl.PFAdotTraverser
 import org.maraist.fa.pfa.Builders.PFAelements
@@ -27,7 +26,7 @@ import org.maraist.fa.pfa.Builders.PFAelements
  *
  * @group PFA
  */
-trait PFA[S,T] extends Automaton[S,T] with Graphable[S,T] {
+trait PFA[S,T] extends StateHolder[S] with Graphable[S,T] {
 
   /** Returns the probability that `s` is an initial state of this automaton.
    */
@@ -40,6 +39,8 @@ trait PFA[S,T] extends Automaton[S,T] with Graphable[S,T] {
    *  the automaton
    */
   def isFinalState(s:S): Boolean = finalStateProb(s)>0.0
+
+  def labels: Iterable[T]
 
   /** {@inheritDoc} For PFAs, this method returns the states which map via
    *  {@link org.maraist.fa.PFA#finalStateProb} to a non-zero probability.

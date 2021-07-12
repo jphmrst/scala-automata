@@ -79,7 +79,7 @@ abstract class AbstractArrayDFA[S,T](
   def state(i:Int):S = stateSeq(i)
   /** Returns the index of a state */
   def indexOf(s:S):Int = stateSeq.indexOf(s)
-  def initialState: S = stateSeq(initialStateIndex)
+  def getInitialState: S = stateSeq(initialStateIndex)
   def finalStates: Set[S] = finalStateIndices.map(stateSeq)
   def isState(s:S):Boolean = stateSeq.contains(s)
   def isInitialState(s:S):Boolean = stateSeq(initialStateIndex).equals(s)

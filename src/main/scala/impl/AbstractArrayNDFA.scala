@@ -57,7 +57,7 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
   def initialStateIndices: Set[Int] = initialStateSet.toSet
   /** Retrieve the indices of finals states */
   def finalStateIndices: Set[Int] = finalStateSet.toSet
-  def initialStates: Set[S] = initialStateSet.map(stateSeq)
+  def getInitialStates: Set[S] = initialStateSet.map(stateSeq)
   def finalStates: Set[S] = finalStateSet.map(stateSeq)
   def isState(s:S):Boolean = stateSeq.contains(s)
   def isInitialState(s:S):Boolean = initialStateSet.contains(indexOf(s))

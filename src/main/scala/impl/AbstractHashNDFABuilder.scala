@@ -11,9 +11,12 @@
 package org.maraist.fa.impl
 import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.fa.general.
-  {InitialStateSetTrait, StateHashBuilderTrait,
-    FinalStateSetHashBuilderTrait, InitialStateSetTraitElements,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+  {HashSetStateBuilderMixin,
+    StateBuilderElement,
+    InitialStateSetTrait,
+    InitialStateSetTraitElements,
+    FinalStateSetBuilderElement,
+    HashFinalStateSetBuilderMixin,
     NondeterministicLabelledTransitionMixin,
     NondeterministicLabelledTransitionMixinElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
@@ -36,8 +39,8 @@ abstract class AbstractHashNDFABuilder
     K >: NDFAelements[S,T] <: Matchable
   ]
     extends NDFABuilder[S, T, ThisDFA, ThisNDFA, K]
-    with StateHashBuilderTrait[S, T]
-    with FinalStateSetHashBuilderTrait[S, T]
+    with HashSetStateBuilderMixin[S, T]
+    with HashFinalStateSetBuilderMixin[S, T]
     with InitialStateSetTrait[S, T]
     with NondeterministicLabelledTransitionMixin[S, T] {
 
@@ -83,7 +86,7 @@ abstract class AbstractHashNDFABuilder
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val initials: HashSet[Int] = new HashSet[Int]
-    for(s <- initialStates) initials += statesSeq.indexOf(s)
+    for(s <- getInitialStates) initials += statesSeq.indexOf(s)
     val finals: HashSet[Int] = new HashSet[Int]
     for(s <- finalStatesSet) finals += statesSeq.indexOf(s)
     val empty = new HashSet[Int]
@@ -129,9 +132,9 @@ abstract class AbstractHashNDFABuilder
     builder match {
       case e: InitialStateSetTraitElements[S, T] =>
         dispatchInitialStateSetTraitElements(e)
-      case e: StateHashBuilderElements[S, T] =>
-        dispatchStateHashBuilderElement(e)
-      case e: FinalStateSetHashBuilderElements[S, T] =>
+      case e: StateBuilderElement[S, T] =>
+        dispatchStateBuilderElement(e)
+      case e: FinalStateSetBuilderElement[S, T] =>
         dispatchFinalStateSetHashBuilderElement(e)
       case AddTransition(state1, trans, state2) =>
         addTransition(state1, trans, state2)

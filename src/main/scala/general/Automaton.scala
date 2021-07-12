@@ -9,6 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.general
+import org.maraist.fa.traits.
+  {StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder}
 
 /** Trait of the basic usage operations on an automaton with states and labels.
  *
@@ -19,22 +21,9 @@ package org.maraist.fa.general
  *
  * @group General
  */
-trait Automaton[S,T] {
-  /** Number of states in the automaton */
-  def size: Int
-  /** Set of automaton states */
-  def states: Iterable[S]
-  /** Set of automaton transition labels */
-  def labels: Iterable[T]
-  /** Set of the initial states of the automaton */
-  def initialStates: Set[S]
-  /** Set of the accept states of the automaton */
-  def finalStates: Set[S]
-  /** Returns `true` if `s` is used as a state */
-  def isState(s:S): Boolean
-  /** Returns `true` if `s` is an initial state of the automaton */
-  def isInitialState(s:S): Boolean
-  /** Returns `true` if `s` is a final state of the automaton */
-  def isFinalState(s:S): Boolean
-}
+trait Automaton[S,T]
+    extends StateHolder[S]
+    with FinalStateSetHolder[S]
+    with InitialStateSetHolder[S]
+    with LabelsHolder[T]
 

@@ -10,10 +10,14 @@
 
 package org.maraist.fa.pfa
 import scala.collection.mutable.{HashSet}
+import scala.collection.immutable.IndexedSeq
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
-import org.maraist.fa.general.IndexedAutomaton
+import org.maraist.fa.general.Automaton
+import org.maraist.fa.traits.
+  {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
+    IndexedFinalStateSetHolder}
 
 /** Trait of the basic usage operations on a DFA.
  *
@@ -22,12 +26,19 @@ import org.maraist.fa.general.IndexedAutomaton
  *
  * @group PFA
  */
-trait IndexedPFA[S,T] extends IndexedAutomaton[S,T] with PFA[S,T] {
+trait IndexedPFA[S,T]
+    extends Automaton[S,T]
+    with IndexedStateHolder[S]
+    with IndexedLabelsHolder[T]
+    with IndexedInitialStateSetHolder[S]
+    with IndexedFinalStateSetHolder[S]
+    with PFA[S,T] {
   def transitionIndex(fromIdx:Int, labelIdx:Int, toIdx:Int):Double
   def transitionIndex(s0:Int, t:Int):Map[Int,Double]
   def eTransitionIndex(s0:Int, s1:Int):Double
   def initialStateIndexProb(s:Int):Double
   def finalStateIndexProb(s:Int):Double
+  def labels: IndexedSeq[T]
 
   def initialStateIndices: Set[Int] = {
     val result = new HashSet[Int]
@@ -36,6 +47,8 @@ trait IndexedPFA[S,T] extends IndexedAutomaton[S,T] with PFA[S,T] {
     }
     result.toSet
   }
+
+  def getInitialStates: Set[S] = for (i <- initialStateIndices) yield state(i)
 
   def finalStateIndices: Set[Int] = {
     val result = new HashSet[Int]

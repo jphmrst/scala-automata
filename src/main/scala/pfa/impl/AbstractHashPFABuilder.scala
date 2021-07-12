@@ -12,7 +12,7 @@ package org.maraist.fa.pfa.impl
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import org.maraist.fa.pfa.{PFA, IndexedPFA, PFABuilder}
-import org.maraist.fa.general.{StateHashBuilderTrait}
+import org.maraist.fa.general.{HashSetStateBuilderMixin}
 
 /** Implementation of [[org.maraist.fa.PFABuilder PFABuilder]] using
  *  [[scala.collection.mutable.HashSet `HashSet`s]] and
@@ -25,7 +25,7 @@ import org.maraist.fa.general.{StateHashBuilderTrait}
  * @group DFA
  */
 abstract class AbstractHashPFABuilder[S,T]
-extends StateHashBuilderTrait[S,T] with PFABuilder[S,T] {
+extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
   private val transitionsMap = new HashMap[S,HashMap[T,HashMap[S,Double]]]
   private val eTransitionsMap = new HashMap[S,HashMap[S,Double]]
   private val initialProb = new HashMap[S,Double]

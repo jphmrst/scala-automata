@@ -11,8 +11,8 @@
 package org.maraist.fa.pfa
 import scala.collection.mutable.{Builder, HashMap, HashSet}
 import org.maraist.fa.general.
-  {SingleInitialStateMixinElement, StateHashBuilderElements,
-    FinalStateSetHashBuilderElements}
+  {SingleInitialStateMixinElement, StateBuilderElement,
+    FinalStateSetBuilderElement}
 import org.maraist.fa.general.Builders.*
 import org.maraist.fa.pfa.PFA
 import org.maraist.fa.pfa.impl.HashPFABuilder
@@ -34,8 +34,8 @@ object Builders {
 
   type PFAelements[S, T] = (
     SingleInitialStateMixinElement[S,T]
-      | StateHashBuilderElements[S,T]
-      // | FinalStateSetHashBuilderElements[S,T]
+      | StateBuilderElement[S,T]
+      // | FinalStateSetBuilderElement[S,T]
       | ProbBuilders[S,T]
   )
 

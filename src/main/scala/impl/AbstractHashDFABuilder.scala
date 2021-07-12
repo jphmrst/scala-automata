@@ -12,9 +12,9 @@ package org.maraist.fa.impl
 import scala.collection.mutable.{Builder,Growable,HashMap,HashSet}
 import org.maraist.fa.{DFA, DFABuilder}
 import org.maraist.fa.general.
-  {SingleInitialStateMixin, StateHashBuilderTrait,
-    FinalStateSetHashBuilderTrait, SingleInitialStateMixinElement,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+  {SingleInitialStateMixin, HashSetStateBuilderMixin,
+    SingleInitialStateMixinElement, HashFinalStateSetBuilderMixin,
+    StateBuilderElement, FinalStateSetBuilderElement,
     DeterministicLabelledTransitionMixin,
     DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.general.Builders.*
@@ -37,13 +37,13 @@ abstract class AbstractHashDFABuilder[
 ](initialState: S)
     extends SingleInitialStateMixin[S,T](initialState)
     with DFABuilder[S,T, ThisDFA, K]
-    with StateHashBuilderTrait[S,T]
-    with FinalStateSetHashBuilderTrait[S,T]
+    with HashSetStateBuilderMixin[S,T]
+    with HashFinalStateSetBuilderMixin[S,T]
     with DeterministicLabelledTransitionMixin[S, T] {
 
   import scala.util.control.NonLocalReturns.*
   def accepts(ts:Seq[T]): Boolean = returning {
-    var current:S = initialState
+    var current:S = getInitialState
     for(t <- ts) {
       transition(current, t) match {
         case Some(s) => { current = s }
@@ -59,7 +59,7 @@ abstract class AbstractHashDFABuilder[
   def result(): ThisDFA = {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
-    val initialIdx: Int = statesSeq.indexOf(initialState)
+    val initialIdx: Int = statesSeq.indexOf(getInitialState)
     val finalStateIndices: HashSet[Int] = new HashSet[Int]
     for(s <- finalStatesSet) finalStateIndices += statesSeq.indexOf(s)
 
@@ -97,9 +97,9 @@ abstract class AbstractHashDFABuilder[
     builder match {
       case e: SingleInitialStateMixinElement[S, T] =>
         dispatchSingleInitialStateMixinElement(e)
-      case e: StateHashBuilderElements[S, T] =>
-        dispatchStateHashBuilderElement(e)
-      case e: FinalStateSetHashBuilderElements[S, T] =>
+      case e: StateBuilderElement[S, T] =>
+        dispatchStateBuilderElement(e)
+      case e: FinalStateSetBuilderElement[S, T] =>
         dispatchFinalStateSetHashBuilderElement(e)
       case e: DeterministicLabelledTransitionMixinElement[S, T] =>
         dispatchDeterministicLabelledTransitionMixinElement(e)

@@ -12,12 +12,10 @@ package org.maraist.fa.general
 import scala.collection.mutable.{HashMap,HashSet}
 import java.awt.geom.GeneralPath
 import org.maraist.fa.general.Builders.*
-
-/** Mixin of the addState method, used as the self-type of traits
-  * which require this method.
-  */
-trait StateAdder[S] {
-  def addState(s: S): Unit
+import org.maraist.fa.traits.{
+  StateAdder, StateHolder, StateBuilder,
+  FinalStateSetHolder, FinalStateSetBuilder,
+  SingleInitialStateHolder, SingleInitialStateBuilder
 }
 
 /** Mixin of builder routines pertaining to states for
@@ -31,7 +29,8 @@ trait StateAdder[S] {
  *
  * @group General
  */
-trait StateHashBuilderTrait[S,T] extends StateAdder[S] {
+trait HashSetStateBuilderMixin[S,T]
+    extends StateHolder[S] with StateBuilder[S] {
 
   /** Storage for all state objects */
   protected val allStates:HashSet[S] = new HashSet[S]
@@ -51,15 +50,15 @@ trait StateHashBuilderTrait[S,T] extends StateAdder[S] {
   def states:Set[S] = Set.from(allStates)
   def isState(s:S):Boolean = allStates.contains(s)
 
-  protected def dispatchStateHashBuilderElement
-    (elem: StateHashBuilderElements[S, T]):
+  protected def dispatchStateBuilderElement
+    (elem: StateBuilderElement[S, T]):
       Unit = elem match {
     case AddState(s) => addState(s)
     case RemoveState(s) => removeState(s)
   }
 }
 
-type StateHashBuilderElements[S, T] = AddState[S,T] | RemoveState[S,T]
+type StateBuilderElement[S, T] = AddState[S,T] | RemoveState[S,T]
 
 /** Implementation of builder routines pertaining to final states for
  * [[org.maraist.fa.Automaton Automaton]]s using
@@ -72,32 +71,33 @@ type StateHashBuilderElements[S, T] = AddState[S,T] | RemoveState[S,T]
  *
  * @group General
  */
-trait FinalStateSetHashBuilderTrait[S,T] {
+trait HashFinalStateSetBuilderMixin[S,T]
+    extends FinalStateSetHolder[S] with FinalStateSetBuilder[S] {
   this: StateAdder[S] =>
 
   /** Storage for all final state objects */
-  protected val finalStatesSet:HashSet[S] = new HashSet[S]
+  protected val finalStatesSet: HashSet[S] = new HashSet[S]
 
   private[fa] def deleteFinalState(s:S):Unit = { finalStatesSet -= s }
 
-  def addFinalState(s:S):Unit = {
+  def addFinalState(s: S): Unit = {
     finalStatesSet += s
     addState(s)
   }
-  def removeFinalState(s:S):Unit = { finalStatesSet -= s }
+  def removeFinalState(s: S): Unit = { finalStatesSet -= s }
 
   def finalStates: Set[S] = Set.from(finalStatesSet)
   def isFinalState(s:S):Boolean = finalStatesSet.contains(s)
 
   protected def dispatchFinalStateSetHashBuilderElement
-    (elem: FinalStateSetHashBuilderElements[S, T]):
+    (elem: FinalStateSetBuilderElement[S, T]):
       Unit = elem match {
     case AddFinalState(s) => addFinalState(s)
     case RemoveFinalState(s) => removeFinalState(s)
   }
 }
 
-type FinalStateSetHashBuilderElements[S, T] =
+type FinalStateSetBuilderElement[S, T] =
   AddFinalState[S,T] | RemoveFinalState[S,T]
 
 /**
@@ -112,14 +112,18 @@ type FinalStateSetHashBuilderElements[S, T] =
   *
   * @group General
   */
-abstract class SingleInitialStateMixin[S,T](var initialState: S) {
+abstract class SingleInitialStateMixin[S,T]
+  (protected var initialStateVar: S)
+    extends SingleInitialStateHolder[S] with SingleInitialStateBuilder[S] {
   this: StateAdder[S] =>
+
+  def getInitialState: S = initialStateVar
 
   def setInitialState(s:S):Unit = {
     addState(s)
-    initialState = s
+    initialStateVar = s
   }
-  def isInitialState(s:S):Boolean = initialState.equals(s)
+  def isInitialState(s:S):Boolean = initialStateVar.equals(s)
   private[fa] def deleteInitialState(s:S):Unit =
     throw new IllegalStateException()
 
@@ -148,7 +152,7 @@ trait InitialStateSetTrait[S,T] {
     initialStatesSet -= s
   }
   def isInitialState(s:S):Boolean = initialStatesSet.contains(s)
-  def initialStates: Set[S] = initialStatesSet.toSet
+  def getInitialStates: Set[S] = initialStatesSet.toSet
   private[fa] def deleteInitialState(s:S):Unit = {
     removeInitialState(s)
   }
