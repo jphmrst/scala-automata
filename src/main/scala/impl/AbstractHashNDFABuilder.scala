@@ -11,11 +11,13 @@
 package org.maraist.fa.impl
 import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.fa.general.
-  {SingleInitialStateMixin, StateHashBuilderTrait,
-    FinalStateSetHashBuilderTrait, InitialStateSetTrait,
+  {InitialStateSetTrait, StateHashBuilderTrait,
+    FinalStateSetHashBuilderTrait, InitialStateSetTraitElements,
     StateHashBuilderElements, FinalStateSetHashBuilderElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
+import org.maraist.fa.NDFA.{AddETransition, RemoveETransition, NDFAelements}
 import org.maraist.fa.DFA.IndexedDFA
+import org.maraist.fa.general.Builders.*
 
 /** Implementation of [[org.maraist.fa.NDFABuilder NDFABuilder]] using
   * [[scala.collection.mutable.HashMap `HashMap`s]] and
@@ -152,4 +154,23 @@ abstract class AbstractHashNDFABuilder[S, T, +ThisDFA <: IndexedDFA[Set[S],T],
     labelsArray: Array[Array[HashSet[Int]]],
     epsilonsArray: Array[HashSet[Int]]):
       ThisNDFA
+
+  /** Helper method for the [[scala.collection.mutable.Builder]]
+    * implementation.
+    */
+  protected def addBuilderElement(builder: NDFAelements[S, T]): Unit =
+    builder match {
+      case e: InitialStateSetTraitElements[S, T] =>
+        dispatchInitialStateSetTraitElements(e)
+      case e: StateHashBuilderElements[S, T] =>
+        dispatchStateHashBuilderElement(e)
+      case e: FinalStateSetHashBuilderElements[S, T] =>
+        dispatchFinalStateSetHashBuilderElement(e)
+      case AddTransition(state1, trans, state2) =>
+        addTransition(state1, trans, state2)
+      case RemoveTransition(state, trans, state2) =>
+        removeTransition(state, trans, state2)
+      case AddETransition(state1, state2) => addETransition(state1, state2)
+      case RemoveETransition(state, state2) => removeETransition(state, state2)
+    }
 }
