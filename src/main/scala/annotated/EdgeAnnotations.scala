@@ -13,8 +13,8 @@ import scala.collection.mutable.{HashMap,HashSet,Queue}
 import org.maraist.graphviz.{Graphable,NodeLabeling,TransitionLabeling}
 import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.{DFA, NDFA, DFABuilder, NDFABuilder}
-import org.maraist.fa.NDFA.IndexedNDFA
-import org.maraist.fa.DFA.IndexedDFA
+import org.maraist.fa.DFA.{IndexedDFA, DFAelements}
+import org.maraist.fa.NDFA.{IndexedNDFA, NDFAelements}
 
 /** Methods provided by an edge-annotated nondeterministic finite
   * automata (NDFA).
@@ -161,4 +161,26 @@ trait EdgeAnnotationCombiner[A, K[_]] {
 
   /** Combine in another annotation. */
   def combine(k: K[A], a: A): K[A]
+}
+
+object Elements {
+  case class SetAnnotation[S,T,A](src: S, dest: S, label: T, annotation: A)
+  case class RemoveAnnotation[S,T,A](src: S, dest: S, label: T)
+
+  type LabelledEdgeAnnotationElements[S,T,A] =
+    SetAnnotation[S,T,A] | RemoveAnnotation[S,T,A]
+
+  type AnnotatedDFAelement[S,T,A] =
+    DFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
+
+  case class SetEAnnotation[S,A](src: S, dest: S, annotation: A)
+  case class RemoveEAnnotation[S,A](src: S, dest: S)
+
+  type UnlabelledEdgeAnnotationElements[S,A] =
+    SetEAnnotation[S,A] | RemoveEAnnotation[S,A]
+
+  type AnnotatedNDFAelement[S,T,A] = (
+    NDFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
+      | UnlabelledEdgeAnnotationElements[S,A]
+  )
 }

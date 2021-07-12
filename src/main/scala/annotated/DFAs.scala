@@ -75,13 +75,22 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
 abstract class AbstractHashEdgeAnnotatedDFABuilder
   [S, T, A,
     D <: AbstractEdgeAnnotatedArrayDFA[S,T,A],
-    K >: DFA.DFAelements[S,T] <: Matchable
+    K >: Elements.AnnotatedDFAelement[S,T,A] <: Matchable
   ](initialState: S)
     extends AbstractHashDFABuilder[S,T,D,K](initialState)
     with DFAEdgeAnnotationsBuilder[S,T,A,D,K] {
 
   val edgeAnnotations: HashMap[S, HashMap[T, A]] =
     new HashMap[S, HashMap[T, A]]
+
+  def annotation(src: S, label: T): Option[A] =
+    edgeAnnotations.get(src) match {
+      case None => None
+      case Some(subhash) => subhash.get(label) match {
+        case None => None
+        case Some(ann) => Some(ann)
+      }
+    }
 
   def setAnnotation(src: S, label: T, annotation: A): Unit = {
     val subhash: HashMap[T, A] = edgeAnnotations.get(src) match {
@@ -149,13 +158,24 @@ abstract class AbstractHashEdgeAnnotatedDFABuilder
     edgeAnnotationsArray: Array[Array[Option[A]]]
   ): D
 
+
+  /** Helper method for the [[scala.collection.mutable.Builder]]
+    * implementation.
+    */
+  override protected def addBuilderElement(builder: K): Unit =
+    builder match {
+      case Elements.SetAnnotation(src, _, label, ann) =>
+        setAnnotation(src, label, ann)
+      case Elements.RemoveAnnotation(src, _, label) =>
+        removeAnnotation(src, label)
+      case e: DFAelements[S, T] => super.addBuilderElement(builder)
+    }
 }
 
-// TODO Should be concrete/final
-abstract class HashEdgeAnnotatedDFABuilder[S, T, A](initialState: S)
+class HashEdgeAnnotatedDFABuilder[S, T, A](initialState: S)
 extends AbstractHashEdgeAnnotatedDFABuilder[
   S, T, A, EdgeAnnotatedArrayDFA[S, T, A],
-  DFA.DFAelements[S,T] // Something else for EdgeAnnotations
+  Elements.AnnotatedDFAelement[S,T,A]
 ](initialState) {
 
   protected def assembleDFA(
@@ -176,14 +196,7 @@ extends AbstractHashEdgeAnnotatedDFABuilder[
     )
 
   // TODO
-  protected def dotTraverser(
-    sb: StringBuilder, stateList: IndexedSeq[S]
-  ): Traverser = ???
-
-  // TODO
-  def annotation(src: S, label: T): Option[A] = ???
-
-  override protected def addBuilderElement(builder: DFAelements[S, T]): Unit =
-    super.addBuilderElement(builder)
+  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]):
+      Traverser = ???
 }
 
