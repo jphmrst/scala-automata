@@ -14,8 +14,8 @@ import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
 import org.maraist.fa.traits.StateHolder
-import org.maraist.fa.general.{SingleInitialStateMixinElement}
-import org.maraist.fa.general.Builders.HasBuilder
+import org.maraist.fa.impl.{SingleInitialStateMixinElement}
+import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.pfa.impl.PFAdotTraverser
 import org.maraist.fa.pfa.Builders.PFAelements
 

@@ -11,13 +11,13 @@
 package org.maraist.fa.impl
 import scala.collection.mutable.{Builder,Growable,HashMap,HashSet}
 import org.maraist.fa.{DFA, DFABuilder}
-import org.maraist.fa.general.
+import org.maraist.fa.impl.
   {SingleInitialStateMixin, HashSetStateBuilderMixin,
     SingleInitialStateMixinElement, HashFinalStateSetBuilderMixin,
     StateBuilderElement, FinalStateSetBuilderElement,
     DeterministicLabelledTransitionMixin,
     DeterministicLabelledTransitionMixinElement}
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.DFA.*
 
 /** Implementation of [[org.maraist.fa.DFABuilder DFABuilder]] using

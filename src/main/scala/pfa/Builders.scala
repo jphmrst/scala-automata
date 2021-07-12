@@ -10,10 +10,10 @@
 
 package org.maraist.fa.pfa
 import scala.collection.mutable.{Builder, HashMap, HashSet}
-import org.maraist.fa.general.
+import org.maraist.fa.impl.
   {SingleInitialStateMixinElement, StateBuilderElement,
     FinalStateSetBuilderElement}
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.pfa.PFA
 import org.maraist.fa.pfa.impl.HashPFABuilder
 

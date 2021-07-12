@@ -31,11 +31,11 @@ trait IndexedPFA[S,T]
     with IndexedInitialStateSetHolder[S]
     with IndexedFinalStateSetHolder[S]
     with PFA[S,T] {
-  def transitionIndex(fromIdx:Int, labelIdx:Int, toIdx:Int):Double
-  def transitionIndex(s0:Int, t:Int):Map[Int,Double]
-  def eTransitionIndex(s0:Int, s1:Int):Double
-  def initialStateIndexProb(s:Int):Double
-  def finalStateIndexProb(s:Int):Double
+  def transitionIndex(fromIdx: Int, labelIdx: Int, toIdx: Int): Double
+  def transitionIndex(s0: Int, t: Int): Map[Int,Double]
+  def eTransitionIndex(s0: Int, s1: Int): Double
+  def initialStateIndexProb(s: Int): Double
+  def finalStateIndexProb(s: Int): Double
   def labels: IndexedSeq[T]
 
   def initialStateIndices: Set[Int] = {

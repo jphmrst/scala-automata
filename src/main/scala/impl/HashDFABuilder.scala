@@ -10,7 +10,7 @@
 
 package org.maraist.fa.impl
 import scala.collection.mutable.HashSet
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.DFA
 import org.maraist.fa.DFA.*
 

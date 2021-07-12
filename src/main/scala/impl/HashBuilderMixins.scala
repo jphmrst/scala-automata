@@ -8,10 +8,10 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.general
+package org.maraist.fa.impl
 import scala.collection.mutable.{HashMap,HashSet}
 import java.awt.geom.GeneralPath
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.traits.{
   StateAdder, StateHolder, StateBuilder,
   FinalStateSetHolder, FinalStateSetBuilder,

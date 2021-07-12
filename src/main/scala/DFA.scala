@@ -16,11 +16,11 @@ import org.maraist.fa.traits.
   { StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
     IndexedStateHolder, IndexedLabelsHolder, IndexedSingleInitialStateHolder,
     IndexedFinalStateSetHolder, SingleInitialStateHolder}
-import org.maraist.fa.general.
+import org.maraist.fa.impl.
   {SingleInitialStateMixinElement,
     StateBuilderElement, FinalStateSetBuilderElement,
     DeterministicLabelledTransitionMixinElement}
-import org.maraist.fa.general.Builders.
+import org.maraist.fa.elements.
   {HasBuilder, HasBuilderWithInit, AddTransition, RemoveTransition}
 import org.maraist.fa.DFA.DFAtraverser
 import org.maraist.fa.impl.HashDFABuilder

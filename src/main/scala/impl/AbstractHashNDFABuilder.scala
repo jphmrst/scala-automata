@@ -10,7 +10,7 @@
 
 package org.maraist.fa.impl
 import scala.collection.mutable.{HashMap,HashSet}
-import org.maraist.fa.general.
+import org.maraist.fa.impl.
   {HashSetStateBuilderMixin,
     StateBuilderElement,
     InitialStateSetTrait,
@@ -22,7 +22,7 @@ import org.maraist.fa.general.
 import org.maraist.fa.{NDFA, NDFABuilder}
 import org.maraist.fa.NDFA.{AddETransition, RemoveETransition, NDFAelements}
 import org.maraist.fa.DFA.IndexedDFA
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 
 /** Implementation of [[org.maraist.fa.NDFABuilder NDFABuilder]] using
   * [[scala.collection.mutable.HashMap `HashMap`s]] and

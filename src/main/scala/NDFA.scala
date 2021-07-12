@@ -15,11 +15,10 @@ import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
     IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
     IndexedFinalStateSetHolder}
-import org.maraist.fa.general.Builders.{HasBuilder}
-import org.maraist.fa.general.
+import org.maraist.fa.elements.{HasBuilder, AddTransition, RemoveTransition}
+import org.maraist.fa.impl.
   {InitialStateSetTraitElements,
     StateBuilderElement, FinalStateSetBuilderElement}
-import org.maraist.fa.general.Builders.{AddTransition, RemoveTransition}
 import org.maraist.fa.DFA.IndexedDFA
 import org.maraist.fa.impl.{DOT,HashNDFABuilder}
 

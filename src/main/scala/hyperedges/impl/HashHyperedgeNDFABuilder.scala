@@ -10,7 +10,7 @@
 
 package org.maraist.fa.hyperedges.impl
 import scala.collection.mutable.{Builder,HashSet,HashMap}
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.NDFA.*
 import org.maraist.fa.hyperedges.Builders.*
 import org.maraist.fa.hyperedges.{HyperedgeNDFA,HyperedgeNDFABuilder}

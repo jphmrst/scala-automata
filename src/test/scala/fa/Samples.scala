@@ -14,7 +14,7 @@ import java.io.File
 import scala.collection.mutable.{Builder,HashMap,HashSet}
 import org.maraist.util.FilesCleaner
 import org.maraist.fa.impl.{HashNDFABuilder}
-import org.maraist.fa.general.Builders.
+import org.maraist.fa.elements.
   {AddState, RemoveState, RemoveFinalState, AddFinalState,
     RemoveTransition, AddTransition}
 import org.maraist.fa.DFA.{DFAelements}

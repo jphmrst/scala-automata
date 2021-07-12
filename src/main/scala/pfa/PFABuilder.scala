@@ -10,7 +10,7 @@
 
 package org.maraist.fa.pfa
 import scala.collection.mutable.{Builder,Growable}
-import org.maraist.fa.general.Builders.*
+import org.maraist.fa.elements.*
 import org.maraist.fa.pfa.Builders.*
 
 /** Builders for probabilistic finite automata (PFAs)

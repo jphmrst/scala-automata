@@ -11,7 +11,7 @@
 package org.maraist.fa.annotated
 import scala.collection.mutable.{HashMap,HashSet,Queue}
 import org.maraist.graphviz.{Graphable,NodeLabeling,TransitionLabeling}
-import org.maraist.fa.general.Builders.HasBuilder
+import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.{DFA, NDFA, DFABuilder, NDFABuilder}
 import org.maraist.fa.NDFA.IndexedNDFA
 import org.maraist.fa.DFA.IndexedDFA
