@@ -46,7 +46,7 @@ abstract class AbstractHashNDFABuilder
 
   /** Maps from a state `s` to the set of states at the end of
     * &epsilon;-transitions starting from `s` */
-  val epsilons:HashMap[S,HashSet[S]] = new HashMap[S,HashSet[S]]
+  val epsilons: HashMap[S, HashSet[S]] = new HashMap[S, HashSet[S]]
 
   private[fa] def deleteTransitionsFrom(s:S) = {
     transitionsMap -= s

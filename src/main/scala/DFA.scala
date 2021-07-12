@@ -13,7 +13,8 @@ import scala.collection.mutable.{Builder, HashMap, HashSet}
 import org.maraist.graphviz.
   {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
-  { StateHolder, FinalStateSetHolder, InitialStateSetHolder, LabelsHolder,
+  { StateHolder, FinalStateSetHolder,
+    InitialStateSetHolder, DeterministicLabelledTransitionHolder,
     IndexedStateHolder, IndexedLabelsHolder, IndexedSingleInitialStateHolder,
     IndexedFinalStateSetHolder, SingleInitialStateHolder}
 import org.maraist.fa.impl.
@@ -36,14 +37,10 @@ trait DFA[S,T]
     extends StateHolder[S]
     with FinalStateSetHolder[S]
     with SingleInitialStateHolder[S]
-    with LabelsHolder[T]
+    with DeterministicLabelledTransitionHolder[S, T]
     with Graphable[S,T] {
   type Traverser <: DFAtraverser[S,T]
 
-  /** Returns the state, if any, into which the automaton could
-   * transition starting from `s` via a transition labelled `t`.
-   */
-  def transition(s:S, t:T): Option[S]
   /** Check whether the automaton accepts the given sequence */
   def accepts(ts:Seq[T]): Boolean
   override def toString():String = {

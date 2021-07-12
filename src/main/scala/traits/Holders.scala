@@ -76,3 +76,11 @@ trait IndexedLabelsHolder[T] extends LabelsHolder[T] {
   def labelIndex(t:T): Int
   def label(i:Int): T
 }
+
+trait DeterministicLabelledTransitionHolder[S, T] extends LabelsHolder[T] {
+  /** Returns the state, if any, into which the automaton could
+   * transition starting from `s` via a transition labelled `t`.
+   */
+  def transition(s:S, t:T): Option[S]
+
+}
