@@ -36,7 +36,7 @@ class HashNDFABuilder[S,T]
   /** Dispatch steps for a Builder-pattern implementation.  */
   override def addOne(builder: NDFAelements[S,T]): this.type = {
     builder match {
-      case AddState(s) => addState(s)
+      case AddState(s): AddState[S, T] => addState(s)
       case RemoveState(state) => removeState(state)
       case AddFinalState(state) => addFinalState(state)
       case RemoveFinalState(state) => removeFinalState(state)

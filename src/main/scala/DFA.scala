@@ -12,9 +12,11 @@ package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet}
 import org.maraist.graphviz.{Graphable, GraphvizOptions,
                              NodeLabeling, TransitionLabeling}
-import org.maraist.fa.general.{Automaton, IndexedAutomaton}
+import org.maraist.fa.general.
+  {Automaton, IndexedAutomaton, SingleInitialStateMixinElement,
+    StateHashBuilderElements, FinalStateSetHashBuilderElements}
 import org.maraist.fa.general.Builders.
-  {HasBuilderWithInit, NonProbBuilders, AnyBuilders}
+  {HasBuilder, HasBuilderWithInit, AddTransition, RemoveTransition}
 import org.maraist.fa.DFA.DFAtraverser
 import org.maraist.fa.impl.HashDFABuilder
 
@@ -229,23 +231,6 @@ object DFA {
 
   // Directives for the Builder pattern
 
-  /** [[Builder]]-pattern element for setting the initial state in a
-    * [[DFABuilder DFA builder]].
-    *
-    *  @tparam S The type of all states of the automaton
-    *
-    * @group builderElements
-    */
-  case class SetInitialState[S](state: S)
-  /** [[Builder]]-pattern elements pertaining to an builder for automata
-    * with a single initial state.
-    *
-    *  @tparam S The type of all states of the automaton
-    *
-    * @group builderElements
-    */
-  type SingleInitialStateBuilders[S] = SetInitialState[S]
-
   /** All [[Builder]]-pattern elements pertaining to [[DFA]]s.
     *
     *  @tparam S The type of all states of the automaton
@@ -253,17 +238,14 @@ object DFA {
     *
     * @group builderElements
     */
-  type DFAelements[S, T] =
-    SingleInitialStateBuilders[S] | NonProbBuilders[S,T] | AnyBuilders[S,T]
+  type DFAelements[S, T] = (
+    SingleInitialStateMixinElement[S,T]
+      | StateHashBuilderElements[S,T]
+      | FinalStateSetHashBuilderElements[S,T]
 
-  /** Implementation of [[Builder]] pattern for [[DFA]]s.
-    *
-    * @group builderPattern
-    */
-  given hashBd: HasBuilderWithInit[DFAelements, HashDFABuilder, DFA] with {
-    override def build[S,T](init: S): HashDFABuilder[S, T] =
-        new HashDFABuilder[S, T](init)
-  }
+      | AddTransition[S,T]
+      | RemoveTransition[S,T]
+  )
 
   // Fetch a builder for the pattern.
 
@@ -290,4 +272,13 @@ object DFA {
     Impl[X, Y] <: DFA[X,Y]
   ](initialState: S)(using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]) =
     impl.build[S,T](initialState)
+
+  /** Implementation of [[Builder]] pattern for [[DFA]]s.
+    *
+    * @group builderPattern
+    */
+  given hashBd: HasBuilderWithInit[DFAelements, HashDFABuilder, DFA] with {
+    override def build[S,T](init: S): HashDFABuilder[S, T] =
+        new HashDFABuilder[S, T](init)
+  }
 }

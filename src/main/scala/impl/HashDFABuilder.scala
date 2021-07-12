@@ -43,16 +43,7 @@ class HashDFABuilder[S,T](initialState: S)
     * implementation.
     */
   override def addOne(builder: DFAelements[S, T]): this.type = {
-    builder match {
-      case AddState(s) => addState(s)
-      case RemoveState(state) => removeState(state)
-      case AddFinalState(state) => addFinalState(state)
-      case RemoveFinalState(state) => removeFinalState(state)
-      case AddTransition(state1, trans, state2) =>
-        addTransition(state1, trans, state2)
-      case RemoveTransition(state, trans, state2) => removeTransition(state, trans)
-      case SetInitialState(state) => setInitialState(state)
-    }
+    addBuilderElement(builder)
     this
   }
 }

@@ -11,7 +11,6 @@
 package org.maraist.fa.pfa
 import scala.collection.mutable.{Builder,Growable}
 import org.maraist.fa.general.Builders.*
-import org.maraist.fa.DFA.{SetInitialState}
 import org.maraist.fa.pfa.Builders.*
 
 /** Builders for probabilistic finite automata (PFAs)
@@ -61,13 +60,13 @@ trait PFABuilder[S,T]
 
   override def addOne(builder: PFAelements[S,T]): this.type = {
     builder match {
-      case AddState(s) => addState(s)
+      case AddState(s): AddState[S, T] => addState(s)
       case RemoveState(state) => removeState(state)
       case AddProbFinalState(state, prob) => addFinalState(state, prob)
       case RemoveFinalState(state) => removeFinalState(state)
       case AddProbTransition(state1, trans, state2, prob) =>
         addTransition(state1, trans, state2, prob)
-      case RemoveTransition(state1, trans, state2) =>
+      case RemoveTransition(state1, trans, state2): RemoveTransition[S, T] =>
         removeTransition(state1, trans, state2)
       case SetInitialState(state) => SetInitialState(state)
       case AddProbETransition(state1, state2, prob) =>

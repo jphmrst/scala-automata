@@ -16,8 +16,8 @@ import org.maraist.util.FilesCleaner
 import org.maraist.fa.impl.{HashNDFABuilder}
 import org.maraist.fa.general.Builders.
   {AddState, RemoveState, RemoveFinalState, AddFinalState,
-    RemoveTransition, AddTransition, NonProbBuilders}
-import org.maraist.fa.DFA.{DFAelements, SingleInitialStateBuilders}
+    RemoveTransition, AddTransition}
+import org.maraist.fa.DFA.{DFAelements}
 import org.maraist.fa.pfa.PFABuilder
 import org.maraist.fa.pfa.impl.HashPFABuilder
 import org.maraist.fa.hyperedges.

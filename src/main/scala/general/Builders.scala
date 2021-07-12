@@ -21,11 +21,30 @@ object Builders {
   case class RemoveFinalState[S,T](state: S)
   case class AddFinalState[S,T](state: S)
   case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
-  type AnyBuilders[S,T] =
-    AddState[S,T] | RemoveState[S,T] | RemoveFinalState[S,T] | RemoveTransition[S,T]
+
+  /** [[Builder]]-pattern element for setting the initial state in a
+    * [[DFABuilder DFA builder]].
+    * @tparam S The type of all states of the automaton
+    * @group builderElements
+    */
+  case class SetInitialState[S](state: S)
+  case class AddInitialState[S](state: S)
+  case class RemoveInitialState[S](state: S)
+
+//  type AnyBuilders[S,T] =
+//    AddState[S,T] | RemoveState[S,T] | RemoveFinalState[S,T] | RemoveTransition[S,T]
 
   case class AddTransition[S,T](state1: S, trans: T, state2: S)
-  type NonProbBuilders[S,T] = AddFinalState[S,T] | AddTransition[S,T]
+//  type NonProbBuilders[S,T] = AddFinalState[S,T] | AddTransition[S,T]
+
+//  /** [[Builder]]-pattern elements pertaining to an builder for automata
+//    * with a single initial state.
+//    *
+//    *  @tparam S The type of all states of the automaton
+//    *
+//    * @group builderElements
+//    */
+//  type SingleInitialStateBuilders[S] = SetInitialState[S]
 
   trait HasBuilder[
     Elements[_,_],

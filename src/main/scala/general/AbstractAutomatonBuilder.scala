@@ -8,9 +8,10 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.impl
+package org.maraist.fa.general
 import scala.collection.mutable.{HashMap,HashSet}
 import java.awt.geom.GeneralPath
+import org.maraist.fa.general.Builders.*
 
 /** Mixin of builder routines pertaining to states for
  * [[org.maraist.fa.Automaton Automaton]]s using
@@ -42,7 +43,16 @@ trait StateHashBuilderTrait[S,T] {
   def size:Int = allStates.size
   def states:Set[S] = Set.from(allStates)
   def isState(s:S):Boolean = allStates.contains(s)
+
+  protected def dispatchStateHashBuilderElement
+    (elem: StateHashBuilderElements[S, T]):
+      Unit = elem match {
+    case AddState(s) => addState(s)
+    case RemoveState(s) => removeState(s)
+  }
 }
+
+type StateHashBuilderElements[S, T] = AddState[S,T] | RemoveState[S,T]
 
 /** Implementation of builder routines pertaining to final states for
  * [[org.maraist.fa.Automaton Automaton]]s using
@@ -71,7 +81,17 @@ trait FinalStateSetHashBuilderTrait[S,T] {
 
   def finalStates: Set[S] = Set.from(finalStatesSet)
   def isFinalState(s:S):Boolean = finalStatesSet.contains(s)
+
+  protected def dispatchFinalStateSetHashBuilderElement
+    (elem: FinalStateSetHashBuilderElements[S, T]):
+      Unit = elem match {
+    case AddFinalState(s) => addFinalState(s)
+    case RemoveFinalState(s) => removeFinalState(s)
+  }
 }
+
+type FinalStateSetHashBuilderElements[S, T] =
+  AddFinalState[S,T] | RemoveFinalState[S,T]
 
 /**
   * Mixin of builder routines for
@@ -94,7 +114,16 @@ abstract class SingleInitialStateMixin[S,T](var initialState: S) {
   def isInitialState(s:S):Boolean = initialState.equals(s)
   private[fa] def deleteInitialState(s:S):Unit =
     throw new IllegalStateException()
+
+  protected def dispatchSingleInitialStateMixinElement
+    (elem: SingleInitialStateMixinElement[S, T]):
+      Unit = elem match {
+    case AddState(s) => addState(s)
+    case SetInitialState(s) => setInitialState(s)
+  }
 }
+
+type SingleInitialStateMixinElement[S, T] = AddState[S,T] | SetInitialState[S]
 
 /**
   *
@@ -114,4 +143,16 @@ trait InitialStateSetTrait[S,T] {
   private[fa] def deleteInitialState(s:S):Unit = {
     removeInitialState(s)
   }
+
+  protected def dispatchInitialStateSetTraitElements
+    (elem: InitialStateSetTraitElements[S, T]):
+      Unit = elem match {
+    case AddState(s) => addState(s)
+    case AddInitialState(s) => AddInitialState(s)
+    case RemoveInitialState(s) => RemoveInitialState(s)
+  }
 }
+
+type InitialStateSetTraitElements[S, T] =
+  AddState[S,T] | AddInitialState[S] | RemoveInitialState[S]
+

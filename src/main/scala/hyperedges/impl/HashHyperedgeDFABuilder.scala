@@ -66,7 +66,7 @@ class HashHyperedgeDFABuilder[S, T](initialState: S)
     */
   override def addOne(builder: HyperedgeDFAelements[S,T]): this.type = {
     builder match {
-      case AddState(s) => addState(s)
+      case AddState(s): AddState[S, T] => addState(s)
       case RemoveState(state) => removeState(state)
       case AddFinalState(state) => addFinalState(state)
       case RemoveFinalState(state) => removeFinalState(state)

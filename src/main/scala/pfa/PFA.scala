@@ -13,7 +13,9 @@ import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
-import org.maraist.fa.general.Automaton
+import org.maraist.fa.general.
+  {Automaton, SingleInitialStateMixinElement,
+    StateHashBuilderElements, FinalStateSetHashBuilderElements}
 import org.maraist.fa.general.Builders.HasBuilder
 import org.maraist.fa.pfa.impl.PFAdotTraverser
 import org.maraist.fa.pfa.Builders.PFAelements

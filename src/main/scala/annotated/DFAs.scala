@@ -11,6 +11,7 @@
 package org.maraist.fa.annotated
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.DFA
+import org.maraist.fa.DFA.DFAelements
 import org.maraist.fa.impl.{AbstractArrayDFA, AbstractHashDFABuilder}
 
 /** Implementation of a [[org.maraist.fa.DFA DFA]] using
@@ -150,11 +151,12 @@ abstract class AbstractHashEdgeAnnotatedDFABuilder
 
 }
 
-// TODO Should not need to be abstract
-abstract class HashEdgeAnnotatedDFABuilder
-  [S, T, A, K >: DFA.DFAelements[S,T]](initialState: S)
-    extends AbstractHashEdgeAnnotatedDFABuilder[S, T, A,
-      EdgeAnnotatedArrayDFA[S, T, A], K](initialState) {
+// TODO Should be concrete/final
+abstract class HashEdgeAnnotatedDFABuilder[S, T, A](initialState: S)
+extends AbstractHashEdgeAnnotatedDFABuilder[
+  S, T, A, EdgeAnnotatedArrayDFA[S, T, A],
+  DFA.DFAelements[S,T] // Something else for EdgeAnnotations
+](initialState) {
 
   protected def assembleDFA(
     statesSeq: IndexedSeq[S],
@@ -181,5 +183,16 @@ abstract class HashEdgeAnnotatedDFABuilder
   // TODO
   def annotation(src: S, label: T): Option[A] = ???
 
+
+  /** Primary {@link scala.collection.mutable.Builder Builder} method
+    * implementation.
+    */
+  override def addOne(builder: DFAelements[S, T]): this.type = {
+    addBuilderElement(builder)
+    this
+  }
+
+  override protected def addBuilderElement(builder: DFAelements[S, T]): Unit =
+    super.addBuilderElement(builder)
 }
 

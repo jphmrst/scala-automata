@@ -10,8 +10,13 @@
 
 package org.maraist.fa.impl
 import scala.collection.mutable.{Builder,Growable,HashMap,HashSet}
-import org.maraist.fa.DFABuilder
-import org.maraist.fa.DFA.DFAelements
+import org.maraist.fa.{DFA, DFABuilder}
+import org.maraist.fa.general.
+  {SingleInitialStateMixin, StateHashBuilderTrait,
+    FinalStateSetHashBuilderTrait, SingleInitialStateMixinElement,
+    StateHashBuilderElements, FinalStateSetHashBuilderElements}
+import org.maraist.fa.general.Builders.*
+import org.maraist.fa.DFA.*
 
 /** Implementation of [[org.maraist.fa.DFABuilder DFABuilder]] using
  *  [[scala.collection.mutable.HashSet `HashSet`s]] and
@@ -29,8 +34,9 @@ abstract class AbstractHashDFABuilder[
   K >: DFAelements[S,T]
 ](initialState: S)
     extends SingleInitialStateMixin[S,T](initialState)
-      with DFABuilder[S,T, ThisDFA, K]
-      with StateHashBuilderTrait[S,T] with FinalStateSetHashBuilderTrait[S,T] {
+    with DFABuilder[S,T, ThisDFA, K]
+    with StateHashBuilderTrait[S,T]
+    with FinalStateSetHashBuilderTrait[S,T] {
   private val transitionsMap = new HashMap[S,HashMap[T,S]]
 
   private[fa] def deleteTransitionsFrom(s:S) = {
@@ -116,4 +122,25 @@ abstract class AbstractHashDFABuilder[
                             finalStateIndices: HashSet[Int],
                             transitionsSeq: IndexedSeq[T],
                             idxLabels: Array[Array[Int]]): ThisDFA
+
+  /** Helper method for the [[scala.collection.mutable.Builder]]
+    * implementation.
+    */
+  protected def addBuilderElement(builder: DFAelements[S, T]): Unit =
+    builder match {
+      case e: SingleInitialStateMixinElement[S, T] =>
+        dispatchSingleInitialStateMixinElement(e)
+      case e: StateHashBuilderElements[S, T] =>
+        dispatchStateHashBuilderElement(e)
+      case e: FinalStateSetHashBuilderElements[S, T] =>
+        dispatchFinalStateSetHashBuilderElement(e)
+      // case AddState(s) => addState(s)
+      // case RemoveState(state) => removeState(state)
+      // case AddFinalState(state) => addFinalState(state)
+      // case RemoveFinalState(state) => removeFinalState(state)
+      case AddTransition(state1, trans, state2) =>
+        addTransition(state1, trans, state2)
+      case RemoveTransition(state, trans, state2) => removeTransition(state, trans)
+      // case SetInitialState(state) => setInitialState(state)
+    }
 }
