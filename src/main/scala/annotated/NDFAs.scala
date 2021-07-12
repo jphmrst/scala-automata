@@ -77,6 +77,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]]):
       ThisDFA = {
+    // TODO
     val edgeAnnotations: Array[Array[Option[A]]] = ???
     assembleDFA(
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
