@@ -28,9 +28,12 @@ import org.maraist.fa.general.Builders.*
   *
   * @group NDFA
   */
-abstract class AbstractHashNDFABuilder[S, T, +ThisDFA <: IndexedDFA[Set[S],T],
-                                       +ThisNDFA <: NDFA[S,T,ThisDFA]]
-    extends NDFABuilder[S, T, ThisDFA, ThisNDFA]
+abstract class AbstractHashNDFABuilder
+  [S, T, +ThisDFA <: IndexedDFA[Set[S],T],
+    +ThisNDFA <: NDFA[S,T,ThisDFA],
+    K >: NDFAelements[S,T] <: Matchable
+  ]
+    extends NDFABuilder[S, T, ThisDFA, ThisNDFA, K]
     with StateHashBuilderTrait[S, T]
     with FinalStateSetHashBuilderTrait[S, T]
     with InitialStateSetTrait[S, T] {

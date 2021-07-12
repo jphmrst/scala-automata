@@ -17,8 +17,11 @@ import org.maraist.fa.DFA.IndexedDFA
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
   * @group NDFA
   */
-trait NDFABuilder[S, T, +ThisDFA <: IndexedDFA[Set[S],T],
-                  +ThisNDFA <: NDFA[S,T,ThisDFA]]
+trait NDFABuilder[
+  S, T, +ThisDFA <: IndexedDFA[Set[S],T],
+  +ThisNDFA <: NDFA[S,T,ThisDFA],
+  K >: NDFA.NDFAelements[S,T] <: Matchable
+]
     extends NDFA[S,T,ThisDFA]
     with Builder[NDFA.NDFAelements[S,T], ThisNDFA] {
   /** Adds a state to the automaton */

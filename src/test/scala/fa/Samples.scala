@@ -69,7 +69,7 @@ object Samples extends App with Sampler {
   /**
    * Return a fresh copy of a sample NDFA builder
    */
-  def ndfa2B: NDFABuilder[String,Int,?,?] = {
+  def ndfa2B: NDFABuilder[String,Int,?,?,?] = {
     val builder = new HashNDFABuilder[String,Int]()
     builder.addInitialState("A")
     builder.addState("B")

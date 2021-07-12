@@ -16,5 +16,5 @@ import org.maraist.fa.{NDFA,NDFABuilder}
   */
 trait HyperedgeNDFABuilder[S,T, +ThisDFA <: IndexedHyperedgeDFA[Set[S],T],
                            +ThisNDFA <: NDFA[S,T,ThisDFA]]
-extends NDFABuilder[S,T,ThisDFA,ThisNDFA]
+extends NDFABuilder[S,T,ThisDFA,ThisNDFA, Builders.HyperedgeNDFAelements[S, T]]
       with HyperedgeNDFA[S,T,ThisDFA] with HyperedgeBuilder[S]

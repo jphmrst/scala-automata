@@ -72,10 +72,11 @@ trait NDFAEdgeAnnotations
 trait NDFAEdgeAnnotationsBuilder
   [S, T, A, K[_],
     +D <: IndexedDFA[Set[S],T] & DFAEdgeAnnotations[S,T,K[A]],
-    +N <: NDFA[S,T,D] & NDFAEdgeAnnotations[S,T,A,K,D]
+    +N <: NDFA[S,T,D] & NDFAEdgeAnnotations[S,T,A,K,D],
+    E >: NDFA.NDFAelements[S,T] <: Matchable
   ]
     extends NDFAEdgeAnnotations[S, T, A, K, D] {
-  this: NDFABuilder[S, T, D, N] =>
+  this: NDFABuilder[S, T, D, N, E] =>
 
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.

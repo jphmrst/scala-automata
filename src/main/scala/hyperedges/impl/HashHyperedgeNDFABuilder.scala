@@ -22,7 +22,8 @@ import org.maraist.fa.impl.AbstractHashNDFABuilder
   */
 class HashHyperedgeNDFABuilder[S,T]
     extends AbstractHashNDFABuilder[
-      S,T,ArrayHyperedgeDFA[Set[S],T], ArrayHyperedgeNDFA[S,T]
+      S,T,ArrayHyperedgeDFA[Set[S],T], ArrayHyperedgeNDFA[S,T],
+      HyperedgeNDFAelements[S,T]
     ] with HyperedgeNDFABuilder[
       S,T,ArrayHyperedgeDFA[Set[S],T], ArrayHyperedgeNDFA[S,T]
     ] with Builder[
