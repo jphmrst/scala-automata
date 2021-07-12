@@ -14,7 +14,8 @@ import org.maraist.graphviz.{Graphable, GraphvizOptions,
                              NodeLabeling, TransitionLabeling}
 import org.maraist.fa.general.
   {Automaton, IndexedAutomaton, SingleInitialStateMixinElement,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements}
+    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+    DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.general.Builders.
   {HasBuilder, HasBuilderWithInit, AddTransition, RemoveTransition}
 import org.maraist.fa.DFA.DFAtraverser
@@ -242,9 +243,7 @@ object DFA {
     SingleInitialStateMixinElement[S,T]
       | StateHashBuilderElements[S,T]
       | FinalStateSetHashBuilderElements[S,T]
-
-      | AddTransition[S,T]
-      | RemoveTransition[S,T]
+      | DeterministicLabelledTransitionMixinElement[S, T]
   )
 
   // Fetch a builder for the pattern.

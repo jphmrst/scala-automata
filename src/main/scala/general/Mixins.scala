@@ -124,7 +124,7 @@ abstract class SingleInitialStateMixin[S,T](var initialState: S) {
 
 type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
 
-/**
+/** Mixin behavior for an automaton with a single initial state.
   *
   * @group DFA
   */
@@ -155,3 +155,55 @@ trait InitialStateSetTrait[S,T] {
 type InitialStateSetTraitElements[S, T] =
   AddInitialState[S] | RemoveInitialState[S]
 
+trait DeterministicLabelledTransitionMixin[S, T] {
+  def addState(s: S): Unit
+
+  protected val transitionsMap = new HashMap[S,HashMap[T,S]]
+
+  def addTransition(s1: S, t: T, s2: S): Unit = {
+    addState(s1)
+    addState(s2)
+    if (!transitionsMap.contains(s1)) {
+      transitionsMap += (s1 -> new HashMap[T,S])
+    }
+    transitionsMap(s1) += (t -> s2)
+  }
+
+  def removeTransition(s1:S, t:T):Unit =
+    if (transitionsMap.contains(s1))
+      transitionsMap(s1) -= t
+
+  def transition(s:S, t:T):Option[S] = {
+    if (transitionsMap.contains(s)) {
+      val sub:HashMap[T,S] = transitionsMap(s)
+      sub.get(t)
+    } else None
+  }
+
+  private[fa] def deleteTransitionsFrom(s:S) = {
+    transitionsMap -= s
+    for(lmap <- transitionsMap.valuesIterator)
+      for(v <- for(v <- lmap.keysIterator if (lmap(v).equals(s))) yield v)
+        lmap -= v
+  }
+
+  def labels: Set[T] = {
+    val result = new HashSet[T]()
+    for(map <- transitionsMap.valuesIterator)
+      for(t <- map.keysIterator)
+        result += t
+    result.toSet
+  }
+
+  protected def dispatchDeterministicLabelledTransitionMixinElement
+    (elem: DeterministicLabelledTransitionMixinElement[S, T]):
+      Unit = elem match {
+    case AddTransition(state1, trans, state2) =>
+      addTransition(state1, trans, state2)
+    case RemoveTransition(state, trans, state2) =>
+      removeTransition(state, trans)
+  }
+}
+
+type DeterministicLabelledTransitionMixinElement[S, T] =
+  AddTransition[S, T] | RemoveTransition[S, T]

@@ -14,7 +14,9 @@ import org.maraist.fa.{DFA, DFABuilder}
 import org.maraist.fa.general.
   {SingleInitialStateMixin, StateHashBuilderTrait,
     FinalStateSetHashBuilderTrait, SingleInitialStateMixinElement,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements}
+    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+    DeterministicLabelledTransitionMixin,
+    DeterministicLabelledTransitionMixinElement}
 import org.maraist.fa.general.Builders.*
 import org.maraist.fa.DFA.*
 
@@ -36,43 +38,8 @@ abstract class AbstractHashDFABuilder[
     extends SingleInitialStateMixin[S,T](initialState)
     with DFABuilder[S,T, ThisDFA, K]
     with StateHashBuilderTrait[S,T]
-    with FinalStateSetHashBuilderTrait[S,T] {
-  private val transitionsMap = new HashMap[S,HashMap[T,S]]
-
-  private[fa] def deleteTransitionsFrom(s:S) = {
-    transitionsMap -= s
-    for(lmap <- transitionsMap.valuesIterator)
-      for(v <- for(v <- lmap.keysIterator if (lmap(v).equals(s))) yield v)
-        lmap -= v
-  }
-
-  def addTransition(s1:S, t:T, s2:S):Unit = {
-    allStates += s1
-    allStates += s2
-    if (!transitionsMap.contains(s1)) {
-      transitionsMap += (s1 -> new HashMap[T,S])
-    }
-    transitionsMap(s1) += (t -> s2)
-  }
-
-  def removeTransition(s1:S, t:T):Unit =
-    if (transitionsMap.contains(s1))
-      transitionsMap(s1) -= t
-
-  def transition(s:S, t:T):Option[S] = {
-    if (transitionsMap.contains(s)) {
-      val sub:HashMap[T,S] = transitionsMap(s)
-      sub.get(t)
-    } else None
-  }
-
-  def labels: Set[T] = {
-    val result = new HashSet[T]()
-    for(map <- transitionsMap.valuesIterator)
-      for(t <- map.keysIterator)
-        result += t
-    result.toSet
-  }
+    with FinalStateSetHashBuilderTrait[S,T]
+    with DeterministicLabelledTransitionMixin[S, T] {
 
   import scala.util.control.NonLocalReturns.*
   def accepts(ts:Seq[T]): Boolean = returning {
@@ -134,13 +101,7 @@ abstract class AbstractHashDFABuilder[
         dispatchStateHashBuilderElement(e)
       case e: FinalStateSetHashBuilderElements[S, T] =>
         dispatchFinalStateSetHashBuilderElement(e)
-      // case AddState(s) => addState(s)
-      // case RemoveState(state) => removeState(state)
-      // case AddFinalState(state) => addFinalState(state)
-      // case RemoveFinalState(state) => removeFinalState(state)
-      case AddTransition(state1, trans, state2) =>
-        addTransition(state1, trans, state2)
-      case RemoveTransition(state, trans, state2) => removeTransition(state, trans)
-      // case SetInitialState(state) => setInitialState(state)
+      case e: DeterministicLabelledTransitionMixinElement[S, T] =>
+        dispatchDeterministicLabelledTransitionMixinElement(e)
     }
 }
