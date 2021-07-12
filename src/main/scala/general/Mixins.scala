@@ -13,6 +13,13 @@ import scala.collection.mutable.{HashMap,HashSet}
 import java.awt.geom.GeneralPath
 import org.maraist.fa.general.Builders.*
 
+/** Mixin of the addState method, used as the self-type of traits
+  * which require this method.
+  */
+trait StateAdder[S] {
+  def addState(s: S): Unit
+}
+
 /** Mixin of builder routines pertaining to states for
  * [[org.maraist.fa.Automaton Automaton]]s using
  * [[scala.collection.mutable.HashSet `HashSet`s]] and
@@ -24,7 +31,7 @@ import org.maraist.fa.general.Builders.*
  *
  * @group General
  */
-trait StateHashBuilderTrait[S,T] {
+trait StateHashBuilderTrait[S,T] extends StateAdder[S] {
 
   /** Storage for all state objects */
   protected val allStates:HashSet[S] = new HashSet[S]
@@ -66,7 +73,7 @@ type StateHashBuilderElements[S, T] = AddState[S,T] | RemoveState[S,T]
  * @group General
  */
 trait FinalStateSetHashBuilderTrait[S,T] {
-  def addState(s:S):Unit
+  this: StateAdder[S] =>
 
   /** Storage for all final state objects */
   protected val finalStatesSet:HashSet[S] = new HashSet[S]
@@ -106,7 +113,8 @@ type FinalStateSetHashBuilderElements[S, T] =
   * @group General
   */
 abstract class SingleInitialStateMixin[S,T](var initialState: S) {
-  def addState(s:S):Unit
+  this: StateAdder[S] =>
+
   def setInitialState(s:S):Unit = {
     addState(s)
     initialState = s
@@ -129,8 +137,9 @@ type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
   * @group DFA
   */
 trait InitialStateSetTrait[S,T] {
+  this: StateAdder[S] =>
+
   private val initialStatesSet = new HashSet[S]
-  def addState(s:S):Unit
   def addInitialState(s:S):Unit = {
     addState(s)
     initialStatesSet += s
@@ -156,7 +165,7 @@ type InitialStateSetTraitElements[S, T] =
   AddInitialState[S] | RemoveInitialState[S]
 
 trait DeterministicLabelledTransitionMixin[S, T] {
-  def addState(s: S): Unit
+  this: StateAdder[S] =>
 
   protected val transitionsMap = new HashMap[S,HashMap[T,S]]
 
@@ -206,4 +215,55 @@ trait DeterministicLabelledTransitionMixin[S, T] {
 }
 
 type DeterministicLabelledTransitionMixinElement[S, T] =
+  AddTransition[S, T] | RemoveTransition[S, T]
+
+trait NondeterministicLabelledTransitionMixin[S, T] {
+  this: StateAdder[S] =>
+
+  /** Maps from a state `s` and label `t` to the set of states at the
+    * end of transitions starting from `s` and labeled `t` */
+  protected val transitionsMap = new HashMap[S,HashMap[T,HashSet[S]]]
+
+  def addTransition(s1:S, t:T, s2:S):Unit = {
+    addState(s1)
+    addState(s2)
+    val submap:HashMap[T,HashSet[S]] =
+      transitionsMap.getOrElseUpdate(s1,new HashMap[T,HashSet[S]])
+    val subsubmap:HashSet[S] = submap.getOrElseUpdate(t, new HashSet[S])
+    subsubmap += s2
+  }
+
+  def removeTransition(s1:S, t:T, s2:S):Unit = {
+    if (transitionsMap.contains(s1)) {
+      val submap:HashMap[T,HashSet[S]] = transitionsMap(s1)
+      if (submap.contains(t)) submap(t) -= s2
+    }
+  }
+
+  /** @inheritdoc
+    *
+    * This method is always calculated by traversing the `transitionsMap` map;
+    * it is not cached.
+    */
+  def labels: Set[T] = {
+    val result = new HashSet[T]()
+    for(map <- transitionsMap.valuesIterator)
+      for(t <- map.keysIterator)
+        result += t
+    result.toSet
+  }
+
+  def transitions(s:S, t:T): Set[S] = {
+    if (transitionsMap.contains(s)) {
+      val submap:HashMap[T,HashSet[S]] = transitionsMap(s)
+      if (submap.contains(t))
+        submap(t).toSet
+      else
+        Set.empty[S]
+    } else
+      Set.empty[S]
+  }
+}
+
+type NondeterministicLabelledTransitionMixinElements[S, T] =
   AddTransition[S, T] | RemoveTransition[S, T]

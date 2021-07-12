@@ -13,7 +13,9 @@ import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.fa.general.
   {InitialStateSetTrait, StateHashBuilderTrait,
     FinalStateSetHashBuilderTrait, InitialStateSetTraitElements,
-    StateHashBuilderElements, FinalStateSetHashBuilderElements}
+    StateHashBuilderElements, FinalStateSetHashBuilderElements,
+    NondeterministicLabelledTransitionMixin,
+    NondeterministicLabelledTransitionMixinElements}
 import org.maraist.fa.{NDFA, NDFABuilder}
 import org.maraist.fa.NDFA.{AddETransition, RemoveETransition, NDFAelements}
 import org.maraist.fa.DFA.IndexedDFA
@@ -36,11 +38,9 @@ abstract class AbstractHashNDFABuilder
     extends NDFABuilder[S, T, ThisDFA, ThisNDFA, K]
     with StateHashBuilderTrait[S, T]
     with FinalStateSetHashBuilderTrait[S, T]
-    with InitialStateSetTrait[S, T] {
+    with InitialStateSetTrait[S, T]
+    with NondeterministicLabelledTransitionMixin[S, T] {
 
-  /** Maps from a state `s` and label `t` to the set of states at the
-    * end of transitions starting from `s` and labeled `t` */
-  val transitionsMap = new HashMap[S,HashMap[T,HashSet[S]]]
   /** Maps from a state `s` to the set of states at the end of
     * &epsilon;-transitions starting from `s` */
   val epsilons:HashMap[S,HashSet[S]] = new HashMap[S,HashSet[S]]
@@ -54,14 +54,6 @@ abstract class AbstractHashNDFABuilder
     for(v <- epsilons.valuesIterator) v -= s
   }
 
-  def addTransition(s1:S, t:T, s2:S):Unit = {
-    addState(s1)
-    addState(s2)
-    val submap:HashMap[T,HashSet[S]] =
-      transitionsMap.getOrElseUpdate(s1,new HashMap[T,HashSet[S]])
-    val subsubmap:HashSet[S] = submap.getOrElseUpdate(t, new HashSet[S])
-    subsubmap += s2
-  }
   def addETransition(s1:S, s2:S):Unit = {
     // println("** " + s1 + " --> " + s2)
     addState(s1)
@@ -69,39 +61,11 @@ abstract class AbstractHashNDFABuilder
     val s1Set:HashSet[S] = epsilons.getOrElseUpdate(s1, new HashSet[S])
     s1Set += s2
   }
-  def removeTransition(s1:S, t:T, s2:S):Unit = {
-    if (transitionsMap.contains(s1)) {
-      val submap:HashMap[T,HashSet[S]] = transitionsMap(s1)
-      if (submap.contains(t)) submap(t) -= s2
-    }
-  }
+
   def removeETransition(s1:S, s2:S):Unit = {
     if (epsilons.contains(s1)) epsilons(s1) -= s2
   }
 
-  /** @inheritdoc
-    *
-    * This method is always calculated by traversing the `transitionsMap` map;
-    * it is not cached.
-    */
-  def labels: Set[T] = {
-    val result = new HashSet[T]()
-    for(map <- transitionsMap.valuesIterator)
-      for(t <- map.keysIterator)
-        result += t
-    result.toSet
-  }
-
-  def transitions(s:S, t:T): Set[S] = {
-    if (transitionsMap.contains(s)) {
-      val submap:HashMap[T,HashSet[S]] = transitionsMap(s)
-      if (submap.contains(t))
-        submap(t).toSet
-      else
-        Set.empty[S]
-    } else
-      Set.empty[S]
-  }
   def eTransitions(s:S): Set[S] = {
     if (epsilons.contains(s))
       epsilons(s).toSet
