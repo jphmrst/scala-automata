@@ -18,8 +18,8 @@ import org.maraist.fa.impl.
   {AbstractArrayDFA, AbstractArrayNDFA, AbstractHashNDFABuilder}
 
 abstract class AbstractEdgeAnnotatedArrayNDFA
-  [S, T, +ThisDFA <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,A],
-    A <: Matchable]
+  [S, T, +ThisDFA <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,K[A]],
+    K[_], A <: Matchable]
   (stateSeq: IndexedSeq[S],
     initialStateSet: Set[Int],
     finalStateSet: Set[Int],
@@ -30,6 +30,7 @@ abstract class AbstractEdgeAnnotatedArrayNDFA
         Array[? <: Array[? <: Array[? <: Option[A]]]],
     protected val unlabelledEdgeAnnotations:
         Array[? <: Array[? <: Option[A]]])
+  (using combiner: EdgeAnnotationCombiner[A, K])
 extends AbstractArrayNDFA[S, T, ThisDFA]
   (stateSeq, initialStateSet, finalStateSet,
     transitionsSeq, transitionsArray, epsilons) {
@@ -66,7 +67,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     dfaTransitions:Array[Array[Int]],
     tracker:IndexSetsTracker,
     appearsIn: Array[Set[Int]],
-    edgeAnnotations: Array[Array[Option[A]]]): ThisDFA
+    edgeAnnotations: Array[Array[Option[K[A]]]]): ThisDFA
 
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],
@@ -77,44 +78,142 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]]):
       ThisDFA = {
-    // TODO Fill in initially with no annotations
-    val edgeAnnotations: Array[Array[Option[A]]] = ???
+    val nfaStatesCount = stateSeq.size
+    val dfaStatesCount = dfaStates.size
+    val labelsCount = transitionsSeq.size
 
-    // TODO
+    // All annotations of unlabelled transitions emerging from an NDA
+    // state X will be associated with any transition in the DFA *to*
+    // any state containing X.  This first loop reviews the unlabelled
+    // transitions, and compiles together the annotations assembled
+    // for each *source* NFA state.
+    val nfaUnlabelledCombined: Array[Option[K[A]]] =
+      Array.fill(nfaStatesCount)(None)
+
     // Iterate through the NFA state indices as source state.
-    {
+    for (srcIdx <- 0 until nfaStatesCount) {
+      val src = stateSeq(srcIdx)
+      val unlabelledForSrc = unlabelledEdgeAnnotations(srcIdx)
+
       // Iterate through the NFA state indices as destination state.
-      {
+      for (destIdx <- 0 until nfaStatesCount) {
+        val dest = stateSeq(destIdx)
+
         // Find any annotation on the unlabelled transition from the
         // source to the destination state.
+        unlabelledForSrc(destIdx) match {
+          case None => { }
 
-        // If there is an annotation on the unlabelled transition,
-        {
-          // Iterate through the DFA state indices corresponding to
-          // the source NFA state.
-          {
+          // If there is an annotation on the unlabelled transition,
+          case Some(ann) => {
+
             // Iterate through the DFA state indices corresponding to
-            // the destination NFA state.
-            {
-              // Combine in that annotation.
+            // the source NFA state.
+            for (dfaSrc <- appearsIn(srcIdx)) {
+
+              // Iterate through the DFA state indices corresponding to
+              // the destination NFA state.
+              for (dfaDest <- appearsIn(destIdx)) {
+
+                // Calculate new annotation
+                val updated: K[A] =
+                  combiner.updated(nfaUnlabelledCombined(srcIdx), ann)
+
+                // Write it in
+                nfaUnlabelledCombined(srcIdx) = Some(updated)
+              }
             }
           }
         }
+      }
+    }
 
-        // Iterate through the NFA labels.
-        {
-          // Find any annotation on the labelled transition from the
-          // source to the destination state with that label.
+    // This second loop calculates the annotation from unlabelled
+    // transitions for each state of the DFA, by combining the
+    // annotations for the related NFA states.
+    val dfaUnlabelledCombined: Array[Option[K[A]]] =
+      Array.fill(dfaStatesCount)(None)
 
-          // If there is an annotation on that labelled transition,
-          {
-            // Iterate through the DFA state indices corresponding to
-            // the source NFA state.
-            {
-              // Iterate through the DFA state indices corresponding
-              // to the destination NFA state.
-              {
-                // Combine in that annotation.
+    // Iterate through the NFA state indices.
+    for (srcIdx <- 0 until nfaStatesCount) {
+      val src = stateSeq(srcIdx)
+      val thisOpt = nfaUnlabelledCombined(srcIdx)
+
+      // If this state has an annotation
+      thisOpt match {
+        case None => { }
+        case Some(thisAnn) => {
+
+          // Iterate through the DFA state indices corresponding to
+          // the source NFA state.
+          for (dfaSrc <- appearsIn(srcIdx)) {
+            val newCombined: K[A] =
+              combiner.combined(dfaUnlabelledCombined(dfaSrc), thisAnn)
+
+            dfaUnlabelledCombined(dfaSrc) = Some(newCombined)
+          }
+        }
+      }
+    }
+
+    // Finally, the third loop is for the labelled transitions in the
+    // DFA.
+    val edgeAnnotations: Array[Array[Option[K[A]]]] =
+      Array.fill(dfaStatesCount, labelsCount)(None)
+
+    // Iterate through the DFA state indices.
+    for (srcDfaIdx <- 0 until dfaStatesCount) {
+      val dfaSrc: Set[S] = dfaStates(srcDfaIdx)
+      val writingForDfaSrc = edgeAnnotations(srcDfaIdx)
+
+      // Iterate through the NFA state indices in this DFA source
+      // state.
+      for (src <- dfaSrc) {
+        val srcIdx = stateSeq.indexOf(src)
+
+        // Iterate through the labels.
+        for (labelIdx <- 0 until transitionsSeq.length) {
+          val label = transitionsSeq(labelIdx)
+          val dfaDestIdx = dfaTransitions(srcDfaIdx)(labelIdx)
+
+          // Is there actually a transition here?
+          if (dfaDestIdx > -1) {
+            val dfaDest: Set[S] = dfaStates(dfaDestIdx)
+
+            // Iterate through the NFA state indices in this DFA
+            // source state.
+            for (dest <- dfaDest) {
+              val destIdx = stateSeq.indexOf(dest)
+
+              // Is there an annotation on this NFA edge?
+              labelledEdgeAnnotations(srcIdx)(labelIdx)(destIdx) match {
+                case None => { }
+                case Some(ann) => {
+
+                  // Find the new value to record against this DFA
+                  // edge.
+                  val newAnn = writingForDfaSrc(labelIdx) match {
+
+                    // If we have already recorded an annotation for
+                    // this DFA edge, combine in the new one.
+                    case Some(prev) => combiner.include(prev, ann)
+
+                    // If we have an annotation for this DFA state
+                    // from unlabelled transitions, then combine the
+                    // present annotation with it instead.
+                    case None => dfaUnlabelledCombined(srcDfaIdx) match {
+                      case Some(fromUnlab) =>
+                        combiner.include(fromUnlab, ann)
+
+                        // Otherwise the new value is from the present
+                        // annotation alone.
+                        combiner.single(ann)
+                    }
+                  }
+
+                  // Record the new value
+                  writingForDfaSrc(labelIdx) = Some(newAnn)
+                }
               }
             }
           }
@@ -129,7 +228,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
   }
 }
 
-class EdgeAnnotatedArrayNDFA[S,T,A <: Matchable](
+class EdgeAnnotatedArrayNDFA[S, T, K[_], A <: Matchable](
   stateSeq: IndexedSeq[S],
   initialStateSet: Set[Int],
   finalStateIndices: Set[Int],
@@ -139,8 +238,9 @@ class EdgeAnnotatedArrayNDFA[S,T,A <: Matchable](
   labelledEdgeAnnotations: Array[Array[Array[Option[A]]]],
   unlabelledEdgeAnnotations: Array[Array[Option[A]]]
 )
+  (using combiner: EdgeAnnotationCombiner[A, K])
 extends AbstractEdgeAnnotatedArrayNDFA
-  [S, T, EdgeAnnotatedArrayDFA[Set[S],T,A], A]
+  [S, T, EdgeAnnotatedArrayDFA[Set[S],T,K[A]], K, A]
   (stateSeq, initialStateSet, finalStateIndices,
     transitionsSeq, transitionsMatrix, epsilons,
     labelledEdgeAnnotations, unlabelledEdgeAnnotations
@@ -149,7 +249,7 @@ extends AbstractEdgeAnnotatedArrayNDFA
   // TODO
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) = ???
 
-  protected def assembleDFA(
+  override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],
     initialStateIdx: Int,
     dfaFinals: Set[Int],
@@ -157,9 +257,9 @@ extends AbstractEdgeAnnotatedArrayNDFA
     dfaTransitions: Array[Array[Int]],
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]],
-    edgeAnnotations: Array[Array[Option[A]]]):
-      EdgeAnnotatedArrayDFA[Set[S],T,A] =
-    new EdgeAnnotatedArrayDFA[Set[S],T,A](
+    edgeAnnotations: Array[Array[Option[K[A]]]]):
+      EdgeAnnotatedArrayDFA[Set[S],T,K[A]] =
+    new EdgeAnnotatedArrayDFA[Set[S],T,K[A]](
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
       dfaTransitions, edgeAnnotations)
 }

@@ -159,8 +159,23 @@ trait EdgeAnnotationCombiner[A, K[_]] {
   /** Lift a single annotation to the result annotation type. */
   def single(a: A): K[A]
 
-  /** Combine in another annotation. */
-  def combine(k: K[A], a: A): K[A]
+  /** Incorporate another annotation. */
+  def include(k: K[A], a: A): K[A]
+
+  protected[fa] def updated(prev: Option[K[A]], ann: A): K[A] = prev match {
+    case None => single(ann)
+    case Some(prevAnn) => include(prevAnn, ann)
+  }
+
+  /** Combine two converted annotations. */
+  def combine(k1: K[A], k2: K[A]): K[A]
+
+  protected[fa] def combined(prev: Option[K[A]], curr: K[A]): K[A] =
+    prev match {
+      case None => curr
+      case Some(prev) => combine(prev, curr)
+    }
+
 }
 
 object Elements {
