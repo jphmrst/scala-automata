@@ -208,10 +208,13 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
   }
 
   /**
-   * This method is implemented by subclasses where
-   * [[org.maraist.fa.NDFA#ThisDFA ThisDFA]] is concretized, to
-   * provide a DFA implementation of the specific type.
-   */
+    * This method is implemented by subclasses where
+    * [[org.maraist.fa.NDFA#ThisDFA ThisDFA]] is concretized, to
+    * provide a DFA implementation of the specific type.
+    *
+    * @param appearsIn Maps from the index of an NFA state to a set of
+    * indices of the DFA states in which that NFA state is a member.
+    */
   protected def assembleDFA(dfaStates: IndexedSeq[Set[S]],
                             initialStateIdx: Int,
                             dfaFinals: Set[Int],

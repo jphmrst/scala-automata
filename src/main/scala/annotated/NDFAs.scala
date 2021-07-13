@@ -77,8 +77,51 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]]):
       ThisDFA = {
-    // TODO
+    // TODO Fill in initially with no annotations
     val edgeAnnotations: Array[Array[Option[A]]] = ???
+
+    // TODO
+    // Iterate through the NFA state indices as source state.
+    {
+      // Iterate through the NFA state indices as destination state.
+      {
+        // Find any annotation on the unlabelled transition from the
+        // source to the destination state.
+
+        // If there is an annotation on the unlabelled transition,
+        {
+          // Iterate through the DFA state indices corresponding to
+          // the source NFA state.
+          {
+            // Iterate through the DFA state indices corresponding to
+            // the destination NFA state.
+            {
+              // Combine in that annotation.
+            }
+          }
+        }
+
+        // Iterate through the NFA labels.
+        {
+          // Find any annotation on the labelled transition from the
+          // source to the destination state with that label.
+
+          // If there is an annotation on that labelled transition,
+          {
+            // Iterate through the DFA state indices corresponding to
+            // the source NFA state.
+            {
+              // Iterate through the DFA state indices corresponding
+              // to the destination NFA state.
+              {
+                // Combine in that annotation.
+              }
+            }
+          }
+        }
+      }
+    }
+
     assembleDFA(
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
       dfaTransitions, tracker, appearsIn, edgeAnnotations
