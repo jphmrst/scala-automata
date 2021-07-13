@@ -33,22 +33,26 @@ trait PFA[S,T]
     with FinalStateSetHolder[S]
     with Graphable[S,T] {
 
-  /** Returns the probability that `s` is an initial state of this automaton.
+  /** Returns the probability that `s` is an initial state of this
+    * automaton.
    */
   def initialStateProb(s:S): Double
 
-  /** Returns the probability that `s` is a final state of this automaton. */
+  /** Returns the probability that `s` is a final state of this
+    * automaton.
+    */
   def finalStateProb(s:S): Double
 
-  /** Returns `true` if `s` has a non-zero chance of being a final state of
-   *  the automaton
+  /** Returns `true` if `s` has a non-zero chance of being a final state
+   *  of the automaton
    */
   def isFinalState(s:S): Boolean = finalStateProb(s)>0.0
 
   def labels: Iterable[T]
 
-  /** {@inheritDoc} For PFAs, this method returns the states which map via
-   *  {@link org.maraist.fa.PFA#finalStateProb} to a non-zero probability.
+  /** {@inheritDoc} For PFAs, this method returns the states which map
+   *  via {@link org.maraist.fa.PFA#finalStateProb} to a non-zero
+   *  probability.
    */
   def finalStates: Set[S] = {
     val result = new HashSet[S]
@@ -56,12 +60,12 @@ trait PFA[S,T]
     result.toSet
   }
 
-  /** Returns `true` if `s` has a non-zero chance of being an initial state
-   *  of the automaton */
+  /** Returns `true` if `s` has a non-zero chance of being an initial
+   *  state of the automaton */
   def isInitialState(s:S): Boolean = initialStateProb(s) > 0.0
 
-  /** For PFAs, this method returns the states which map via
-   *  {@link org.maraist.fa.PFA#initialStateProb} to a non-zero probability.
+  /** For PFAs, this method returns the states which map via {@link
+   *  org.maraist.fa.PFA#initialStateProb} to a non-zero probability.
    */
   def getInitialStates: Set[S] = {
     val result = Set.newBuilder[S]
