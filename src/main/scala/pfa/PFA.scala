@@ -13,7 +13,8 @@ import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.graphviz.Graphable
 import org.maraist.graphviz.NodeLabeling
 import org.maraist.graphviz.TransitionLabeling
-import org.maraist.fa.traits.StateHolder
+import org.maraist.fa.traits.
+  {StateHolder, FinalStateSetHolder, InitialStateSetHolder}
 import org.maraist.fa.impl.{SingleInitialStateMixinElement}
 import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.pfa.impl.PFAdotTraverser
@@ -26,7 +27,11 @@ import org.maraist.fa.pfa.Builders.PFAelements
  *
  * @group PFA
  */
-trait PFA[S,T] extends StateHolder[S] with Graphable[S,T] {
+trait PFA[S,T]
+    extends StateHolder[S]
+    // with InitialStateSetHolder[S]
+    with FinalStateSetHolder[S]
+    with Graphable[S,T] {
 
   /** Returns the probability that `s` is an initial state of this automaton.
    */
@@ -53,15 +58,15 @@ trait PFA[S,T] extends StateHolder[S] with Graphable[S,T] {
 
   /** Returns `true` if `s` has a non-zero chance of being an initial state
    *  of the automaton */
-  def isInitialState(s:S): Boolean = initialStateProb(s)>0.0
+  def isInitialState(s:S): Boolean = initialStateProb(s) > 0.0
 
-  /** {@inheritDoc} For PFAs, this method returns the states which map via
+  /** For PFAs, this method returns the states which map via
    *  {@link org.maraist.fa.PFA#initialStateProb} to a non-zero probability.
    */
-  def initialStates: Set[S] = {
-    val result = new HashSet[S]
+  def getInitialStates: Set[S] = {
+    val result = Set.newBuilder[S]
     for(m <- states) { if (initialStateProb(m)>0.0) { result += m } }
-    result.toSet
+    result.result()
   }
 
   /** Calculate the probability that the automaton accepts the given sequence

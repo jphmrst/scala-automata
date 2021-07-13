@@ -46,7 +46,7 @@ trait IndexedPFA[S,T]
     result.toSet
   }
 
-  def getInitialStates: Set[S] = for (i <- initialStateIndices) yield state(i)
+  override def getInitialStates: Set[S] = initialStateIndices.map(state(_))
 
   def finalStateIndices: Set[Int] = {
     val result = new HashSet[Int]

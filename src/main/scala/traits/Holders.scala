@@ -35,9 +35,11 @@ trait IndexedStateHolder[S] extends StateHolder[S] {
 }
 
 trait FinalStateSetHolder[S] {
+  /** Returns the [[Set]] of final states in this automaton. */
   def finalStates: Set[S]
 
-  def isFinalState(s:S):Boolean
+  /** Returns whether the given state `s` is final in this automaton. */
+  def isFinalState(s: S): Boolean
 }
 
 trait IndexedFinalStateSetHolder[S] extends FinalStateSetHolder[S] {
