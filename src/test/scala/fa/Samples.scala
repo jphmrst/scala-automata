@@ -26,6 +26,7 @@ import org.maraist.fa.hyperedges.
 import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
 import org.maraist.fa.hyperedges.impl.
   {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
+import org.maraist.fa.annotated.EdgeAnnotatedNDFA
 import org.maraist.latex.{LaTeXdoc,Sampler}
 import org.scalatest.matchers.*
 import org.scalatest.matchers.should.*
@@ -202,6 +203,10 @@ object Samples extends App with Sampler {
     val res = dlhPfa57
     res.removeEpsilonTransitions
     res
+  }
+
+  def ann01_nfa: EdgeAnnotatedNDFA[String, String, Int, Set, ?] = {
+    ???
   }
 
   def addSamples(guide:LaTeXdoc):FilesCleaner = {
