@@ -17,6 +17,13 @@ import org.maraist.fa.NDFA.NDFAelements
 import org.maraist.fa.impl.
   {AbstractArrayDFA, AbstractArrayNDFA, AbstractHashNDFABuilder}
 
+/** Default [[EdgeAnnotationCombiner]] using set union. */
+given setCombiner[A]: EdgeAnnotationCombiner[A, Set] with {
+  def single(a: A): Set[A] = Set(a)
+  def include(k: Set[A], a: A): Set[A] = k + a
+  def combine(k1: Set[A], k2: Set[A]): Set[A] = k1 ++ k2
+}
+
 abstract class AbstractEdgeAnnotatedArrayNDFA
   [S, T, +ThisDFA <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,K[A]],
     K[_], A]

@@ -116,7 +116,7 @@ object EdgeAnnotatedNDFA {
       EdgeAnnotatedNDFA
         [S, T, A, K,
           ? <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]]] =
-    ???
+    new HashEdgeAnnotatedNDFABuilder[S, T, K, A]
 
 }
 
