@@ -28,11 +28,10 @@ import org.maraist.fa.NDFA.{IndexedNDFA, NDFAelements}
   *
   * @group Annotated
   */
-trait NDFAEdgeAnnotations
-  [S, T, A, K[_], +D <: IndexedDFA[Set[S],T] & DFAEdgeAnnotations[S,T,K[A]]]
-  (using combo: EdgeAnnotationCombiner[A,K]) {
-
-  this: NDFA[S, T, D] =>
+trait EdgeAnnotatedNDFA
+  [S, T, A, K[_], +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]]]
+  (using combo: EdgeAnnotationCombiner[A,K])
+    extends NDFA[S, T, D] {
 
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
@@ -71,11 +70,11 @@ trait NDFAEdgeAnnotations
   */
 trait NDFAEdgeAnnotationsBuilder
   [S, T, A, K[_],
-    +D <: IndexedDFA[Set[S],T] & DFAEdgeAnnotations[S,T,K[A]],
-    +N <: NDFA[S,T,D] & NDFAEdgeAnnotations[S,T,A,K,D],
+    +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]],
+    +N <: EdgeAnnotatedNDFA[S,T,A,K,D],
     E >: NDFA.NDFAelements[S,T] <: Matchable
   ]
-    extends NDFAEdgeAnnotations[S, T, A, K, D] {
+    extends EdgeAnnotatedNDFA[S, T, A, K, D] {
   this: NDFABuilder[S, T, D, N, E] =>
 
   /** Set the annotation on the transition from `src` to `dest` labelled
@@ -108,8 +107,7 @@ trait NDFAEdgeAnnotationsBuilder
   *
   * @group Annotated
   */
-trait DFAEdgeAnnotations[S,T,A] {
-  this: DFA[S, T] =>
+trait EdgeAnnotatedDFA[S,T,A] extends DFA[S, T] {
 
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
@@ -124,14 +122,14 @@ trait DFAEdgeAnnotations[S,T,A] {
   * automaton
   * @tparam A The type of annotations on transitions
   * @tparam D Type of DFA returned from this builder.  Should
-  * implement both the core [[DFA]] triat plus [[DFAEdgeAnnotations]].
+  * implement [[EdgeAnnotatedDFA]].
   *
   * @group Annotated
   */
 trait DFAEdgeAnnotationsBuilder[
-  S, T, A, +D <: DFA[S,T] & DFAEdgeAnnotations[S,T,A],
+  S, T, A, +D <: EdgeAnnotatedDFA[S,T,A],
   K >: DFA.DFAelements[S,T] <: Matchable]
-    extends DFAEdgeAnnotations[S, T, A] {
+    extends EdgeAnnotatedDFA[S, T, A] {
   this: DFABuilder[S, T, D, K] =>
 
   /** Set the annotation on the transition from `src` to `dest` labelled
@@ -175,7 +173,6 @@ trait EdgeAnnotationCombiner[A, K[_]] {
       case None => curr
       case Some(prev) => combine(prev, curr)
     }
-
 }
 
 object Elements {

@@ -35,7 +35,7 @@ abstract class AbstractEdgeAnnotatedArrayDFA[S, T, A](
       stateSeq, initialStateIndex, finalStateIndices,
       transitionsSeq, transitionsMatrix
     )
-    with DFAEdgeAnnotations[S,T,A] {
+    with EdgeAnnotatedDFA[S,T,A] {
 
   /** Return the annotation (if any) on the transition from `src`
     * labelled `label`.
@@ -76,7 +76,7 @@ abstract class AbstractHashEdgeAnnotatedDFABuilder
     K >: Elements.AnnotatedDFAelement[S,T,A] <: Matchable
   ](initialState: S)
     extends AbstractHashDFABuilder[S,T,D,K](initialState)
-    with DFAEdgeAnnotationsBuilder[S,T,A,D,K] {
+    with EdgeAnnotatedDFA[S,T,A] {
 
   val edgeAnnotations: HashMap[S, HashMap[T, A]] =
     new HashMap[S, HashMap[T, A]]
