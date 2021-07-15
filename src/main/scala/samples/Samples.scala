@@ -228,6 +228,10 @@ object Samples extends Sampler {
     graphable(guide,cleaner,hndfa4dfa,"hndfa4dfa","hndfa4dfa", "3in")
     graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
     graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
+
+    // // Rendering traverser for annotated automata not yet implemented.
+    // graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "2in")
+
     cleaner
   }
 
