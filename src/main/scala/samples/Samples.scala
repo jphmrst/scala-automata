@@ -206,7 +206,13 @@ object Samples extends Sampler {
 
   def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set, ?] = {
     import org.maraist.fa.annotated.setCombiner
+    import org.maraist.fa.elements.*
+    import org.maraist.fa.annotated.Elements.*
+
     val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set]
+    builder += AddInitialState("S")
+    builder += AddState("S1")
+    builder += AddState("S2")
     builder.result()
   }
 

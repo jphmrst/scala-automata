@@ -158,6 +158,10 @@ class TestDFA extends AnyFlatSpec with Matchers {
 
     val dfa = builder.toDFA
   }
+
+  "An annotated-NDFABuilder" `should` "work" in {
+    val nfa = Samples.ann01_nfa
+  }
 }
 
 class IntSetsTrackerTest extends AnyFlatSpec with Matchers
