@@ -49,6 +49,9 @@ trait EdgeAnnotationCombiner[A, K[_]] {
 }
 
 object Elements {
+  // Use:
+  // import org.maraist.fa.elements.*
+  // import org.maraist.fa.annotated.Elements.*
   case class SetAnnotation[S,T,A](src: S, dest: S, label: T, annotation: A)
   case class RemoveAnnotation[S,T,A](src: S, dest: S, label: T)
 
