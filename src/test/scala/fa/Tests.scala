@@ -16,6 +16,7 @@ import org.maraist.fa.impl.{HashDFABuilder,HashNDFABuilder}
 import org.maraist.fa.DFA
 import org.maraist.fa.pfa.PFA
 import org.maraist.fa.pfa.impl.HashPFABuilder
+import org.maraist.fa.samples.*
 
 class TestDFA extends AnyFlatSpec with Matchers {
 

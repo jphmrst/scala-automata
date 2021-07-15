@@ -8,11 +8,12 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa
+package org.maraist.fa.samples
 import scala.language.adhocExtensions
 import java.io.File
 import scala.collection.mutable.{Builder,HashMap,HashSet}
 import org.maraist.util.FilesCleaner
+import org.maraist.fa.{DFA, NDFA, NDFABuilder}
 import org.maraist.fa.impl.{HashNDFABuilder}
 import org.maraist.fa.elements.
   {AddState, RemoveState, RemoveFinalState, AddFinalState,
@@ -28,13 +29,11 @@ import org.maraist.fa.hyperedges.impl.
   {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
 import org.maraist.fa.annotated.EdgeAnnotatedNDFA
 import org.maraist.latex.{LaTeXdoc,Sampler}
-import org.scalatest.matchers.*
-import org.scalatest.matchers.should.*
 
 /**
  * Sample automata, and printing a guide to them.
  */
-object Samples extends App with Sampler {
+object Samples extends Sampler {
 
   /**
    * Return a fresh copy of a sample DFA builder
@@ -232,14 +231,16 @@ object Samples extends App with Sampler {
     cleaner
   }
 
-  private val guide = new LaTeXdoc("guide")
-  guide.addPackage("times")
-  guide.addPackage("graphicx")
-  guide.addPackage("multicol")
-  guide.open()
-  guide ++= "\\begin{multicols}{2}"
-  val cleanup = addSamples(guide)
-  guide ++= "\\end{multicols}"
-  guide.close()
-  cleanup.clean
+  @main def printSamples = {
+    val guide = new LaTeXdoc("samples")
+    guide.addPackage("times")
+    guide.addPackage("graphicx")
+    guide.addPackage("multicol")
+    guide.open()
+    guide ++= "\\begin{multicols}{2}"
+    val cleanup = addSamples(guide)
+    guide ++= "\\end{multicols}"
+    guide.close()
+    cleanup.clean
+  }
 }
