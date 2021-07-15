@@ -56,6 +56,8 @@ Compile / doc / scalacOptions ++= Seq(
 lazy val main = project
   .in(file("."))
   .settings(
+    run / fork := true,
+    run / baseDirectory := file("./samples/"),
     scalaVersion := scala3Version,
     compile / watchTriggers += baseDirectory.value.toGlob / "build.sbt",
     unmanagedSources / excludeFilter := ".#*",
