@@ -113,9 +113,10 @@ trait EdgeAnnotatedNDFA
 object EdgeAnnotatedNDFA {
 
   def newBuilder[S, T, A, K[_]](using combo: EdgeAnnotationCombiner[A,K]):
-      EdgeAnnotatedNDFA
-        [S, T, A, K,
-          ? <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]]] =
+      NDFAEdgeAnnotationsBuilder[S, T, A, K,
+        ? <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]],
+        ? <: EdgeAnnotatedNDFA[S,T,A,K,?],
+        Elements.AnnotatedNDFAelement[S,T,A]] =
     new HashEdgeAnnotatedNDFABuilder[S, T, K, A]
 
 }
@@ -138,8 +139,8 @@ trait NDFAEdgeAnnotationsBuilder
     +N <: EdgeAnnotatedNDFA[S,T,A,K,D],
     E >: Elements.AnnotatedNDFAelement[S,T,A] <: Matchable
   ]
-    extends EdgeAnnotatedNDFA[S, T, A, K, D] {
-  this: NDFABuilder[S, T, D, N, E] =>
+    extends NDFABuilder[S, T, D, N, E]
+    with EdgeAnnotatedNDFA[S, T, A, K, D] {
 
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.
@@ -193,8 +194,7 @@ trait EdgeAnnotatedDFA[S,T,A] extends DFA[S, T] {
 trait DFAEdgeAnnotationsBuilder[
   S, T, K[_], A, +D <: EdgeAnnotatedDFA[S,T,A],
   E >: Elements.AnnotatedDFAelement[S,T,A] <: Matchable]
-    extends EdgeAnnotatedDFA[S, T, A] {
-  this: DFABuilder[S, T, D, E] =>
+    extends DFABuilder[S, T, D, E] with EdgeAnnotatedDFA[S, T, A] {
 
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.
