@@ -207,7 +207,7 @@ object Samples extends Sampler {
   def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set, ?] = {
     import org.maraist.fa.annotated.setCombiner
     val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set]
-    ???
+    builder.result()
   }
 
   def addSamples(guide:LaTeXdoc):FilesCleaner = {
