@@ -18,15 +18,15 @@ import org.maraist.fa.impl.
   {AbstractArrayDFA, AbstractArrayNDFA, AbstractHashNDFABuilder}
 
 /** Default [[EdgeAnnotationCombiner]] using set union. */
-given setCombiner[A]: EdgeAnnotationCombiner[A, Set] with {
+given setCombiner[A]: EdgeAnnotationCombiner[A, Set[A]] with {
   def single(a: A): Set[A] = Set(a)
   def include(k: Set[A], a: A): Set[A] = k + a
   def combine(k1: Set[A], k2: Set[A]): Set[A] = k1 ++ k2
 }
 
 abstract class AbstractEdgeAnnotatedArrayNDFA
-  [S, T, +ThisDFA <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,K[A]],
-    K[_], A]
+  [S, T, +ThisDFA <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,DA],
+    DA, NA]
   (stateSeq: IndexedSeq[S],
     initialStateSet: Set[Int],
     finalStateSet: Set[Int],
@@ -34,37 +34,37 @@ abstract class AbstractEdgeAnnotatedArrayNDFA
     transitionsArray: Array[? <: Array[? <: Set[Int]]],
     epsilons: Array[? <: Set[Int]],
     protected val labelledEdgeAnnotations:
-        Array[? <: Array[? <: Array[? <: Option[A]]]],
+        Array[? <: Array[? <: Array[? <: Option[NA]]]],
     protected val unlabelledEdgeAnnotations:
-        Array[? <: Array[? <: Option[A]]])
-  (using combiner: EdgeAnnotationCombiner[A, K])
+        Array[? <: Array[? <: Option[NA]]])
+  (using combiner: EdgeAnnotationCombiner[NA, DA])
 extends AbstractArrayNDFA[S, T, ThisDFA]
   (stateSeq, initialStateSet, finalStateSet,
     transitionsSeq, transitionsArray, epsilons)
-    with EdgeAnnotatedNDFA[S, T, A, K, ThisDFA] {
+    with EdgeAnnotatedNDFA[S, T, NA, DA, ThisDFA] {
 
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
     */
-  def annotation(src: S, label: T, dest: S): Option[A] =
+  def annotation(src: S, label: T, dest: S): Option[NA] =
     annotationIndex(indexOf(src), labelIndex(label), indexOf(src))
 
   /** Return the annotation (if any) on the transition from the state at
     * index `srcIdx` with the label with index `labelIdx`.
     */
-  def annotationIndex(srcIdx: Int, labelIdx: Int, destIdx: Int): Option[A] =
+  def annotationIndex(srcIdx: Int, labelIdx: Int, destIdx: Int): Option[NA] =
     labelledEdgeAnnotations(srcIdx)(labelIdx)(destIdx)
 
   /** Return the annotation (if any) on the unlabelled transition from
     * `src` to `dest`.
     */
-  def annotation(src: S, dest: S): Option[A] =
+  def annotation(src: S, dest: S): Option[NA] =
     annotationIndex(indexOf(src), indexOf(src))
 
   /** Return the annotation (if any) on the unlabelled transition from
     * the state at index `srcIdx`.
     */
-  def annotationIndex(srcIdx: Int, destIdx: Int): Option[A] =
+  def annotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
 
   protected def assembleDFA(
@@ -75,7 +75,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     dfaTransitions:Array[Array[Int]],
     tracker:IndexSetsTracker,
     appearsIn: Array[Set[Int]],
-    edgeAnnotations: Array[Array[Option[K[A]]]]): ThisDFA
+    edgeAnnotations: Array[Array[Option[DA]]]): ThisDFA
 
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],
@@ -95,7 +95,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     // any state containing X.  This first loop reviews the unlabelled
     // transitions, and compiles together the annotations assembled
     // for each *source* NFA state.
-    val nfaUnlabelledCombined: Array[Option[K[A]]] =
+    val nfaUnlabelledCombined: Array[Option[DA]] =
       Array.fill(nfaStatesCount)(None)
 
     // Iterate through the NFA state indices as source state.
@@ -124,7 +124,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
               for (dfaDest <- appearsIn(destIdx)) {
 
                 // Calculate new annotation
-                val updated: K[A] =
+                val updated: DA =
                   combiner.updated(nfaUnlabelledCombined(srcIdx), ann)
 
                 // Write it in
@@ -139,7 +139,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     // This second loop calculates the annotation from unlabelled
     // transitions for each state of the DFA, by combining the
     // annotations for the related NFA states.
-    val dfaUnlabelledCombined: Array[Option[K[A]]] =
+    val dfaUnlabelledCombined: Array[Option[DA]] =
       Array.fill(dfaStatesCount)(None)
 
     // Iterate through the NFA state indices.
@@ -155,7 +155,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
           // Iterate through the DFA state indices corresponding to
           // the source NFA state.
           for (dfaSrc <- appearsIn(srcIdx)) {
-            val newCombined: K[A] =
+            val newCombined: DA =
               combiner.combined(dfaUnlabelledCombined(dfaSrc), thisAnn)
 
             dfaUnlabelledCombined(dfaSrc) = Some(newCombined)
@@ -166,7 +166,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
 
     // Finally, the third loop is for the labelled transitions in the
     // DFA.
-    val edgeAnnotations: Array[Array[Option[K[A]]]] =
+    val edgeAnnotations: Array[Array[Option[DA]]] =
       Array.fill(dfaStatesCount, labelsCount)(None)
 
     // Iterate through the DFA state indices.
@@ -236,19 +236,19 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
   }
 }
 
-class EdgeAnnotatedArrayNDFA[S, T, K[_], A](
+class EdgeAnnotatedArrayNDFA[S, T, DA, NA](
   stateSeq: IndexedSeq[S],
   initialStateSet: Set[Int],
   finalStateIndices: Set[Int],
   transitionsSeq: IndexedSeq[T],
   transitionsMatrix: Array[Array[Set[Int]]],
   epsilons: Array[? <: Set[Int]],
-  labelledEdgeAnnotations: Array[Array[Array[Option[A]]]],
-  unlabelledEdgeAnnotations: Array[Array[Option[A]]]
+  labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+  unlabelledEdgeAnnotations: Array[Array[Option[NA]]]
 )
-  (using combiner: EdgeAnnotationCombiner[A, K])
+  (using combiner: EdgeAnnotationCombiner[NA, DA])
 extends AbstractEdgeAnnotatedArrayNDFA
-  [S, T, EdgeAnnotatedArrayDFA[Set[S],T,K[A]], K, A]
+  [S, T, EdgeAnnotatedArrayDFA[Set[S],T,DA], DA, NA]
   (stateSeq, initialStateSet, finalStateIndices,
     transitionsSeq, transitionsMatrix, epsilons,
     labelledEdgeAnnotations, unlabelledEdgeAnnotations
@@ -265,9 +265,9 @@ extends AbstractEdgeAnnotatedArrayNDFA
     dfaTransitions: Array[Array[Int]],
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]],
-    edgeAnnotations: Array[Array[Option[K[A]]]]):
-      EdgeAnnotatedArrayDFA[Set[S],T,K[A]] =
-    new EdgeAnnotatedArrayDFA[Set[S],T,K[A]](
+    edgeAnnotations: Array[Array[Option[DA]]]):
+      EdgeAnnotatedArrayDFA[Set[S],T,DA] =
+    new EdgeAnnotatedArrayDFA[Set[S],T,DA](
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
       dfaTransitions, edgeAnnotations)
 }
@@ -278,22 +278,22 @@ extends AbstractEdgeAnnotatedArrayNDFA
 // -----------------------------------------------------------------
 
 abstract class AbstractHashEdgeAnnotatedNDFABuilder
-  [S, T, K[_], A,
-    +D <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,K[A]],
-    +N <: AbstractEdgeAnnotatedArrayNDFA[S,T,D,K,A],
-    E >: Elements.AnnotatedNDFAelement[S,T,A] <: Matchable]
-  (using combiner: EdgeAnnotationCombiner[A, K])
+  [S, T, DA, NA,
+    +D <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,DA],
+    +N <: AbstractEdgeAnnotatedArrayNDFA[S,T,D,DA,NA],
+    E >: Elements.AnnotatedNDFAelement[S,T,NA] <: Matchable]
+  (using combiner: EdgeAnnotationCombiner[NA, DA])
     extends AbstractHashNDFABuilder[S,T,D,N,E]
-    with NDFAEdgeAnnotationsBuilder[S,T,A,K,D,N,E] {
+    with NDFAEdgeAnnotationsBuilder[S,T,NA,DA,D,N,E] {
 
   protected val labelledEdgeAnnotations:
-      HashMap[S, HashMap[T, HashMap[S, A]]] =
-    new HashMap[S, HashMap[T, HashMap[S, A]]]
+      HashMap[S, HashMap[T, HashMap[S, NA]]] =
+    new HashMap[S, HashMap[T, HashMap[S, NA]]]
 
-  def annotation(src: S, label: T, dest: S): Option[A] =
+  def annotation(src: S, label: T, dest: S): Option[NA] =
     labelledEdgeAnnotations.get(src).map(_(label)).map(_(dest))
 
-  def setAnnotation(src: S, dest: S, label: T, annotation: A): Unit =
+  def setAnnotation(src: S, dest: S, label: T, annotation: NA): Unit =
     labelledEdgeAnnotations.get(src) match {
       case None => {
         labelledEdgeAnnotations(src) =
@@ -322,13 +322,13 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
       }
     }
 
-  protected val unlabelledEdgeAnnotations: HashMap[S, HashMap[S, A]] =
-    new HashMap[S, HashMap[S, A]]
+  protected val unlabelledEdgeAnnotations: HashMap[S, HashMap[S, NA]] =
+    new HashMap[S, HashMap[S, NA]]
 
-  def annotation(src: S, dest: S): Option[A] =
+  def annotation(src: S, dest: S): Option[NA] =
     unlabelledEdgeAnnotations.get(src).map(_(dest))
 
-  def setEAnnotation(src: S, dest: S, annotation: A): Unit =
+  def setEAnnotation(src: S, dest: S, annotation: NA): Unit =
     unlabelledEdgeAnnotations.get(src) match {
       case None => {
         unlabelledEdgeAnnotations(src) = HashMap(dest -> annotation)
@@ -380,20 +380,20 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
     transitionsSeq: IndexedSeq[T],
     labelsArray: Array[Array[Set[Int]]],
     epsilonsArray: Array[Set[Int]],
-    labelledEdgeAnnotations: Array[Array[Array[Option[A]]]],
-    unlabelledEdgeAnnotations: Array[Array[Option[A]]]):
+    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
       N
 
   def toDFA: D = toNDFA.toDFA
 }
 
-class HashEdgeAnnotatedNDFABuilder[S, T, K[_], A]
-  (using combiner: EdgeAnnotationCombiner[A, K])
+class HashEdgeAnnotatedNDFABuilder[S, T, DA, NA]
+  (using combiner: EdgeAnnotationCombiner[NA, DA])
 extends AbstractHashEdgeAnnotatedNDFABuilder[
-  S, T, K, A,
-  EdgeAnnotatedArrayDFA[Set[S], T, K[A]],
-  EdgeAnnotatedArrayNDFA[S, T, K, A],
-  Elements.AnnotatedNDFAelement[S,T,A]
+  S, T, DA, NA,
+  EdgeAnnotatedArrayDFA[Set[S], T, DA],
+  EdgeAnnotatedArrayNDFA[S, T, DA, NA],
+  Elements.AnnotatedNDFAelement[S,T,NA]
 ] {
 
   protected override def assembleNDFA(
@@ -401,10 +401,10 @@ extends AbstractHashEdgeAnnotatedNDFABuilder[
     transitionsSeq: IndexedSeq[T],
     labelsArray: Array[Array[Set[Int]]],
     epsilonsArray: Array[Set[Int]],
-    labelledEdgeAnnotations: Array[Array[Array[Option[A]]]],
-    unlabelledEdgeAnnotations: Array[Array[Option[A]]]):
-      EdgeAnnotatedArrayNDFA[S, T, K, A] =
-    new EdgeAnnotatedArrayNDFA[S, T, K, A](
+    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
+      EdgeAnnotatedArrayNDFA[S, T, DA, NA] =
+    new EdgeAnnotatedArrayNDFA[S, T, DA, NA](
       statesSeq, initials, finals, transitionsSeq, labelsArray, epsilonsArray,
       labelledEdgeAnnotations, unlabelledEdgeAnnotations
     )

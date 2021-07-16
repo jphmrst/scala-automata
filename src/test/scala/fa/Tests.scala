@@ -160,7 +160,7 @@ class TestDFA extends AnyFlatSpec with Matchers {
   }
 
   "An annotated-NDFABuilder" `should` "work" in {
-    val nfa = Samples.ann01_nfa
+    val nfa = Samples.ann02_nfa
   }
 }
 

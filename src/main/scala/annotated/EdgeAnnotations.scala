@@ -25,23 +25,23 @@ import org.maraist.fa.NDFA.{IndexedNDFA, NDFAelements}
   *
   * @group Annotated
   */
-trait EdgeAnnotationCombiner[A, K[_]] {
+trait EdgeAnnotationCombiner[NA, DA] {
 
   /** Lift a single annotation to the result annotation type. */
-  def single(a: A): K[A]
+  def single(a: NA): DA
 
   /** Incorporate another annotation. */
-  def include(k: K[A], a: A): K[A]
+  def include(k: DA, a: NA): DA
 
-  protected[fa] def updated(prev: Option[K[A]], ann: A): K[A] = prev match {
+  protected[fa] def updated(prev: Option[DA], ann: NA): DA = prev match {
     case None => single(ann)
     case Some(prevAnn) => include(prevAnn, ann)
   }
 
   /** Combine two converted annotations. */
-  def combine(k1: K[A], k2: K[A]): K[A]
+  def combine(k1: DA, k2: DA): DA
 
-  protected[fa] def combined(prev: Option[K[A]], curr: K[A]): K[A] =
+  protected[fa] def combined(prev: Option[DA], curr: DA): DA =
     prev match {
       case None => curr
       case Some(prev) => combine(prev, curr)
@@ -86,14 +86,14 @@ object Elements {
   * @group Annotated
   */
 trait EdgeAnnotatedNDFA
-  [S, T, A, K[_], +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]]]
-  (using combo: EdgeAnnotationCombiner[A,K])
+  [S, T, NA, DA, +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,DA]]
+  (using combo: EdgeAnnotationCombiner[NA, DA])
     extends NDFA[S, T, D] {
 
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.
     */
-  def annotation(src: S, label: T, dest: S): Option[A]
+  def annotation(src: S, label: T, dest: S): Option[NA]
 
   /** Check whether there is an annotation on the transition from `src`
     * to `dest` labelled `label`.
@@ -104,7 +104,7 @@ trait EdgeAnnotatedNDFA
   /** Return the annotation (if any) on the e-transition from `src` to
     * `dest`.
     */
-  def annotation(src: S, dest: S): Option[A]
+  def annotation(src: S, dest: S): Option[NA]
 
   /** Check whether there is an annotation on the unlabeled transition
     * from `src` to `dest`.
@@ -115,12 +115,12 @@ trait EdgeAnnotatedNDFA
 
 object EdgeAnnotatedNDFA {
 
-  def newBuilder[S, T, A, K[_]](using combo: EdgeAnnotationCombiner[A,K]):
-      NDFAEdgeAnnotationsBuilder[S, T, A, K,
-        ? <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]],
-        ? <: EdgeAnnotatedNDFA[S,T,A,K,?],
-        Elements.AnnotatedNDFAelement[S,T,A]] =
-    new HashEdgeAnnotatedNDFABuilder[S, T, K, A]
+  def newBuilder[S, T, NA, DA](using combo: EdgeAnnotationCombiner[NA, DA]):
+      NDFAEdgeAnnotationsBuilder[S, T, NA, DA,
+        ? <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,DA],
+        ? <: EdgeAnnotatedNDFA[S,T,NA,DA,?],
+        Elements.AnnotatedNDFAelement[S,T,NA]] =
+    new HashEdgeAnnotatedNDFABuilder[S, T, DA, NA]
 
 }
 
@@ -129,26 +129,25 @@ object EdgeAnnotatedNDFA {
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the
   * automaton
-  * @tparam A The type of annotations on transitions
-  * @tparam K Type function/contructor producing the type of
-  * annotation on DFAs from the type of annotation on NDFAs.
+  * @tparam NA The type of annotations on transitions in the NDFA.
+  * @tparam DA The type of annotations on transitions in the DFA.
   * @tparam D Type of DFA converted from this NDFA
   *
   * @group Annotated
   */
 trait NDFAEdgeAnnotationsBuilder
-  [S, T, A, K[_],
-    +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,K[A]],
-    +N <: EdgeAnnotatedNDFA[S,T,A,K,D],
-    E >: Elements.AnnotatedNDFAelement[S,T,A] <: Matchable
+  [S, T, NA, DA,
+    +D <: IndexedDFA[Set[S],T] & EdgeAnnotatedDFA[Set[S],T,DA],
+    +N <: EdgeAnnotatedNDFA[S,T,NA,DA,D],
+    E >: Elements.AnnotatedNDFAelement[S,T,NA] <: Matchable
   ]
     extends NDFABuilder[S, T, D, N, E]
-    with EdgeAnnotatedNDFA[S, T, A, K, D] {
+    with EdgeAnnotatedNDFA[S, T, NA, DA, D] {
 
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.
     */
-  def setAnnotation(src: S, dest: S, label: T, annotation: A): Unit
+  def setAnnotation(src: S, dest: S, label: T, annotation: NA): Unit
 
   /** Remove any annotation from the transition from `src` to `dest`
     * labelled `label`.
@@ -158,7 +157,7 @@ trait NDFAEdgeAnnotationsBuilder
   /** Set the annotation on the unlabelled transition from `src` to
     * `dest`.
     */
-  def setEAnnotation(src: S, dest: S, annotation: A): Unit
+  def setEAnnotation(src: S, dest: S, annotation: NA): Unit
 
   /** Remove any annotation from the unlabelled transition from `src` to
     * `dest`.
@@ -195,7 +194,7 @@ trait EdgeAnnotatedDFA[S,T,A] extends DFA[S, T] {
   * @group Annotated
   */
 trait DFAEdgeAnnotationsBuilder[
-  S, T, K[_], A, +D <: EdgeAnnotatedDFA[S,T,A],
+  S, T, A, +D <: EdgeAnnotatedDFA[S,T,A],
   E >: Elements.AnnotatedDFAelement[S,T,A] <: Matchable]
     extends DFABuilder[S, T, D, E] with EdgeAnnotatedDFA[S, T, A] {
 

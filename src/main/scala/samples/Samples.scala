@@ -14,7 +14,7 @@ import java.io.File
 import scala.collection.mutable.{Builder,HashMap,HashSet}
 import org.maraist.util.FilesCleaner
 import org.maraist.fa.{DFA, NDFA, NDFABuilder}
-import org.maraist.fa.impl.{HashNDFABuilder}
+import org.maraist.fa.impl.HashNDFABuilder
 import org.maraist.fa.elements.
   {AddState, RemoveState, RemoveFinalState, AddFinalState,
     RemoveTransition, AddTransition}
@@ -27,7 +27,8 @@ import org.maraist.fa.hyperedges.
 import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
 import org.maraist.fa.hyperedges.impl.
   {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
-import org.maraist.fa.annotated.EdgeAnnotatedNDFA
+import org.maraist.fa.annotated.
+  {EdgeAnnotatedNDFA, HashEdgeAnnotatedNDFABuilder}
 import org.maraist.latex.{LaTeXdoc,Sampler}
 
 /**
@@ -204,21 +205,22 @@ object Samples extends Sampler {
     res
   }
 
-  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set, ?] = {
+  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
     import org.maraist.fa.annotated.setCombiner
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set]
+    val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
     // builder += AddInitialState("S")
     builder += AddState("S1")
     // builder += AddState("S2")
     builder.result()
   }
 
-  def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set, ?] = {
+  def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
+    import org.maraist.fa.annotated.setCombiner
 
-    val builder = new HashEdgeAnnotatedNDFABuilder[String, Char, Int, Set]
+    val builder = new HashEdgeAnnotatedNDFABuilder[String, Char, Set[Int], Int]
     // builder += AddInitialState("S")
     builder += AddState("S1")
     // builder += AddState("S2")

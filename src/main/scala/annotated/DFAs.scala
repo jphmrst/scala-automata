@@ -76,7 +76,7 @@ abstract class AbstractHashEdgeAnnotatedDFABuilder
     K >: Elements.AnnotatedDFAelement[S,T,A] <: Matchable
   ](initialState: S)
     extends AbstractHashDFABuilder[S,T,D,K](initialState)
-    with EdgeAnnotatedDFA[S,T,A] {
+    with DFAEdgeAnnotationsBuilder[S,T,A,D,K] {
 
   val edgeAnnotations: HashMap[S, HashMap[T, A]] =
     new HashMap[S, HashMap[T, A]]
