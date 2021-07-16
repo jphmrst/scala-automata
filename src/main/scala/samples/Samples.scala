@@ -216,6 +216,15 @@ object Samples extends Sampler {
     builder.result()
   }
 
+  def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set, ?] = {
+
+    val builder = new HashEdgeAnnotatedNDFABuilder[String, Char, Int, Set]
+    // builder += AddInitialState("S")
+    builder += AddState("S1")
+    // builder += AddState("S2")
+    builder.result()
+  }
+
   def addSamples(guide:LaTeXdoc):FilesCleaner = {
     val cleaner = newCleaner()
     section(guide,"Package FA")
