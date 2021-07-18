@@ -18,7 +18,7 @@ import org.maraist.fa.impl.HashNDFABuilder
 import org.maraist.fa.elements.
   {AddState, RemoveState, RemoveFinalState, AddFinalState,
     RemoveTransition, AddTransition}
-import org.maraist.fa.DFA.{DFAelements}
+import org.maraist.fa.DFA.{DFAelements, IndexedDFA}
 import org.maraist.fa.pfa.PFABuilder
 import org.maraist.fa.pfa.impl.HashPFABuilder
 import org.maraist.fa.hyperedges.
@@ -28,7 +28,8 @@ import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
 import org.maraist.fa.hyperedges.impl.
   {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
 import org.maraist.fa.annotated.
-  {EdgeAnnotatedNDFA, HashEdgeAnnotatedNDFABuilder}
+  {Elements, EdgeAnnotatedNDFA, EdgeAnnotatedDFA,
+    NDFAEdgeAnnotationsBuilder, HashEdgeAnnotatedNDFABuilder}
 import org.maraist.latex.{LaTeXdoc,Sampler}
 
 /**
@@ -210,10 +211,19 @@ object Samples extends Sampler {
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
-    // builder += AddInitialState("S")
+    val builder: NDFAEdgeAnnotationsBuilder[String, Char, Int, Set[Int],
+      ?,
+      org.maraist.fa.annotated.EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?],
+      Elements.AnnotatedNDFAelement[String,Char,Int]
+  ] =
+      EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
+    builder += AddInitialState("S")
     builder += AddState("S1")
-    // builder += AddState("S2")
+    builder += AddState("S2a")
+    builder += AddState("S2b")
+    builder += AddFinalState("SF")
+    builder += AddTransition("S", 'a', "S1")
+    // TODO --- not compiling // builder += SetAnnotation("S", 'a', "S1", 4)
     builder.result()
   }
 
