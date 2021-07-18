@@ -47,6 +47,7 @@ ThisBuild / versionScheme := Some("semver-spec")
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.9"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
 libraryDependencies += "org.maraist" %% "scala-latex" % "1.1.1"
+unmanagedSources / excludeFilter := ".#*"
 Global / excludeLintKeys ++= Set(scalacOptions)
 Compile / doc / scalacOptions ++= Seq(
   "-groups",
