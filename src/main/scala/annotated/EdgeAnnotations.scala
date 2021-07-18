@@ -52,8 +52,8 @@ object Elements {
   // Use:
   // import org.maraist.fa.elements.*
   // import org.maraist.fa.annotated.Elements.*
-  case class SetAnnotation[S,T,A](src: S, dest: S, label: T, annotation: A)
-  case class RemoveAnnotation[S,T,A](src: S, dest: S, label: T)
+  case class SetAnnotation[S,T,A](src: S, label: T, dest: S, annotation: A)
+  case class RemoveAnnotation[S,T,A](src: S, label: T, dest: S)
 
   type LabelledEdgeAnnotationElements[S,T,A] =
     SetAnnotation[S,T,A] | RemoveAnnotation[S,T,A]
@@ -147,12 +147,12 @@ trait NDFAEdgeAnnotationsBuilder
   /** Set the annotation on the transition from `src` to `dest` labelled
     * `label`.
     */
-  def setAnnotation(src: S, dest: S, label: T, annotation: NA): Unit
+  def setAnnotation(src: S, label: T, dest: S, annotation: NA): Unit
 
   /** Remove any annotation from the transition from `src` to `dest`
     * labelled `label`.
     */
-  def removeAnnotation(src: S, dest: S, label: T): Unit
+  def removeAnnotation(src: S, label: T, dest: S): Unit
 
   /** Set the annotation on the unlabelled transition from `src` to
     * `dest`.

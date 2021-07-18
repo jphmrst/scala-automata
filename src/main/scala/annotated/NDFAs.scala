@@ -293,7 +293,7 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
   def annotation(src: S, label: T, dest: S): Option[NA] =
     labelledEdgeAnnotations.get(src).map(_(label)).map(_(dest))
 
-  def setAnnotation(src: S, dest: S, label: T, annotation: NA): Unit =
+  def setAnnotation(src: S, label: T, dest: S, annotation: NA): Unit =
     labelledEdgeAnnotations.get(src) match {
       case None => {
         labelledEdgeAnnotations(src) =
@@ -305,7 +305,7 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
       }
     }
 
-  def removeAnnotation(src: S, dest: S, label: T): Unit =
+  def removeAnnotation(src: S, label: T, dest: S): Unit =
     labelledEdgeAnnotations.get(src) match {
       case None => { }
       case Some(submap1) => submap1.get(label) match {
@@ -347,10 +347,10 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
 
   import Elements.*
   override protected def addBuilderElement(elem: E): Unit = elem match {
-    case SetAnnotation(src, dest, label, annotation) =>
-      setAnnotation(src, dest, label, annotation)
-    case RemoveAnnotation(src, dest, label) =>
-      removeAnnotation(src, dest, label)
+    case SetAnnotation(src, label, dest, annotation) =>
+      setAnnotation(src, label, dest, annotation)
+    case RemoveAnnotation(src, label, dest) =>
+      removeAnnotation(src, label, dest)
     case SetEAnnotation(src, dest, annotation) =>
       setEAnnotation(src, dest, annotation)
     case RemoveEAnnotation(src, dest) => removeEAnnotation(src, dest)
