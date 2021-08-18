@@ -162,10 +162,10 @@ abstract class AbstractHashEdgeAnnotatedDFABuilder
     */
   override protected def addBuilderElement(builder: K): Unit =
     builder match {
-      case Elements.SetAnnotation(src, label, _, ann) =>
-        setAnnotation(src, label, ann)
-      case Elements.RemoveAnnotation(src, label, _) =>
-        removeAnnotation(src, label)
+      case Elements.SetAnnotation(src, label, _, ann):
+          Elements.SetAnnotation[S, T, A] => setAnnotation(src, label, ann)
+      case Elements.RemoveAnnotation(src, label, _):
+          Elements.RemoveAnnotation[S, T, A] => removeAnnotation(src, label)
       case e: DFAelements[S, T] => super.addBuilderElement(builder)
     }
 }

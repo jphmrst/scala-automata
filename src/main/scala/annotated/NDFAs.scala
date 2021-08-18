@@ -347,13 +347,14 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
 
   import Elements.*
   override protected def addBuilderElement(elem: E): Unit = elem match {
-    case SetAnnotation(src, label, dest, annotation) =>
+    case SetAnnotation(src, label, dest, annotation): SetAnnotation[S,T,NA] =>
       setAnnotation(src, label, dest, annotation)
-    case RemoveAnnotation(src, label, dest) =>
+    case RemoveAnnotation(src, label, dest): RemoveAnnotation[S,T,NA] =>
       removeAnnotation(src, label, dest)
-    case SetEAnnotation(src, dest, annotation) =>
+    case SetEAnnotation(src, dest, annotation): SetEAnnotation[S, NA] =>
       setEAnnotation(src, dest, annotation)
-    case RemoveEAnnotation(src, dest) => removeEAnnotation(src, dest)
+    case RemoveEAnnotation(src, dest): RemoveEAnnotation[S, NA] =>
+      removeEAnnotation(src, dest)
     case e: NDFAelements[S,T] => super.addBuilderElement(e)
   }
 
