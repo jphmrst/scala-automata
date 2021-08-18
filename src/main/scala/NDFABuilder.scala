@@ -23,7 +23,7 @@ trait NDFABuilder[
   K >: NDFA.NDFAelements[S,T] <: Matchable
 ]
     extends NDFA[S,T,ThisDFA]
-    with Builder[NDFA.NDFAelements[S,T], ThisNDFA] {
+    with Builder[K, ThisNDFA] {
   /** Adds a state to the automaton */
   def addState(s:S):Unit
   /** Removes a state from the automaton */
