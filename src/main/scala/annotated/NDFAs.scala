@@ -11,6 +11,7 @@
 package org.maraist.fa.annotated
 import scala.collection.immutable.IndexedSeq
 import scala.collection.mutable.{HashMap, HashSet}
+import org.maraist.graphviz.{NodeLabeling,TransitionLabeling}
 import org.maraist.util.IndexSetsTracker
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.NDFAelements
@@ -66,6 +67,25 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     */
   def annotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
+
+  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    print("- " + src + " -[ " + label)
+    annotation(src, label, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" ]-> " + dest)
+    println()
+  }
+
+  override protected def dumpTransition(src: S, dest: S): Unit = {
+    println("- " + src + " -{ ")
+    annotation(src, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" }-> " + dest)
+  }
 
   protected def assembleDFA(
     dfaStates:IndexedSeq[Set[S]],
@@ -234,6 +254,13 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
       dfaTransitions, tracker, appearsIn, edgeAnnotations
     )
   }
+
+  override protected def
+    getArrowLabel(t: T, s0: S, s1: S, trLabeling: TransitionLabeling[T]):
+      String = annotation(s0, t, s1) match {
+    case None => trLabeling.getLabel(t)
+    case Some(a) => trLabeling.getLabel(t) + " [" + a.toString() + "]"
+  }
 }
 
 class EdgeAnnotatedArrayNDFA[S, T, DA, NA](
@@ -386,6 +413,25 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
       N
 
   def toDFA: D = toNDFA.toDFA
+
+  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    print("- " + src + " -[ " + label)
+    annotation(src, label, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" ]-> " + dest)
+    println()
+  }
+
+  override protected def dumpTransition(src: S, dest: S): Unit = {
+    println("- " + src + " -{ ")
+    annotation(src, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" }-> " + dest)
+  }
 }
 
 class HashEdgeAnnotatedNDFABuilder[S, T, DA, NA]

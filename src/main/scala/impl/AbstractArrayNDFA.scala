@@ -215,11 +215,13 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
     * @param appearsIn Maps from the index of an NFA state to a set of
     * indices of the DFA states in which that NFA state is a member.
     */
-  protected def assembleDFA(dfaStates: IndexedSeq[Set[S]],
-                            initialStateIdx: Int,
-                            dfaFinals: Set[Int],
-                            transitionsSeq: IndexedSeq[T],
-                            dfaTransitions: Array[Array[Int]],
-                            tracker: IndexSetsTracker,
-                            appearsIn: Array[Set[Int]]): ThisDFA
+  protected def assembleDFA(
+    dfaStates: IndexedSeq[Set[S]],
+    initialStateIdx: Int,
+    dfaFinals: Set[Int],
+    transitionsSeq: IndexedSeq[T],
+    dfaTransitions: Array[Array[Int]],
+    tracker: IndexSetsTracker,
+    appearsIn: Array[Set[Int]]
+  ): ThisDFA
 }

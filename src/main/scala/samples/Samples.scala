@@ -211,29 +211,35 @@ object Samples extends Sampler {
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder: NDFAEdgeAnnotationsBuilder[String, Char, Int, Set[Int],
-      ?,
-      org.maraist.fa.annotated.EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?],
+    val builder: NDFAEdgeAnnotationsBuilder[
+      String, Char, Int, Set[Int], ?,
+      org.maraist.fa.annotated.EdgeAnnotatedNDFA
+        [String, Char, Int, Set[Int], ?],
       Elements.AnnotatedNDFAelement[String,Char,Int]
-  ] =
-      EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
+    ] = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2a")
     builder += AddState("S2b")
     builder += AddFinalState("SF")
     builder += AddTransition("S", 'a', "S1")
-    // TODO --- not compiling // builder += SetAnnotation("S", 'a', "S1", 4)
-    builder.result()
+    builder += SetAnnotation("S", 'a', "S1", 4)
+    builder.dump()
+    println("----------")
+    val res = builder.result()
+    res.dump()
+    res
   }
 
   def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
     import org.maraist.fa.annotated.setCombiner
+    import org.maraist.fa.elements.*
+    import org.maraist.fa.annotated.Elements.*
 
     val builder = new HashEdgeAnnotatedNDFABuilder[String, Char, Set[Int], Int]
-    // builder += AddInitialState("S")
+    builder += AddInitialState("S")
     builder += AddState("S1")
-    // builder += AddState("S2")
+    builder += AddState("S2")
     builder.result()
   }
 
@@ -257,7 +263,8 @@ object Samples extends Sampler {
     graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
 
     // // Rendering traverser for annotated automata not yet implemented.
-    // graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "2in")
+    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "2in")
+    graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
 
     cleaner
   }

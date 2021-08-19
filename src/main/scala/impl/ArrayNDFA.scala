@@ -36,34 +36,6 @@ class ArrayNDFA[S,T](
 ) extends AbstractArrayNDFA[S,T,ArrayDFA[Set[S],T]](stateSeq, initialStateSet,
                                          finalStateSet, transitionsSeq,
                                          labels, epsilons) {
-  // for(i <- 0 until epsilons.length)  println("*** ["+i+"] "+epsilons(i))
-  def dump():Unit = {
-    println("stateSeq: " + stateSeq)
-    println("transitionsSeq: " + transitionsSeq)
-    println("initialStateSet: " + initialStateSet)
-    println("finalStateSet: " + finalStateSet)
-    println("Raw labels array: [")
-    for(i <- 0 until labels.length) {
-      val row = labels(i)
-      var sep = "  ["
-      for(j <- 0 until row.length) {
-        print(sep + row(j))
-        sep = ", "
-      }
-      println("], ")
-    }
-    println("]")
-    println("Transitions by method: [")
-    for(from <- stateSeq) {
-      var sep = "  [ "
-      for(trans <- transitionsSeq) {
-        print(sep + transitions(from, trans))
-        sep = ", "
-      }
-      println(" ], ")
-    }
-    println("]")
-  }
 
   protected def assembleDFA(dfaStates:IndexedSeq[Set[S]],
                             initialStateIdx:Int,
