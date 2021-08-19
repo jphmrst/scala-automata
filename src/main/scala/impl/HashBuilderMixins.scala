@@ -149,7 +149,7 @@ type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
 trait InitialStateSetTrait[S,T] {
   this: StateAdder[S] =>
 
-  private val initialStatesSet = new HashSet[S]
+  protected val initialStatesSet = new HashSet[S]
   def addInitialState(s:S):Unit = {
     addState(s)
     initialStatesSet += s
@@ -166,8 +166,8 @@ trait InitialStateSetTrait[S,T] {
   protected def dispatchInitialStateSetTraitElements
     (elem: InitialStateSetTraitElements[S, T]):
       Unit = elem match {
-    case AddInitialState(s) => AddInitialState(s)
-    case RemoveInitialState(s) => RemoveInitialState(s)
+    case AddInitialState(s) => addInitialState(s)
+    case RemoveInitialState(s) => removeInitialState(s)
   }
 }
 

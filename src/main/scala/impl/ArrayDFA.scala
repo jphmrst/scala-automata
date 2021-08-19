@@ -30,7 +30,7 @@ class ArrayDFA[S,T](stateSeq: IndexedSeq[S],
 extends AbstractArrayDFA[S,T](stateSeq, initialStateIndex, finalStateIndices,
                               transitionsSeq, transitionsMatrix) {
   type Traverser = DFAtraverser[S,T]
-  protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
+  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
     new DotTraverseDFA[S,T](graphvizOptions, sb, nodeLabeling,
                             transitionLabeling, stateList, getInitialState)
 }

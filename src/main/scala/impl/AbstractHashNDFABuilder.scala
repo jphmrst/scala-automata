@@ -64,8 +64,6 @@ abstract class AbstractHashNDFABuilder
   def result(): ThisNDFA = {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
-    val initials: HashSet[Int] = new HashSet[Int]
-    for(s <- getInitialStates) initials += statesSeq.indexOf(s)
     val finals: HashSet[Int] = new HashSet[Int]
     for(s <- finalStatesSet) finals += statesSeq.indexOf(s)
     val empty = new HashSet[Int]
@@ -91,7 +89,10 @@ abstract class AbstractHashNDFABuilder
 
     // println(epsilonsArray)
     assembleNDFA(
-      statesSeq, initials.toSet, finals.toSet, transitionsSeq, labelsArray,
+      statesSeq,
+      initialStatesSet.map(statesSeq.indexOf(_)).toSet,
+      finals.toSet,
+      transitionsSeq, labelsArray,
       epsilonsArray)
   }
 

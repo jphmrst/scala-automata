@@ -63,7 +63,11 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   transitionsSeq, transitionsMatrix, edgeAnnotations
 ) {
   type Traverser = org.maraist.fa.DFA.DFAtraverser[S,T]
-  protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) = ???
+  import org.maraist.fa.impl.DotTraverseDFA
+  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
+    new DotTraverseDFA[S,T](graphvizOptions, sb, nodeLabeling,
+                            transitionLabeling, stateList, getInitialState)
+
 }
 
 // -----------------------------------------------------------------

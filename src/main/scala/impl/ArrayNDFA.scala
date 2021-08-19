@@ -33,9 +33,9 @@ class ArrayNDFA[S,T](
   transitionsSeq: IndexedSeq[T],
   labels: Array[? <: Array[? <: Set[Int]]],
   epsilons: Array[? <: Set[Int]]
-) extends AbstractArrayNDFA[S,T,ArrayDFA[Set[S],T]](stateSeq, initialStateSet,
-                                         finalStateSet, transitionsSeq,
-                                         labels, epsilons) {
+) extends AbstractArrayNDFA[S,T,ArrayDFA[Set[S],T]](
+  stateSeq, initialStateSet, finalStateSet, transitionsSeq, labels, epsilons
+) {
 
   protected def assembleDFA(dfaStates:IndexedSeq[Set[S]],
                             initialStateIdx:Int,

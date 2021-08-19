@@ -65,8 +65,10 @@ trait NDFABuilder[
     this
   }
 
+  override protected def dumpHeader(): Unit =
+    println("---------- NDFABuilder dump")
+
   /** Returns the (possibly immutable) [[org.maraist.fa.NDFA NDFA]]
     * described to this builder */
   def toNDFA: ThisNDFA
 }
-

@@ -135,9 +135,14 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
   }
 
   def dump():Unit = {
+    dumpHeader()
     dumpStates()
     dumpTransitions()
+    dumpFooter()
   }
+
+  protected def dumpHeader(): Unit = println("---------- NDFA dump")
+  protected def dumpFooter(): Unit = println("----------")
 
   protected def dumpStates(): Unit = {
     println("States:")

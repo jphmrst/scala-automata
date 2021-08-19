@@ -43,6 +43,7 @@ trait DFA[S,T]
 
   /** Check whether the automaton accepts the given sequence */
   def accepts(ts:Seq[T]): Boolean
+
   override def toString():String = {
     val bld:StringBuilder = new StringBuilder
     for (st <- states) {

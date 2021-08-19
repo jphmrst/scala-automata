@@ -48,7 +48,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     * `dest` labelled `label`.
     */
   def annotation(src: S, label: T, dest: S): Option[NA] =
-    annotationIndex(indexOf(src), labelIndex(label), indexOf(src))
+    annotationIndex(indexOf(src), labelIndex(label), indexOf(dest))
 
   /** Return the annotation (if any) on the transition from the state at
     * index `srcIdx` with the label with index `labelIdx`.
@@ -60,7 +60,7 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
     * `src` to `dest`.
     */
   def annotation(src: S, dest: S): Option[NA] =
-    annotationIndex(indexOf(src), indexOf(src))
+    annotationIndex(indexOf(src), indexOf(dest))
 
   /** Return the annotation (if any) on the unlabelled transition from
     * the state at index `srcIdx`.
@@ -233,9 +233,9 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
                       case Some(fromUnlab) =>
                         combiner.include(fromUnlab, ann)
 
-                        // Otherwise the new value is from the present
-                        // annotation alone.
-                        combiner.single(ann)
+                      // Otherwise the new value is from the present
+                      // annotation alone.
+                      case None => combiner.single(ann)
                     }
                   }
 
@@ -281,6 +281,25 @@ extends AbstractEdgeAnnotatedArrayNDFA
     labelledEdgeAnnotations, unlabelledEdgeAnnotations
   ) {
 
+  // println("** " + initialStateSet)
+
+  // for(src <- stateSeq)
+  //   for(label <- transitionsSeq)
+  //     for(dest <- stateSeq)
+  //       labelledEdgeAnnotations(
+  //         stateSeq.indexOf(src)
+  //       )(
+  //         transitionsSeq.indexOf(label)
+  //       )(
+  //         stateSeq.indexOf(dest)
+  //       ) match {
+  //         case None => {}
+  //         case Some(ann) => printf(
+  //           "** [%s][%s][%s] = %s\n",
+  //           src, label, dest, ann
+  //         )
+  //       }
+
   // TODO
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) = ???
 
@@ -309,7 +328,8 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
     +D <: AbstractEdgeAnnotatedArrayDFA[Set[S],T,DA],
     +N <: AbstractEdgeAnnotatedArrayNDFA[S,T,D,DA,NA],
     E >: Elements.AnnotatedNDFAelement[S,T,NA] <: Matchable]
-  (using combiner: EdgeAnnotationCombiner[NA, DA])
+(using combiner: EdgeAnnotationCombiner[NA, DA])
+
     extends AbstractHashNDFABuilder[S,T,D,N,E]
     with NDFAEdgeAnnotationsBuilder[S,T,NA,DA,D,N,E] {
 
@@ -385,35 +405,6 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
     case e: NDFAelements[S,T] => super.addBuilderElement(e)
   }
 
-  protected override def assembleNDFA(
-    statesSeq: IndexedSeq[S], initials: Set[Int], finals: Set[Int],
-    transitionsSeq: IndexedSeq[T],
-    labelsArray: Array[Array[HashSet[Int]]],
-    epsilonsArray: Array[HashSet[Int]]):
-      N =
-    assembleNDFA(
-      statesSeq, initials, finals, transitionsSeq,
-      labelsArray.map(_.map(_.toSet)),
-      epsilonsArray.map(_.toSet),
-      Array.tabulate(statesSeq.size, transitionsSeq.size, statesSeq.size)(
-        (s1, t, s2) => labelledEdgeAnnotations.get(statesSeq(s1))
-          .flatMap(_.get(transitionsSeq(t)))
-          .flatMap(_.get(statesSeq(s2)))),
-      Array.tabulate(statesSeq.size, statesSeq.size)(
-        (s1, s2) => unlabelledEdgeAnnotations.get(statesSeq(s1))
-          .flatMap(_.get(statesSeq(s2)))))
-
-  protected def assembleNDFA(
-    statesSeq: IndexedSeq[S], initials: Set[Int], finals: Set[Int],
-    transitionsSeq: IndexedSeq[T],
-    labelsArray: Array[Array[Set[Int]]],
-    epsilonsArray: Array[Set[Int]],
-    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
-    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
-      N
-
-  def toDFA: D = toNDFA.toDFA
-
   override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
     print("- " + src + " -[ " + label)
     annotation(src, label, dest) match {
@@ -432,6 +423,37 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
     }
     print(" }-> " + dest)
   }
+
+  protected override def assembleNDFA(
+    statesSeq: IndexedSeq[S], initials: Set[Int], finals: Set[Int],
+    transitionsSeq: IndexedSeq[T],
+    labelsArray: Array[Array[HashSet[Int]]],
+    epsilonsArray: Array[HashSet[Int]]):
+      N = {
+    // println("*** " + initials)
+    assembleNDFA(
+      statesSeq, initials, finals, transitionsSeq,
+      labelsArray.map(_.map(_.toSet)),
+      epsilonsArray.map(_.toSet),
+      Array.tabulate(statesSeq.size, transitionsSeq.size, statesSeq.size)(
+        (s1, t, s2) => labelledEdgeAnnotations.get(statesSeq(s1))
+          .flatMap(_.get(transitionsSeq(t)))
+          .flatMap(_.get(statesSeq(s2)))),
+      Array.tabulate(statesSeq.size, statesSeq.size)(
+        (s1, s2) => unlabelledEdgeAnnotations.get(statesSeq(s1))
+          .flatMap(_.get(statesSeq(s2)))))
+  }
+
+  protected def assembleNDFA(
+    statesSeq: IndexedSeq[S], initials: Set[Int], finals: Set[Int],
+    transitionsSeq: IndexedSeq[T],
+    labelsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
+      N
+
+  def toDFA: D = toNDFA.toDFA
 }
 
 class HashEdgeAnnotatedNDFABuilder[S, T, DA, NA]

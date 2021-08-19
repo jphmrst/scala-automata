@@ -206,7 +206,7 @@ object Samples extends Sampler {
     res
   }
 
-  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
+  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
     import org.maraist.fa.annotated.setCombiner
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
@@ -221,15 +221,30 @@ object Samples extends Sampler {
     builder += AddState("S1")
     builder += AddState("S2a")
     builder += AddState("S2b")
+    builder += AddState("S2c")
     builder += AddFinalState("SF")
     builder += AddTransition("S", 'a', "S1")
     builder += SetAnnotation("S", 'a', "S1", 4)
-    builder.dump()
-    println("----------")
+    builder += AddTransition("S1", 'b', "S2a")
+    builder += SetAnnotation("S1", 'b', "S2a", 10)
+    builder += AddTransition("S1", 'b', "S2b")
+    builder += SetAnnotation("S1", 'b', "S2b", 20)
+    builder += AddTransition("S2a", 'c', "SF")
+    builder += SetAnnotation("S2a", 'c', "SF", 5)
+    builder += AddTransition("S2b", 'd', "SF")
+    builder += SetAnnotation("S2b", 'd', "SF", 5)
+    builder += AddETransition("S2b", "S2c")
+    builder += SetEAnnotation("S2b", "S2c", 15)
+    builder += AddTransition("S2c", 'd', "S2b")
+    builder += SetAnnotation("S2c", 'd', "S2b", 25)
+    // builder.dump()
     val res = builder.result()
-    res.dump()
+    // res.dump()
     res
   }
+
+  def ann01_dfa: EdgeAnnotatedDFA[Set[String], Char, Set[Int]] =
+    ann01_nfa.toDFA
 
   def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
     import org.maraist.fa.annotated.setCombiner
@@ -243,27 +258,35 @@ object Samples extends Sampler {
     builder.result()
   }
 
-  def addSamples(guide:LaTeXdoc):FilesCleaner = {
+  def addSamples(guide: LaTeXdoc): FilesCleaner = {
     val cleaner = newCleaner()
     section(guide,"Package FA")
 
     // This one uses the Builder API, so loses the relationship to Graphable
     // graphable(guide,cleaner,dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
 
-    graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "1.75in")
-    graphable(guide,cleaner,ndfa2B,   "ndfa2B",   "ndfa2B",    "1.75in")
-    graphable(guide,cleaner,ndfa2,    "ndfa2",    "ndfa2",     "1.75in")
-    graphable(guide,cleaner,ndfa2dfa, "ndfa2dfa", "ndfa2dfa",  "3in")
-    graphable(guide,cleaner,hdfa3B,   "hdfa3B",   "hdfa3B",    "3in")
-    graphable(guide,cleaner,hdfa3,    "hdfa3",    "hdfa3",     "3in")
-    graphable(guide,cleaner,hndfa4B,  "hndfa4B",  "hndfa4B",   "3in")
+    graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,ndfa2B,   "ndfa2B",   "ndfa2B",    "4in")
+    graphable(guide,cleaner,ndfa2,    "ndfa2",    "ndfa2",     "4in")
+    graphable(guide,cleaner,ndfa2dfa, "ndfa2dfa", "ndfa2dfa",  "5in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,hdfa3B,   "hdfa3B",   "hdfa3B",    "5in")
+    graphable(guide,cleaner,hdfa3,    "hdfa3",    "hdfa3",     "5in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,hndfa4B,  "hndfa4B",  "hndfa4B",   "5in")
     graphable(guide,cleaner,hndfa4,   "hndfa4",   "hndfa4",    "3in")
     graphable(guide,cleaner,hndfa4dfa,"hndfa4dfa","hndfa4dfa", "3in")
+    guide ++= "\\clearpage\n"
     graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
     graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
 
-    // // Rendering traverser for annotated automata not yet implemented.
-    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "2in")
+    // // Rendering traverser for annotated automata not yet impleMented.
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
+    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "7in")
+
+    guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
 
     cleaner
@@ -271,13 +294,14 @@ object Samples extends Sampler {
 
   @main def printSamples = {
     val guide = new LaTeXdoc("samples")
+    guide.addPackage("geometry", "margin=1in")
     guide.addPackage("times")
     guide.addPackage("graphicx")
     guide.addPackage("multicol")
     guide.open()
-    guide ++= "\\begin{multicols}{2}"
+    // guide ++= "\\begin{multicols}{2}"
     val cleanup = addSamples(guide)
-    guide ++= "\\end{multicols}"
+    // guide ++= "\\end{multicols}"
     guide.close()
     cleanup.clean
   }
