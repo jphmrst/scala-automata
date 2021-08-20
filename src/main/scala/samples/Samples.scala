@@ -243,8 +243,11 @@ object Samples extends Sampler {
     res
   }
 
-  def ann01_dfa: EdgeAnnotatedDFA[Set[String], Char, Set[Int]] =
-    ann01_nfa.toDFA
+  def ann01_dfa: EdgeAnnotatedDFA[Set[String], Char, Set[Int]] = {
+    val res = ann01_nfa.toDFA
+    // res.dump()
+    res
+  }
 
   def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
     import org.maraist.fa.annotated.setCombiner

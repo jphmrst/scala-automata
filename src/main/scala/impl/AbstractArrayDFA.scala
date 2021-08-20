@@ -42,33 +42,6 @@ abstract class AbstractArrayDFA[S,T](
   //  println()
   //}
 
-  def dump():Unit = {
-    println("stateSeq: " + stateSeq)
-    println("initialStateIndex: " + initialStateIndex)
-    println("finalStateIndices: " + finalStateIndices)
-    println("transitionsSeq: " + transitionsSeq)
-    println("Transitions by method: " + labels)
-    println("Raw transitionsMatrix array: [")
-    for(row <- transitionsMatrix) {
-      var sep = "  ["
-      for(entry <- row) {
-        print(sep + Integer.toString(entry))
-        sep = ", "
-      }
-      println("], ")
-    }
-    println("]")
-    println("Transitions by method: [")
-    for(from <- stateSeq) {
-      var sep = "  [ "
-      for(trans <- transitionsSeq) {
-        print(sep + transition(from, trans))
-        sep = ", "
-      }
-      println(" ], ")
-    }
-    println("]")
-  }
   def size: Int = stateSeq.length
   def states: IndexedSeq[S] = stateSeq
   def labels: IndexedSeq[T] = transitionsSeq

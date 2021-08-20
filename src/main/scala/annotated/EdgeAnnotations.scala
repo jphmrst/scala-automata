@@ -111,6 +111,24 @@ trait EdgeAnnotatedNDFA
     */
   def annotated(src: S, dest: S): Boolean =
     annotation(src, dest).isDefined
+  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    print("- " + src + " -[ " + label)
+    annotation(src, label, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" ]-> " + dest)
+    println()
+  }
+
+  override protected def dumpTransition(src: S, dest: S): Unit = {
+    println("- " + src + " -{ ")
+    annotation(src, dest) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" }-> " + dest)
+  }
 }
 
 object EdgeAnnotatedNDFA {
@@ -180,6 +198,16 @@ trait EdgeAnnotatedDFA[S,T,A] extends DFA[S, T] {
     * `dest` labelled `label`.
     */
   def annotation(src: S, label: T): Option[A]
+
+  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    print("- " + src + " -[ " + label)
+    annotation(src, label) match {
+      case None => { print(" (unann.)") }
+      case Some(a) => { print(" : " + a) }
+    }
+    print(" ]-> " + dest)
+    println()
+  }
 }
 
 /** Methods to be implemented by an edge-annotated DFA builder.

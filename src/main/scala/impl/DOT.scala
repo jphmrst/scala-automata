@@ -60,10 +60,14 @@ private[fa] trait DotTraverseMixin[S,T] {
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= trLabeling.getLabel(t)
+    sb ++= getArrowLabel(si0, s0, ti0, t, si1, s1)
     sb ++= "> ];\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
+
+  protected def getArrowLabel(
+    si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S
+  ): String = trLabeling.getLabel(t)
 }
 
 /**
@@ -78,11 +82,12 @@ private[fa] trait DOTQuietDFAMethods[S,T] {
 /**
   * @group graphviz
   */
-private[fa] class DotTraverseDFA[S,T](val graphvizOptions:GraphvizOptions,
-                                      val sb:StringBuilder,
-                                      val nodeLabeling:NodeLabeling[S],
-                                      val trLabeling:TransitionLabeling[T],
-                                      val stateList:IndexedSeq[S],
-                                      val initialState:S)
-extends DFAtraverser[S,T]
-with DotTraverseMixin[S,T] with DOTQuietDFAMethods[S,T]
+private[fa] open class DotTraverseDFA[S,T](
+  val graphvizOptions:GraphvizOptions,
+  val sb:StringBuilder,
+  val nodeLabeling:NodeLabeling[S],
+  val trLabeling:TransitionLabeling[T],
+  val stateList:IndexedSeq[S],
+  val initialState:S)
+    extends DFAtraverser[S,T]
+    with DotTraverseMixin[S,T] with DOTQuietDFAMethods[S,T]

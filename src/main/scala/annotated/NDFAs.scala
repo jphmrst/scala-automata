@@ -405,25 +405,6 @@ abstract class AbstractHashEdgeAnnotatedNDFABuilder
     case e: NDFAelements[S,T] => super.addBuilderElement(e)
   }
 
-  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
-    print("- " + src + " -[ " + label)
-    annotation(src, label, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
-    }
-    print(" ]-> " + dest)
-    println()
-  }
-
-  override protected def dumpTransition(src: S, dest: S): Unit = {
-    println("- " + src + " -{ ")
-    annotation(src, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
-    }
-    print(" }-> " + dest)
-  }
-
   protected override def assembleNDFA(
     statesSeq: IndexedSeq[S], initials: Set[Int], finals: Set[Int],
     transitionsSeq: IndexedSeq[T],

@@ -125,6 +125,55 @@ trait DFA[S,T]
     internalsToDOT(stateList,sb,nodeLabeling,transitionLabeling)
     sb.toString()
   }
+
+  // ---------------------------------------------------------------
+  // Dumping out the DFA as text
+
+  def dump(): Unit = {
+    dumpHeader()
+    dumpStates()
+    dumpTransitions()
+    dumpOther()
+    dumpFooter()
+  }
+
+  protected def dumpHeader(): Unit = println("---------- DFA dump")
+  protected def dumpFooter(): Unit = println("----------")
+
+  protected def dumpStates(): Unit = {
+    println("States:")
+    for(state <- states) {
+      dumpState(state)
+    }
+  }
+
+  protected def dumpState(s: S): Unit = {
+    print("- " + s)
+    if (isInitialState(s) || isFinalState(s)) print(" (")
+    if (isInitialState(s)) print("initial")
+    if (isInitialState(s) && isFinalState(s)) print(", ")
+    if (isFinalState(s)) print("final")
+    if (isInitialState(s) || isFinalState(s)) print(")")
+    println()
+  }
+
+  protected def dumpTransitions(): Unit = {
+    println("Transitions:")
+    for(src <- states) {
+      for(label <- labels) {
+        transition(src, label) match {
+          case None => { }
+          case Some(dest) => dumpTransition(src, label, dest)
+        }
+      }
+    }
+  }
+
+  protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    println("- " + src + " -[ " + label + " ]-> " + dest)
+  }
+
+  protected def dumpOther(): Unit = { }
 }
 
 /**
