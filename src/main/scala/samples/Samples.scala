@@ -287,7 +287,7 @@ object Samples extends Sampler {
     // // Rendering traverser for annotated automata not yet impleMented.
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
-    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "7in")
+    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
 
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")

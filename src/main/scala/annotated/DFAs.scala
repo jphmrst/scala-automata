@@ -71,15 +71,13 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
     ) {
       protected override def getArrowLabel(
         si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S
-      ): String = annotation(s0, t) match {
-        case None => super.getArrowLabel(si0, s0, ti0, t, si1, s1)
-        case Some(ann) => (
-          super.getArrowLabel(si0, s0, ti0, t, si1, s1)
-            + " : "
-            + ann.toString()
-        )
-      }
-
+      ): String = (
+        super.getArrowLabel(si0, s0, ti0, t, si1, s1)
+          + (annotation(s0, t) match {
+            case None => " (unann.)"
+            case Some(ann) => " [" + ann.toString() + "]"
+          })
+      )
     }
 }
 
