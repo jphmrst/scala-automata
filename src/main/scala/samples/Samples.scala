@@ -71,7 +71,7 @@ object Samples extends Sampler {
   /**
    * Return a fresh copy of a sample NDFA builder
    */
-  def ndfa2B: NDFABuilder[String,Int,?,?,?] = {
+  def ndfa2B = {
     val builder = new HashNDFABuilder[String,Int]()
     builder.addInitialState("A")
     builder.addState("B")
@@ -206,17 +206,17 @@ object Samples extends Sampler {
     res
   }
 
-  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
+  def ann01_builder: NDFAEdgeAnnotationsBuilder[
+    String, Char, Int, Set[Int],
+    ? <: IndexedDFA[Set[String],Char] & EdgeAnnotatedDFA[Set[String],Char,Set[Int]],
+    ? <: EdgeAnnotatedNDFA[String,Char,Int,Set[Int],?],
+    Elements.AnnotatedNDFAelement[String,Char,Int]
+  ] = {
     import org.maraist.fa.annotated.setCombiner
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder: NDFAEdgeAnnotationsBuilder[
-      String, Char, Int, Set[Int], ?,
-      org.maraist.fa.annotated.EdgeAnnotatedNDFA
-        [String, Char, Int, Set[Int], ?],
-      Elements.AnnotatedNDFAelement[String,Char,Int]
-    ] = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
+    val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2a")
@@ -238,6 +238,11 @@ object Samples extends Sampler {
     builder += AddTransition("S2c", 'd', "S2b")
     builder += SetAnnotation("S2c", 'd', "S2b", 25)
     // builder.dump()
+    builder
+  }
+
+  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
+    val builder = ann01_builder
     val res = builder.result()
     // res.dump()
     res
@@ -261,6 +266,26 @@ object Samples extends Sampler {
     builder.result()
   }
 
+  def samplesFromNfaBuilder[
+    S, T, ThisDFA <: IndexedDFA[Set[S],T],
+    ThisNDFA <: NDFA[S,T,ThisDFA],
+    K >: NDFA.NDFAelements[S,T] <: Matchable
+  ](
+    doc: LaTeXdoc,
+    cleaner: FilesCleaner,
+    builder: NDFABuilder[S, T, ThisDFA, ThisNDFA, K],
+    tag: String,
+    width: String
+  ): Unit = {
+    doc ++= "\\clearpage\n"
+    graphable(
+      doc, cleaner, builder, tag + "Builder", tag + " NFA builder", width)
+    val nfa = builder.toNDFA
+    graphable(doc, cleaner, nfa, tag + "NFA", tag + " NFA",  width)
+    val dfa = nfa.toDFA
+    graphable(doc, cleaner, dfa, tag + "DFA", tag + " DFA",  width)
+  }
+
   def addSamples(guide: LaTeXdoc): FilesCleaner = {
     val cleaner = newCleaner()
     section(guide,"Package FA")
@@ -269,22 +294,19 @@ object Samples extends Sampler {
     // graphable(guide,cleaner,dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
 
     graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
+    samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")
+
     guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,ndfa2B,   "ndfa2B",   "ndfa2B",    "4in")
-    graphable(guide,cleaner,ndfa2,    "ndfa2",    "ndfa2",     "4in")
-    graphable(guide,cleaner,ndfa2dfa, "ndfa2dfa", "ndfa2dfa",  "5in")
-    guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,hdfa3B,   "hdfa3B",   "hdfa3B",    "5in")
-    graphable(guide,cleaner,hdfa3,    "hdfa3",    "hdfa3",     "5in")
-    guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,hndfa4B,  "hndfa4B",  "hndfa4B",   "5in")
-    graphable(guide,cleaner,hndfa4,   "hndfa4",   "hndfa4",    "3in")
-    graphable(guide,cleaner,hndfa4dfa,"hndfa4dfa","hndfa4dfa", "3in")
+    graphable(guide, cleaner, hdfa3B, "hdfa3B", "hdfa3B", "5in")
+    graphable(guide, cleaner, hdfa3,  "hdfa3",  "hdfa3",  "5in")
+
+    samplesFromNfaBuilder(guide,cleaner,hndfa4B, "hndfa4", "5in")
+
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
     graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
 
-    // // Rendering traverser for annotated automata not yet impleMented.
+    // samplesFromNfaBuilder(guide, cleaner, ann01_builder, "ann01", "4in")
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
     graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")

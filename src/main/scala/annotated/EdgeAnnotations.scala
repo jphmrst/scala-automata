@@ -111,6 +111,7 @@ trait EdgeAnnotatedNDFA
     */
   def annotated(src: S, dest: S): Boolean =
     annotation(src, dest).isDefined
+
   override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
     print("- " + src + " -[ " + label)
     annotation(src, label, dest) match {
