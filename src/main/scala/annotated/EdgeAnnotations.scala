@@ -48,6 +48,13 @@ trait EdgeAnnotationCombiner[NA, DA] {
     }
 }
 
+/** Default [[EdgeAnnotationCombiner]] using set union. */
+given setCombiner[A]: EdgeAnnotationCombiner[A, Set[A]] with {
+  def single(a: A): Set[A] = Set(a)
+  def include(k: Set[A], a: A): Set[A] = k + a
+  def combine(k1: Set[A], k2: Set[A]): Set[A] = k1 ++ k2
+}
+
 object Elements {
   // Use:
   // import org.maraist.fa.elements.*
