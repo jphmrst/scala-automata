@@ -10,6 +10,8 @@
 
 package org.maraist.fa.impl
 import org.maraist.fa.DFA.DFAtraverser
+import org.maraist.graphviz.
+  {GraphvizOptions, NodeLabeling, TransitionLabeling}
 
 /** Implementation of a [[org.maraist.fa.DFA DFA]] using
  *  [[scala.collection.immutable.IndexedSeq `IndexedSeq`s]] and
@@ -31,6 +33,7 @@ extends AbstractArrayDFA[S,T](stateSeq, initialStateIndex, finalStateIndices,
                               transitionsSeq, transitionsMatrix) {
   type Traverser = DFAtraverser[S,T]
   protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
-    new DotTraverseDFA[S,T](graphvizOptions, sb, nodeLabeling,
-                            transitionLabeling, stateList, getInitialState)
+    new DotTraverseDFA[S,T](
+      summon[GraphvizOptions], sb, summon[NodeLabeling[S]],
+      summon[TransitionLabeling[T]], stateList, getInitialState)
 }

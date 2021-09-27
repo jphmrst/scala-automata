@@ -9,7 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.graphviz.{NodeLabeling,TransitionLabeling}
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.IndexedNDFA
@@ -22,13 +23,15 @@ trait HyperedgeNDFA[S, T, +ThisDFA <: IndexedHyperedgeDFA[Set[S], T]]
 extends NDFA[S, T, ThisDFA] with Hyperedge[S] {
   /** {@inheritDoc} */
   override protected def internalsToDOT(
-    stateList: IndexedSeq[S],
-    sb: StringBuilder,
-    nodeLabeling: NodeLabeling[S] = this.nodeLabeling,
-    trLabeling: TransitionLabeling[T] = this.transitionLabeling):
+    stateList: IndexedSeq[S], sb: StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ):
       Unit = {
-    super.internalsToDOT(stateList, sb, nodeLabeling, trLabeling)
-    eHyperedgesToDOT(nodeLabeling, stateList, sb)
+    super.internalsToDOT(stateList, sb)
+    eHyperedgesToDOT(stateList, sb)
   }
 }
 

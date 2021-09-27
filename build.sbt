@@ -1,5 +1,5 @@
 
-val scala3Version = "3.0.2-RC1"
+val scala3Version = "3.0.2"
 
 // library name
 name := "scala-automata"
@@ -46,7 +46,7 @@ ThisBuild / versionScheme := Some("semver-spec")
 
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.9"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
-libraryDependencies += "org.maraist" %% "scala-latex" % "1.1.1"
+// libraryDependencies += "org.maraist" %% "scala-latex" % "2.0.0"
 unmanagedSources / excludeFilter := ".#*"
 Global / excludeLintKeys ++= Set(scalacOptions)
 Compile / doc / scalacOptions ++= Seq(
@@ -64,3 +64,4 @@ lazy val main = project
     unmanagedSources / excludeFilter := ".#*",
     scalacOptions ++= Seq( "-source:future-migration" ),
   )
+  .dependsOn(RootProject(file("/home/jm/Lib/Scala/git-LaTeX")))

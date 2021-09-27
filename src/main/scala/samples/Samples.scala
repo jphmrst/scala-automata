@@ -286,14 +286,16 @@ object Samples extends Sampler {
     graphable(doc, cleaner, dfa, tag + "DFA", tag + " DFA",  width)
   }
 
-  def addSamples(guide: LaTeXdoc): FilesCleaner = {
+  override def addSamples(guide: LaTeXdoc): FilesCleaner = {
     val cleaner = newCleaner()
     section(guide,"Package FA")
 
     // This one uses the Builder API, so loses the relationship to Graphable
     // graphable(guide,cleaner,dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
 
+    // println("First call to graphable")
     graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
+    // println(" - back")
     samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")
 
     guide ++= "\\clearpage\n"
@@ -325,7 +327,9 @@ object Samples extends Sampler {
     guide.addPackage("multicol")
     guide.open()
     // guide ++= "\\begin{multicols}{2}"
+    println("Calling addSamples")
     val cleanup = addSamples(guide)
+    println("Back from addSamples")
     // guide ++= "\\end{multicols}"
     guide.close()
     cleanup.clean

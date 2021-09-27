@@ -10,7 +10,8 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
-import org.maraist.graphviz.{Graphable, NodeLabeling, TransitionLabeling}
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder,
     LabelsHolder, NondeterministicLabelledTransitionHolder,
@@ -64,10 +65,12 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
    *  Graphviz representation of a NDFA */
   protected def internalsToDOT(
     stateList: IndexedSeq[S],
-    sb: StringBuilder,
-    nodeLabeling: NodeLabeling[S] = this.nodeLabeling,
-    trLabeling: TransitionLabeling[T] = this.transitionLabeling
-  ):Unit = {
+    sb: StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ): Unit = {
 
     // Initial state
     sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
@@ -102,7 +105,8 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
       for(t <- labels) {
         for(s1 <- transitions(s0,t)) {
           writeArrow(
-            sb, si0, s1, stateList, getArrowLabel(t, s0, s1, trLabeling))
+            sb, si0, s1, stateList,
+            getArrowLabel(t, s0, s1, transitionLabeling))
         }
       }
     }
@@ -125,12 +129,14 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
   }
 
   /** {@inheritDoc} */
-  def toDOT(nodeLabeling:NodeLabeling[S] = this.nodeLabeling,
-            transitionLabeling:TransitionLabeling[T] =
-              this.transitionLabeling):String = {
+  def toDOT(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ):String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
-    internalsToDOT(stateList,sb,nodeLabeling,transitionLabeling)
+    internalsToDOT(stateList,sb)
     sb.toString()
   }
 

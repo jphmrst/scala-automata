@@ -10,9 +10,8 @@
 
 package org.maraist.fa.pfa
 import scala.collection.mutable.{HashMap,HashSet}
-import org.maraist.graphviz.Graphable
-import org.maraist.graphviz.NodeLabeling
-import org.maraist.graphviz.TransitionLabeling
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder}
 import org.maraist.fa.impl.{SingleInitialStateMixinElement}
@@ -156,23 +155,27 @@ trait PFA[S,T]
   /** Internal routine used by {@link #toDOT}.  Subclesses should
    *  override, but still call super.internalsToDOT, to extend the
    *  Graphviz representation of a DFA */
-  protected def internalsToDOT(stateList:IndexedSeq[S],
-                               sb:StringBuilder,
-                               nodeLabeling:NodeLabeling[S] =
-                                 this.nodeLabeling,
-                               trLabeling:TransitionLabeling[T] =
-                                 this.transitionLabeling):Unit = {
-    traverse(new PFAdotTraverser[S,T](sb, nodeLabeling, trLabeling,
-                                      graphvizOptions))
+  protected def internalsToDOT(
+    stateList:IndexedSeq[S], sb:StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ):
+      Unit = {
+    traverse(new PFAdotTraverser[S,T](
+      sb, nodeLabeling, transitionLabeling, graphvizOptions))
   }
 
   /** {@inheritDoc} */
-  def toDOT(nodeLabeling:NodeLabeling[S] = this.nodeLabeling,
-            transitionLabeling:TransitionLabeling[T] =
-              this.transitionLabeling):String = {
+  def toDOT(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ):String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
-    internalsToDOT(stateList,sb,nodeLabeling,transitionLabeling)
+    internalsToDOT(stateList,sb)
     sb.toString()
   }
 

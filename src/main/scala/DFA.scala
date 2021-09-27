@@ -93,12 +93,12 @@ trait DFA[S,T]
   /** Internal routine used by {@link #toDOT}.  Subclesses should
    *  override, but still call super.internalsToDOT, to extend the
    *  Graphviz representation of a DFA */
-  protected def internalsToDOT(stateList:IndexedSeq[S],
-                               sb:StringBuilder,
-                               nodeLabeling:NodeLabeling[S] =
-                                 this.nodeLabeling,
-                               trLabeling:TransitionLabeling[T] =
-                                 this.transitionLabeling):Unit = {
+  protected def internalsToDOT(stateList:IndexedSeq[S], sb:StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    trLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions):
+      Unit = {
 
     // Initial state
     sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
@@ -117,12 +117,12 @@ trait DFA[S,T]
   }
 
   /** {@inheritDoc} */
-  def toDOT(nodeLabeling:NodeLabeling[S] = this.nodeLabeling,
-            transitionLabeling:TransitionLabeling[T] =
-              this.transitionLabeling):String = {
+  override def toDOT
+    (using NodeLabeling[S], TransitionLabeling[T], GraphvizOptions):
+      String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
-    internalsToDOT(stateList,sb,nodeLabeling,transitionLabeling)
+    internalsToDOT(stateList,sb)
     sb.toString()
   }
 

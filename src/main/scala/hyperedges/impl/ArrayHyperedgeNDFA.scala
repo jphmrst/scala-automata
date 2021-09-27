@@ -117,10 +117,8 @@ with HyperedgeNDFA[S,T,ArrayHyperedgeDFA[Set[S],T]] {
         dfaStates, initialStateIdx, dfaFinals.toSet, transitionsSeq,
         dfaTransitions,
         dfaEHyperedges.map({case (k, v) => (k, v.toSet)}).toMap)
-    result.nodeLabeling =
-      NodeLabeling.labelingSetOf("", "<br/>", "", nodeLabeling)
-    result.transitionLabeling = transitionLabeling
-    result.graphvizOptions = graphvizOptions
+    // result.nodeLabeling =
+    //   NodeLabeling.labelingSetOf("", "<br/>", "", nodeLabeling)
     result
   }
 }

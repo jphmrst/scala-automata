@@ -48,9 +48,7 @@ class ArrayNDFA[S,T](
     val result:ArrayDFA[Set[S],T] =
       new ArrayDFA[Set[S],T](dfaStates, initialStateIdx, dfaFinals,
                              transitionsSeq, dfaTransitions)
-    result.nodeLabeling = NodeLabeling.labelingSetOf(nodeLabeling)
-    result.transitionLabeling = transitionLabeling
-    result.graphvizOptions = graphvizOptions
+    // result.nodeLabeling = NodeLabeling.labelingSetOf(nodeLabeling)
     result
   }
 }

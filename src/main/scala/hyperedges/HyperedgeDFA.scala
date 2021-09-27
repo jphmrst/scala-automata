@@ -22,13 +22,15 @@ trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S] {
   override type Traverser <: HyperedgeDFAtraverser[S,T]
 
   /** {@inheritDoc} */
-  override protected def internalsToDOT(stateList:IndexedSeq[S],
-                                        sb:StringBuilder,
-                                        nodeLabeling:NodeLabeling[S] =
-                                          this.nodeLabeling,
-                                        trLabeling:TransitionLabeling[T] =
-                                          this.transitionLabeling):Unit = {
-    super.internalsToDOT(stateList, sb,nodeLabeling, transitionLabeling)
+  override protected def internalsToDOT(
+    stateList:IndexedSeq[S], sb:StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    transitionLabeling: TransitionLabeling[T],
+    graphvizOptions: GraphvizOptions
+  ):
+      Unit = {
+    super.internalsToDOT(stateList, sb)
     // eHyperedgesToDOT(nodeLabeling, stateList, sb)
   }
 

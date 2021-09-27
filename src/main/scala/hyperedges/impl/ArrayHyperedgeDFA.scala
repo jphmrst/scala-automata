@@ -10,6 +10,8 @@
 
 package org.maraist.fa.hyperedges.impl
 import scala.collection.mutable.HashMap
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.hyperedges.{HyperedgeDFAtraverser, IndexedHyperedgeDFA}
 import org.maraist.fa.impl.{AbstractArrayDFA}
 
@@ -29,9 +31,9 @@ extends AbstractArrayDFA[S,T](stateSeq,initialStateIndex,finalStateIndices,
 with IndexedHyperedgeDFA[S,T] {
   type Traverser = HyperedgeDFAtraverser[S,T]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
-    new DotTraverseHyperedgeDFA[S,T](graphvizOptions, sb, nodeLabeling,
-                                     transitionLabeling, stateList,
-                                     getInitialState)
+    new DotTraverseHyperedgeDFA[S,T](
+      summon[GraphvizOptions], sb, summon[NodeLabeling[S]],
+      summon[TransitionLabeling[T]], stateList, getInitialState)
 
   protected val hyperedgeMap = new HashMap[S,Set[Set[S]]]
   for((si,iss) <- hyperedgeIndexMap)

@@ -9,6 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.impl
+import org.maraist.graphviz.
+  {GraphvizOptions, NodeLabeling, TransitionLabeling}
 import scala.collection.mutable.HashSet
 import org.maraist.fa.elements.*
 import org.maraist.fa.DFA
@@ -33,8 +35,9 @@ extends AbstractHashDFABuilder[
   type ThisDFA = ArrayDFA[S,T]
   type Traverser = DFAtraverser[S,T]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
-    new DotTraverseDFA[S,T](graphvizOptions, sb, nodeLabeling,
-                            transitionLabeling, stateList, initialState)
+    new DotTraverseDFA[S,T](
+      summon[GraphvizOptions], sb, summon[NodeLabeling[S]],
+      summon[TransitionLabeling[T]], stateList, initialState)
   protected def assembleDFA(statesSeq: IndexedSeq[S],
                             initialIdx: Int,
                             finalStateIndices: HashSet[Int],

@@ -9,8 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.graphviz.NodeLabeling
-import org.maraist.graphviz.TransitionLabeling
+import org.maraist.graphviz.
+  {GraphvizOptions, NodeLabeling, TransitionLabeling}
 
 /**
   *  @group Hyperedge
@@ -26,9 +26,12 @@ trait Hyperedge[S] {
    * FIXME Call is commented-out in HyperedgeDFA.internalsToDOT, but
    * still in use in HyperedgeNDFA?
    */
-  protected def eHyperedgesToDOT(nodeLabeling:NodeLabeling[S],
-                                 stateList:IndexedSeq[S],
-                                 sb:StringBuilder):Unit = {
+  protected def eHyperedgesToDOT(
+    stateList:IndexedSeq[S], sb:StringBuilder
+  )(using
+    nodeLabeling: NodeLabeling[S],
+    graphvizOptions: GraphvizOptions
+  ):Unit = {
     var edge:Int = 0
     val stateCount = stateList.length
 
