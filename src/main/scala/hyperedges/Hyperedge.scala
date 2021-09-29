@@ -15,7 +15,7 @@ import org.maraist.graphviz.
 /**
   *  @group Hyperedge
   */
-trait Hyperedge[S] {
+trait Hyperedge[S, T] {
 
   def eHyperedgeTargets(s:S): Set[Set[S]]
 
@@ -29,7 +29,7 @@ trait Hyperedge[S] {
   protected def eHyperedgesToDOT(
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     graphvizOptions: GraphvizOptions
   ):Unit = {
     var edge:Int = 0

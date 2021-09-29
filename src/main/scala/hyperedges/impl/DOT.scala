@@ -58,12 +58,12 @@ private[fa] trait DOTQuietDFAMethods[S,T] {
 /**
   * @group graphviz
   */
-private[fa] class DotTraverseHyperedgeDFA[S,T](
+private[fa] class DotTraverseHyperedgeDFA[S, T](
   val graphvizOptions:GraphvizOptions,
   val sb:StringBuilder,
-  val nodeLabeling:NodeLabeling[S],
+  val nodeLabeling:NodeLabeling[S, T],
   val trLabeling:TransitionLabeling[T],
   val stateList:IndexedSeq[S],
   val initialState:S)
-extends HyperedgeDFAtraverser[S,T] with DotTraverseMixin[S,T]
-with HyperedgeDOTmixin[S] with DOTQuietDFAMethods[S,T]
+extends HyperedgeDFAtraverser[S, T] with DotTraverseMixin[S, T]
+with HyperedgeDOTmixin[S] with DOTQuietDFAMethods[S, T]

@@ -95,7 +95,7 @@ trait DFA[S,T]
    *  Graphviz representation of a DFA */
   protected def internalsToDOT(stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     trLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions):
       Unit = {
@@ -118,7 +118,7 @@ trait DFA[S,T]
 
   /** {@inheritDoc} */
   override def toDOT
-    (using NodeLabeling[S], TransitionLabeling[T], GraphvizOptions):
+    (using NodeLabeling[S, T], TransitionLabeling[T], GraphvizOptions):
       String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()

@@ -9,31 +9,32 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.impl
-import org.maraist.graphviz.{GraphvizOptions,NodeLabeling,TransitionLabeling}
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.DFA.{DFAtraverser}
 
 /**
   * @group graphviz
   */
 private[fa] object DOT {
-  val tabToVmark:String = "\tV"
-  val graphvizArrow:String = " -> "
-  val graphvizArrowToVmark:String = " -> V"
-  val endFontAndDot:String = "</font>> ];\n"
+  val tabToVmark: String = "\tV"
+  val graphvizArrow: String = " -> "
+  val graphvizArrowToVmark: String = " -> V"
+  val endFontAndDot: String = "</font>> ];\n"
 }
 
 /**
   * @group graphviz
   */
 private[fa] trait DotTraverseMixin[S,T] {
-  val graphvizOptions:GraphvizOptions
-  val sb:StringBuilder
-  val nodeLabeling:NodeLabeling[S]
-  val trLabeling:TransitionLabeling[T]
-  val stateList:IndexedSeq[S]
-  val initialState:S
+  val graphvizOptions: GraphvizOptions
+  val sb: StringBuilder
+  val nodeLabeling: NodeLabeling[S, T]
+  val trLabeling: TransitionLabeling[T]
+  val stateList: IndexedSeq[S]
+  val initialState: S
 
-  def state(si:Int, s:S, isInitial:Boolean, isFinal:Boolean): Unit = {
+  def state(si: Int, s: S, isInitial: Boolean, isFinal: Boolean): Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si)
     sb ++= " [shape="
@@ -45,16 +46,16 @@ private[fa] trait DotTraverseMixin[S,T] {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= nodeLabeling.getLabel(s)
+    sb ++= nodeLabeling.getLabel(s, ???)
     sb ++= ">]\n"
   }
-  def postState():Unit = {
+  def postState(): Unit = {
     // Arrow for the initial state
     sb ++= "\tinit -> V"
     sb ++= Integer.toString(stateList.indexOf(initialState))
     sb ++= ";\n"
   }
-  def presentEdge(si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S):Unit = {
+  def presentEdge(si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S): Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark
@@ -66,7 +67,7 @@ private[fa] trait DotTraverseMixin[S,T] {
   }
 
   protected def getArrowLabel(
-    si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S
+    si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S
   ): String = trLabeling.getLabel(t)
 }
 
@@ -74,8 +75,8 @@ private[fa] trait DotTraverseMixin[S,T] {
   * @group graphviz
   */
 private[fa] trait DOTQuietDFAMethods[S,T] {
-  def init(states:Int, labels:Int): Unit = { }
-  def absentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T): Unit = { }
+  def init(states: Int, labels: Int): Unit = { }
+  def absentEdge(fromIndex: Int, fromState:S, labelIndex: Int, label: T): Unit = { }
   def finish(): Unit = { }
 }
 
@@ -83,11 +84,11 @@ private[fa] trait DOTQuietDFAMethods[S,T] {
   * @group graphviz
   */
 private[fa] open class DotTraverseDFA[S,T](
-  val graphvizOptions:GraphvizOptions,
-  val sb:StringBuilder,
-  val nodeLabeling:NodeLabeling[S],
-  val trLabeling:TransitionLabeling[T],
-  val stateList:IndexedSeq[S],
-  val initialState:S)
+  val graphvizOptions: GraphvizOptions,
+  val sb:  StringBuilder,
+  val nodeLabeling: NodeLabeling[S, T],
+  val trLabeling: TransitionLabeling[T],
+  val stateList: IndexedSeq[S],
+  val initialState: S)
     extends DFAtraverser[S,T]
     with DotTraverseMixin[S,T] with DOTQuietDFAMethods[S,T]

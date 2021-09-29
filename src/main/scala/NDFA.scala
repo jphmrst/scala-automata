@@ -67,7 +67,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
     stateList: IndexedSeq[S],
     sb: StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions
   ): Unit = {
@@ -86,7 +86,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
         sb ++= graphvizOptions.nodeShape
       }
       sb ++= ",label=<"
-      sb ++= nodeLabeling.getLabel(s)
+      sb ++= nodeLabeling.getLabel(s, this)
       sb ++= ">];\n"
     }
 
@@ -130,7 +130,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
 
   /** {@inheritDoc} */
   def toDOT(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions
   ):String = {

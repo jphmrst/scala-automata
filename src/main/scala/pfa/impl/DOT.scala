@@ -9,7 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.pfa.impl
-import org.maraist.graphviz.{GraphvizOptions,NodeLabeling,TransitionLabeling}
+import org.maraist.graphviz.
+  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
 import org.maraist.fa.pfa.{PFAtraverser}
 import org.maraist.fa.impl.{DOT}
 
@@ -17,10 +18,11 @@ import org.maraist.fa.impl.{DOT}
  * @group graphviz
  */
 private[fa] class PFAdotTraverser[S,T](val sb:StringBuilder,
-                                       val nodeLabeling:NodeLabeling[S],
+                                       val nodeLabeling:NodeLabeling[S, T],
                                        val trLabeling:TransitionLabeling[T],
                                        val graphvizOptions:GraphvizOptions)
 extends PFAtraverser[S,T]() {
+
   override def state(si:Int, s:S,
                      initialProb:Double, finalProb:Double):Unit = {
     sb ++= DOT.tabToVmark
@@ -34,7 +36,7 @@ extends PFAtraverser[S,T]() {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= nodeLabeling.getLabel(s)
+    sb ++= nodeLabeling.getLabel(s, ???)
     sb ++= "; <font color=\"blue\">"
     sb ++= finalProb.toString()
     sb ++= DOT.endFontAndDot

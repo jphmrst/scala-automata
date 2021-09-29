@@ -41,7 +41,7 @@ class HashHyperedgeDFABuilder[S, T](initialState: S)
   type Traverser = HyperedgeDFAtraverser[S,T]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
     new DotTraverseHyperedgeDFA[S,T](
-      summon[GraphvizOptions], sb, summon[NodeLabeling[S]],
+      summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, initialState)
 
   protected def assembleDFA(statesSeq: IndexedSeq[S],

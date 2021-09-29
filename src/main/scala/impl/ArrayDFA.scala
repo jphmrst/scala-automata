@@ -34,6 +34,6 @@ extends AbstractArrayDFA[S,T](stateSeq, initialStateIndex, finalStateIndices,
   type Traverser = DFAtraverser[S,T]
   protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
     new DotTraverseDFA[S,T](
-      summon[GraphvizOptions], sb, summon[NodeLabeling[S]],
+      summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, getInitialState)
 }

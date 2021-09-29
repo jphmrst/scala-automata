@@ -158,10 +158,9 @@ trait PFA[S,T]
   protected def internalsToDOT(
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
-  ):
+    graphvizOptions: GraphvizOptions):
       Unit = {
     traverse(new PFAdotTraverser[S,T](
       sb, nodeLabeling, transitionLabeling, graphvizOptions))
@@ -169,7 +168,7 @@ trait PFA[S,T]
 
   /** {@inheritDoc} */
   def toDOT(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions
   ):String = {

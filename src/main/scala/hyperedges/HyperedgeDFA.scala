@@ -18,14 +18,14 @@ import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
 /**
   *  @group Hyperedge
   */
-trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S] {
+trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S, T] {
   override type Traverser <: HyperedgeDFAtraverser[S,T]
 
   /** {@inheritDoc} */
   override protected def internalsToDOT(
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions
   ):

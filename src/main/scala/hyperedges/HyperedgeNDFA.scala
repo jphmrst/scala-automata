@@ -20,12 +20,12 @@ import org.maraist.fa.hyperedges.Builders.HyperedgeNDFAelements
   *  @group Hyperedge
   */
 trait HyperedgeNDFA[S, T, +ThisDFA <: IndexedHyperedgeDFA[Set[S], T]]
-extends NDFA[S, T, ThisDFA] with Hyperedge[S] {
+extends NDFA[S, T, ThisDFA] with Hyperedge[S, T] {
   /** {@inheritDoc} */
   override protected def internalsToDOT(
     stateList: IndexedSeq[S], sb: StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S],
+    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions
   ):
