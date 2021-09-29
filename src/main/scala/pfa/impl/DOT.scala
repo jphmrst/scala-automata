@@ -27,9 +27,9 @@ extends PFAtraverser[S, T, P]() {
     sb ++= Integer.toString(si)
     sb ++= " [shape="
     if (finalProb > 0.0) {
-      sb ++= graphvizOptions.finalNodeShape
+      sb ++= graphvizOptions.finalNodeShape(s, pfa)
     } else {
-      sb ++= graphvizOptions.nodeShape
+      sb ++= graphvizOptions.nodeShape(s, pfa)
     }
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()

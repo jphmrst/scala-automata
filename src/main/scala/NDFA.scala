@@ -78,9 +78,9 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
       sb ++= Integer.toString(si)
       sb ++= " [shape="
       if (isFinalState(s)) {
-        sb ++= graphvizOptions.finalNodeShape
+        sb ++= graphvizOptions.finalNodeShape(s, this)
       } else {
-        sb ++= graphvizOptions.nodeShape
+        sb ++= graphvizOptions.nodeShape(s, this)
       }
       sb ++= ",label=<"
       sb ++= graphvizOptions.nodeLabel(s, this)

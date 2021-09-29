@@ -39,9 +39,9 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= Integer.toString(si)
     sb ++= " [shape="
     if (isFinal) {
-      sb ++= graphStyle.finalNodeShape
+      sb ++= graphStyle.finalNodeShape(s, dfa)
     } else {
-      sb ++= graphStyle.nodeShape
+      sb ++= graphStyle.nodeShape(s, dfa)
     }
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
