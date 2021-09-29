@@ -34,7 +34,7 @@ extends PFAtraverser[S, T, P]() {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= graphvizOptions.getNodeLabel(s, pfa)
+    sb ++= graphvizOptions.nodeLabel(s, pfa)
     sb ++= "; <font color=\"blue\">"
     sb ++= finalProb.toString()
     sb ++= DOT.endFontAndDot
@@ -58,7 +58,7 @@ extends PFAtraverser[S, T, P]() {
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= graphvizOptions.getEdgeLabel(t, s0, s1, pfa)
+    sb ++= graphvizOptions.edgeLabel(t, s0, s1, pfa)
     sb ++= "; <font color=\"blue\">"
     sb ++= prob.toString()
     sb ++= DOT.endFontAndDot

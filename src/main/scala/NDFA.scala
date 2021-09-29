@@ -83,7 +83,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
         sb ++= graphvizOptions.nodeShape
       }
       sb ++= ",label=<"
-      sb ++= graphvizOptions.getNodeLabel(s, this)
+      sb ++= graphvizOptions.nodeLabel(s, this)
       sb ++= ">];\n"
     }
 
@@ -103,7 +103,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
         for(s1 <- transitions(s0,t)) {
           writeArrow(
             sb, si0, s1, stateList,
-            graphvizOptions.getEdgeLabel(t, s0, s1, this))
+            graphvizOptions.edgeLabel(t, s0, s1, this))
         }
       }
     }

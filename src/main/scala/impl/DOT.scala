@@ -46,7 +46,7 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= graphStyle.getNodeLabel(s, dfa)
+    sb ++= graphStyle.nodeLabel(s, dfa)
     sb ++= ">]\n"
   }
   def postState(): Unit = {
@@ -63,7 +63,7 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= graphStyle.getEdgeLabel(t, s0, s1, dfa)
+    sb ++= graphStyle.edgeLabel(t, s0, s1, dfa)
     sb ++= "> ];\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
