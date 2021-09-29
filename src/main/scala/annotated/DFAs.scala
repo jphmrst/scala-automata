@@ -64,17 +64,19 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   stateSeq, initialStateIndex, finalStateIndices,
   transitionsSeq, transitionsMatrix, edgeAnnotations
 ) {
-  type Traverser = org.maraist.fa.DFA.DFAtraverser[S,T]
+  type Traverser =
+    org.maraist.fa.DFA.DFAtraverser[S, T, EdgeAnnotatedArrayDFA[S,T,A]]
   import org.maraist.fa.impl.DotTraverseDFA
   protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
-    new DotTraverseDFA[S,T](
+    new DotTraverseDFA[S, T, EdgeAnnotatedArrayDFA[S,T,A]](
       summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, getInitialState
     ) {
       protected override def getArrowLabel(
+        dfa: EdgeAnnotatedArrayDFA[S,T,A],
         si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S
       ): String = (
-        super.getArrowLabel(si0, s0, ti0, t, si1, s1)
+        super.getArrowLabel(EdgeAnnotatedArrayDFA.this, si0, s0, ti0, t, si1, s1)
           + (annotation(s0, t) match {
             case None => " (unann.)"
             case Some(ann) => " [" + ann.toString() + "]"

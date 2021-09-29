@@ -109,13 +109,13 @@ trait PFA[S,T]
   }
 
    /** Traverse the structure of this DFA, states first, then transitions */
-   def traverse(trav:PFAtraverser[S,T]) = {
+   def traverse(trav:PFAtraverser[S,T,? >: this.type]) = {
      val stateList = IndexedSeq.from(states)
      val theLabels = IndexedSeq.from(labels)
      trav.init()
      for(si <- 0 until stateList.length) {
        val s = stateList(si)
-       trav.state(si,s,initialStateProb(s),finalStateProb(s))
+       trav.state(this, si,s,initialStateProb(s),finalStateProb(s))
      }
      trav.postState()
      for(si0 <- 0 until stateList.length) {
@@ -125,9 +125,9 @@ trait PFA[S,T]
          val s1 = stateList(si1)
          val prob = eTransition(s0,s1)
          if (prob>0.0) {
-           trav.presentEdge(si0, s0, si1, s1, prob)
+           trav.presentEdge(this, si0, s0, si1, s1, prob)
          } else {
-           trav.absentEpsilonEdge(si0, s0, si1, s1)
+           trav.absentEpsilonEdge(this, si0, s0, si1, s1)
          }
        }
 
@@ -138,14 +138,14 @@ trait PFA[S,T]
            val s1 = stateList(si1)
            val prob = transition(s0,t,s1)
            if (prob>0.0) {
-             trav.presentEdge(si0, s0, ti, t, si1, s1, prob)
+             trav.presentEdge(this, si0, s0, ti, t, si1, s1, prob)
              present=true
            } else {
-             trav.absentEdge(si0, s0, ti, t, si1, s1)
+             trav.absentEdge(this, si0, s0, ti, t, si1, s1)
            }
          }
          if (!present) {
-           trav.absentEdge(si0, s0, ti, t)
+           trav.absentEdge(this, si0, s0, ti, t)
          }
        }
      }
@@ -162,7 +162,7 @@ trait PFA[S,T]
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions):
       Unit = {
-    traverse(new PFAdotTraverser[S,T](
+    traverse(new PFAdotTraverser[S,T,PFA[S,T]](
       sb, nodeLabeling, transitionLabeling, graphvizOptions))
   }
 
@@ -181,11 +181,11 @@ trait PFA[S,T]
   private[fa] def getEdgeProbTotals: Map[S, Map[T, Double]] = {
     val totals = new HashMap[S, HashMap[T,Double]]
 
-    traverse(new PFAtraverser[S,T] {
-      override def state(i:Int, s:S, init:Double, fin:Double) = {
+    traverse(new PFAtraverser[S, T, PFA[S,T]] {
+      override def state(pfa: PFA[S,T], i:Int, s:S, init:Double, fin:Double) = {
         totals += ((s, new HashMap[T,Double]()))
       }
-      override def presentEdge(fromIndex:Int, fromState:S,
+      override def presentEdge(pfa: PFA[S,T], fromIndex:Int, fromState:S,
                                labelIndex:Int, label:T,
                                toIndex:Int, toState:S, prob:Double) = {
         val smap = totals(fromState)
@@ -207,13 +207,13 @@ trait PFA[S,T]
  *  @tparam T The type of labels on transitions of the automaton
  * @group graphviz
  */
-private[fa] trait PFAtraverser[-S,-T] {
+private[fa] trait PFAtraverser[-S,-T, P >: PFA[S,T]] {
 
   /** Called at the beginning of traversal, before any other methods. */
   def init():Unit = { }
 
   /** Called once for each state in the {@link org.maraist.fa.DFA DFA}. */
-  def state(index:Int, state:S,
+  def state(pfa: P, index:Int, state:S,
             initialProb:Double, finalProb:Double):Unit = { }
 
   /**
@@ -226,30 +226,31 @@ private[fa] trait PFAtraverser[-S,-T] {
 
   /** Called for each epsilon-transition between states in the DFA with
    *  non-zero pronbability. */
-  def presentEdge(fromIndex:Int, fromState:S,
+  def presentEdge(pfa: P, fromIndex:Int, fromState:S,
                   toIndex:Int, toState:S, prob:Double):Unit = { }
 
   /** Called for each state pair with zero probability of an epsilon
    * transition between them.  Note that this method will be called even if
    * there is a labeled transition from `fromState` to `toState`.*/
-  def absentEpsilonEdge(fromIndex:Int, fromState:S,
+  def absentEpsilonEdge(pfa: P, fromIndex:Int, fromState:S,
                         toIndex:Int, toState:S):Unit = { }
 
   /** Called for each labeled transition between states with non-zero
    *  probability in the DFA. */
-  def presentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T,
+  def presentEdge(pfa: P, fromIndex:Int, fromState:S, labelIndex:Int, label:T,
                   toIndex:Int, toState:S, prob:Double):Unit = { }
 
   /** Called for each state/label/state triple with zero probability.
    *  Note that this method will be called even if there is an epsilon
    *  transition from `fromState` to `toState`.
    */
-  def absentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T,
+  def absentEdge(pfa: P, fromIndex:Int, fromState:S, labelIndex:Int, label:T,
                  toIndex:Int, toState:S):Unit = { }
 
   /** Called for each state/label pair for which there is no target state
    *  with nonzero pobability. */
-  def absentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T):Unit = { }
+  def absentEdge(pfa: P, fromIndex:Int, fromState:S, labelIndex:Int, label:T):
+      Unit = { }
 
   /** Called last among the methods of this trait for any traversal. */
   def finish():Unit = { }

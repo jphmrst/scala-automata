@@ -11,20 +11,21 @@
 package org.maraist.fa.pfa.impl
 import org.maraist.graphviz.
   {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
-import org.maraist.fa.pfa.{PFAtraverser}
+import org.maraist.fa.pfa.{PFA,PFAtraverser}
 import org.maraist.fa.impl.{DOT}
 
 /**
  * @group graphviz
  */
-private[fa] class PFAdotTraverser[S,T](val sb:StringBuilder,
-                                       val nodeLabeling:NodeLabeling[S, T],
-                                       val trLabeling:TransitionLabeling[T],
-                                       val graphvizOptions:GraphvizOptions)
-extends PFAtraverser[S,T]() {
+private[fa] class PFAdotTraverser[S, T, P >: PFA[S,T] <: Graphable[S,T]](
+  val sb: StringBuilder,
+  val nodeLabeling: NodeLabeling[S, T],
+  val trLabeling: TransitionLabeling[T],
+  val graphvizOptions: GraphvizOptions)
+extends PFAtraverser[S, T, P]() {
 
-  override def state(si:Int, s:S,
-                     initialProb:Double, finalProb:Double):Unit = {
+  override def state(pfa: P, si: Int, s: S,
+                     initialProb: Double, finalProb: Double): Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si)
     sb ++= " [shape="
@@ -36,7 +37,7 @@ extends PFAtraverser[S,T]() {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= nodeLabeling.getLabel(s, ???)
+    sb ++= nodeLabeling.getLabel(s, pfa)
     sb ++= "; <font color=\"blue\">"
     sb ++= finalProb.toString()
     sb ++= DOT.endFontAndDot
@@ -52,8 +53,9 @@ extends PFAtraverser[S,T]() {
       sb ++= DOT.endFontAndDot
     }
   }
-  override def presentEdge(si0:Int, s0:S, ti0:Int, t:T, si1:Int, s1:S,
-                           prob:Double):Unit = {
+  override def presentEdge(
+    pfa: P, si0: Int, s0: S, ti0: Int, t: T, si1: Int, s1: S, prob: Double):
+      Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark
@@ -65,7 +67,9 @@ extends PFAtraverser[S,T]() {
     sb ++= DOT.endFontAndDot
     //println(si0 + "--[" + t + "]-->" + si1);
   }
-  override def presentEdge(si0:Int, s0:S, si1:Int, s1:S, prob:Double):Unit = {
+  override def presentEdge(
+    pfa: P, si0: Int, s0: S, si1: Int, s1: S, prob: Double):
+      Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark

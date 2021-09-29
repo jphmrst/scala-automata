@@ -39,13 +39,13 @@ trait DFA[S,T]
     with SingleInitialStateHolder[S]
     with DeterministicLabelledTransitionHolder[S, T]
     with Graphable[S,T] {
-  type Traverser <: DFAtraverser[S,T]
+  type Traverser <: DFAtraverser[S,T, ? >: this.type]
 
   /** Check whether the automaton accepts the given sequence */
-  def accepts(ts:Seq[T]): Boolean
+  def accepts(ts: Seq[T]): Boolean
 
-  override def toString():String = {
-    val bld:StringBuilder = new StringBuilder
+  override def toString(): String = {
+    val bld: StringBuilder = new StringBuilder
     for (st <- states) {
       if (isInitialState(st)) bld ++= "> " else bld ++= "  "
       bld ++= st.toString() + "\n"
@@ -59,13 +59,13 @@ trait DFA[S,T]
   }
 
   /** Traverse the structure of this DFA, states first, then transitions */
-  def traverse(trav:Traverser) = {
+  def traverse(trav: Traverser) = {
     val stateList = IndexedSeq.from(states)
     val theLabels = IndexedSeq.from(labels)
-    trav.init(stateList.size, theLabels.size)
+    trav.init(this, stateList.size, theLabels.size)
     for(si <- 0 until stateList.length) {
       val s = stateList(si)
-      trav.state(si,s,isInitialState(s),isFinalState(s))
+      trav.state(this, si, s, isInitialState(s), isFinalState(s))
     }
     trav.postState()
     for(si0 <- 0 until stateList.length) {
@@ -75,25 +75,25 @@ trait DFA[S,T]
     trav.finish()
   }
 
-  protected def traverseEdgesFrom(si0:Int, s0:S, stateList:IndexedSeq[S],
-                                  theLabels:IndexedSeq[T], trav:Traverser) = {
+  protected def traverseEdgesFrom(si0: Int, s0: S, stateList: IndexedSeq[S],
+                                  theLabels: IndexedSeq[T], trav: Traverser) = {
     for(ti <- 0 until theLabels.length) {
       val t = theLabels(ti)
       transition(s0,t) match {
         case Some(s1) =>
-          trav.presentEdge(si0, s0, ti, t, stateList.indexOf(s1), s1)
-        case None => trav.absentEdge(si0, s0, ti, t)
+          trav.presentEdge(this, si0, s0, ti, t, stateList.indexOf(s1), s1)
+        case None => trav.absentEdge(this, si0, s0, ti, t)
       }
     }
   }
 
-  protected def dotTraverser(sb:StringBuilder,
-                             stateList:IndexedSeq[S]): Traverser
+  protected def dotTraverser(sb: StringBuilder,
+                             stateList: IndexedSeq[S]): Traverser
 
   /** Internal routine used by {@link #toDOT}.  Subclesses should
    *  override, but still call super.internalsToDOT, to extend the
    *  Graphviz representation of a DFA */
-  protected def internalsToDOT(stateList:IndexedSeq[S], sb:StringBuilder
+  protected def internalsToDOT(stateList: IndexedSeq[S], sb: StringBuilder
   )(using
     nodeLabeling: NodeLabeling[S, T],
     trLabeling: TransitionLabeling[T],
@@ -204,11 +204,13 @@ object DFA {
     *
     * @group DFA
     */
-  trait DFAtraverser[-S,-T] {
+  trait DFAtraverser[-S,-T, -D <: DFA[S,T]] {
     /** Called at the beginning of traversal, before any other methods. */
-    def init(states:Int, labels:Int): Unit
+    def init(dfa: D, states: Int, labels: Int): Unit
     /** Called once for each state in the {@link org.maraist.fa.DFA DFA}. */
-    def state(index:Int, state:S, isInitial:Boolean, isFinal:Boolean): Unit
+    def state(
+      dfa: D, index: Int, state: S, isInitial: Boolean, isFinal: Boolean):
+        Unit
     /**
       * Called after the last call to
       * [[org.maraist.fa.DFA.DFAtraverser#state state]], but before any
@@ -218,10 +220,14 @@ object DFA {
       */
     def postState(): Unit
     /** Called for each transition between states in the DFA. */
-    def presentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T,
-      toIndex:Int, toState:S): Unit
+    def presentEdge(
+      dfa: D, fromIndex: Int, fromState: S, labelIndex: Int, label: T,
+      toIndex: Int, toState: S):
+        Unit
     /** Called for each state/label pair for which there is no target state. */
-    def absentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T): Unit
+    def absentEdge(
+      dfa: D, fromIndex: Int, fromState: S, labelIndex: Int, label: T):
+        Unit
     /** Called last among the methods of this trait for any traversal. */
     def finish(): Unit
   }
@@ -240,16 +246,16 @@ object DFA {
       with IndexedSingleInitialStateHolder[S]
       with IndexedFinalStateSetHolder[S] {
 
-    def transitionIndex(si:Int, ti:Int): Option[Int]
+    def transitionIndex(si: Int, ti: Int): Option[Int]
 
     /** Traverse the structure of this DFA, states first, then
       * transitions.
       */
-    override def traverse(trav:Traverser) = {
-      trav.init(states.size, labels.size)
+    override def traverse(trav: Traverser) = {
+      trav.init(this, states.size, labels.size)
       for(si <- 0 until size) {
         val s = state(si)
-        trav.state(si,s,si==initialStateIndex,isFinalState(s))
+        trav.state(this, si, s, si==initialStateIndex, isFinalState(s))
       }
       trav.postState()
       for(si0 <- 0 until size) {
@@ -260,10 +266,10 @@ object DFA {
     }
 
     override protected def traverseEdgesFrom(
-      si0:Int, s0:S,
-      stateList:IndexedSeq[S],
-      theLabels:IndexedSeq[T],
-      trav:Traverser):
+      si0: Int, s0: S,
+      stateList: IndexedSeq[S],
+      theLabels: IndexedSeq[T],
+      trav: Traverser):
         Unit = {
       for(ti <- 0 until labels.size) {
         val t = label(ti)
@@ -272,10 +278,10 @@ object DFA {
         toIndex match {
           case Some(si1) => {
             //println("        echo " + si0 + " " + ti + " " + si1)
-            trav.presentEdge(si0, s0, ti, t, si1, state(si1))
+            trav.presentEdge(this, si0, s0, ti, t, si1, state(si1))
           }
           case None => {
-            trav.absentEdge(si0, s0, ti, t)
+            trav.absentEdge(this, si0, s0, ti, t)
           }
         }
         //println("  end traversing")

@@ -29,9 +29,11 @@ class ArrayHyperedgeDFA[S,T](stateSeq: IndexedSeq[S],
 extends AbstractArrayDFA[S,T](stateSeq,initialStateIndex,finalStateIndices,
                               transitionsSeq,labels)
 with IndexedHyperedgeDFA[S,T] {
-  type Traverser = HyperedgeDFAtraverser[S,T]
+
+  type Traverser = HyperedgeDFAtraverser[S, T, ArrayHyperedgeDFA[S,T]]
+
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
-    new DotTraverseHyperedgeDFA[S,T](
+    new DotTraverseHyperedgeDFA[S,T, ArrayHyperedgeDFA[S,T]](
       summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, getInitialState)
 

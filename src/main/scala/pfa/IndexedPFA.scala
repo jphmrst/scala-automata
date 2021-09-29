@@ -73,11 +73,11 @@ trait IndexedPFA[S,T]
   }
 
   /** Traverse the structure of this PFA, states first, then transitions */
-  override def traverse(trav:PFAtraverser[S,T]) = {
+  override def traverse(trav:PFAtraverser[S,T, ? >: this.type]) = {
     trav.init()
     for(si <- 0 until size) {
       val s = state(si)
-      trav.state(si,s,initialStateIndexProb(si),finalStateIndexProb(si))
+      trav.state(this, si,s,initialStateIndexProb(si),finalStateIndexProb(si))
     }
     trav.postState()
     for(si0 <- 0 until size) {
@@ -91,16 +91,16 @@ trait IndexedPFA[S,T]
           val prob = transitionIndex(si0,ti,si1)
           if (prob>0.0) {
             //println("        echo " + si0 + " " + ti + " " + si1)
-            trav.presentEdge(si0, s0, ti, t, si1, s1, prob)
+            trav.presentEdge(this, si0, s0, ti, t, si1, s1, prob)
             absent=false
           } else {
-            trav.absentEdge(si0, s0, ti, t, si1, s1)
+            trav.absentEdge(this, si0, s0, ti, t, si1, s1)
           }
           //println("  end traversing")
         }
 
         if (absent) {
-          trav.absentEdge(si0, s0, ti, t)
+          trav.absentEdge(this, si0, s0, ti, t)
         }
       }
     }

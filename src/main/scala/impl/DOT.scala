@@ -11,6 +11,7 @@
 package org.maraist.fa.impl
 import org.maraist.graphviz.
   {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
+import org.maraist.fa.DFA
 import org.maraist.fa.DFA.{DFAtraverser}
 
 /**
@@ -26,7 +27,7 @@ private[fa] object DOT {
 /**
   * @group graphviz
   */
-private[fa] trait DotTraverseMixin[S,T] {
+private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
   val graphvizOptions: GraphvizOptions
   val sb: StringBuilder
   val nodeLabeling: NodeLabeling[S, T]
@@ -34,7 +35,9 @@ private[fa] trait DotTraverseMixin[S,T] {
   val stateList: IndexedSeq[S]
   val initialState: S
 
-  def state(si: Int, s: S, isInitial: Boolean, isFinal: Boolean): Unit = {
+  def state(
+    dfa: D, si: Int, s: S, isInitial: Boolean, isFinal: Boolean):
+      Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si)
     sb ++= " [shape="
@@ -46,7 +49,7 @@ private[fa] trait DotTraverseMixin[S,T] {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= nodeLabeling.getLabel(s, ???)
+    sb ++= nodeLabeling.getLabel(s, dfa)
     sb ++= ">]\n"
   }
   def postState(): Unit = {
@@ -55,40 +58,42 @@ private[fa] trait DotTraverseMixin[S,T] {
     sb ++= Integer.toString(stateList.indexOf(initialState))
     sb ++= ";\n"
   }
-  def presentEdge(si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S): Unit = {
+  def presentEdge(
+    dfa: D, si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S):
+      Unit = {
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= getArrowLabel(si0, s0, ti0, t, si1, s1)
+    sb ++= getArrowLabel(dfa, si0, s0, ti0, t, si1, s1)
     sb ++= "> ];\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
 
   protected def getArrowLabel(
-    si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S
+    dfa: D, si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S
   ): String = trLabeling.getLabel(t)
 }
 
 /**
   * @group graphviz
   */
-private[fa] trait DOTQuietDFAMethods[S,T] {
-  def init(states: Int, labels: Int): Unit = { }
-  def absentEdge(fromIndex: Int, fromState:S, labelIndex: Int, label: T): Unit = { }
+private[fa] trait DOTQuietDFAMethods[S, T, D <: DFA[S,T]] {
+  def init(dfa: D, states: Int, labels: Int): Unit = { }
+  def absentEdge(dfa: D, fromIndex: Int, fromState:S, labelIndex: Int, label: T): Unit = { }
   def finish(): Unit = { }
 }
 
 /**
   * @group graphviz
   */
-private[fa] open class DotTraverseDFA[S,T](
+private[fa] open class DotTraverseDFA[S, T, D <: DFA[S,T]](
   val graphvizOptions: GraphvizOptions,
   val sb:  StringBuilder,
   val nodeLabeling: NodeLabeling[S, T],
   val trLabeling: TransitionLabeling[T],
   val stateList: IndexedSeq[S],
   val initialState: S)
-    extends DFAtraverser[S,T]
-    with DotTraverseMixin[S,T] with DOTQuietDFAMethods[S,T]
+    extends DFAtraverser[S, T, D]
+    with DotTraverseMixin[S,T,D] with DOTQuietDFAMethods[S,T,D]

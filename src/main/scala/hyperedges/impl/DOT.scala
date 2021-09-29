@@ -11,7 +11,7 @@
 package org.maraist.fa.hyperedges.impl
 import org.maraist.graphviz.{GraphvizOptions,NodeLabeling,TransitionLabeling}
 import org.maraist.fa.impl.{DOT, DotTraverseMixin}
-import org.maraist.fa.hyperedges.{HyperedgeDFAtraverser}
+import org.maraist.fa.hyperedges.{HyperedgeDFAtraverser,HyperedgeDFA}
 import org.maraist.fa.DFA.{DFAtraverser}
 
 /**
@@ -49,21 +49,22 @@ private[fa] trait HyperedgeDOTmixin[S] {
 /**
   * @group graphviz
   */
-private[fa] trait DOTQuietDFAMethods[S,T] {
-  def init(states:Int, labels:Int): Unit = { }
-  def absentEdge(fromIndex:Int, fromState:S, labelIndex:Int, label:T): Unit = { }
+private[fa] trait DOTQuietDFAMethods[S, T, D <: HyperedgeDFA[S,T]] {
+  def init(dfa: D, states:Int, labels:Int): Unit = { }
+  def absentEdge(
+    dfa: D, fromIndex:Int, fromState:S, labelIndex:Int, label:T): Unit = { }
   def finish(): Unit = { }
 }
 
 /**
   * @group graphviz
   */
-private[fa] class DotTraverseHyperedgeDFA[S, T](
+private[fa] class DotTraverseHyperedgeDFA[S, T, D <: HyperedgeDFA[S, T]](
   val graphvizOptions:GraphvizOptions,
   val sb:StringBuilder,
   val nodeLabeling:NodeLabeling[S, T],
   val trLabeling:TransitionLabeling[T],
   val stateList:IndexedSeq[S],
   val initialState:S)
-extends HyperedgeDFAtraverser[S, T] with DotTraverseMixin[S, T]
-with HyperedgeDOTmixin[S] with DOTQuietDFAMethods[S, T]
+extends HyperedgeDFAtraverser[S, T, D] with DotTraverseMixin[S, T, D]
+with HyperedgeDOTmixin[S] with DOTQuietDFAMethods[S, T, D]

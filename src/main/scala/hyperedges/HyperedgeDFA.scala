@@ -19,7 +19,7 @@ import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
   *  @group Hyperedge
   */
 trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S, T] {
-  override type Traverser <: HyperedgeDFAtraverser[S,T]
+  override type Traverser <: HyperedgeDFAtraverser[S, T, ? >: this.type]
 
   /** {@inheritDoc} */
   override protected def internalsToDOT(
@@ -69,6 +69,7 @@ trait IndexedHyperedgeDFA[S,T] extends IndexedDFA[S,T] with HyperedgeDFA[S,T]
  *
  * @group DFA
  */
-trait HyperedgeDFAtraverser[S,-T] extends DFA.DFAtraverser[S,T] {
+trait HyperedgeDFAtraverser[S, -T, -D <: HyperedgeDFA[S,T]]
+extends DFA.DFAtraverser[S,T,D] {
   def eHyperedge(sourceIndex:Int, source:S, targets:Set[S]): Unit
 }
