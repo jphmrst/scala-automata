@@ -9,8 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.impl
-import org.maraist.graphviz.
-  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
 import org.maraist.fa.DFA
 import org.maraist.fa.DFA.{DFAtraverser}
 
@@ -30,7 +29,6 @@ private[fa] object DOT {
 private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
   val graphvizOptions: GraphvizOptions[S, T]
   val sb: StringBuilder
-  val nodeLabeling: NodeLabeling[S, T]
   val trLabeling: TransitionLabeling[T]
   val stateList: IndexedSeq[S]
   val initialState: S
@@ -49,7 +47,7 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= nodeLabeling.getLabel(s, dfa)
+    sb ++= graphvizOptions.getNodeLabel(s, dfa)
     sb ++= ">]\n"
   }
   def postState(): Unit = {
@@ -91,7 +89,6 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: DFA[S,T]] {
 private[fa] open class DotTraverseDFA[S, T, D <: DFA[S,T]](
   val graphvizOptions: GraphvizOptions[S, T],
   val sb:  StringBuilder,
-  val nodeLabeling: NodeLabeling[S, T],
   val trLabeling: TransitionLabeling[T],
   val stateList: IndexedSeq[S],
   val initialState: S)

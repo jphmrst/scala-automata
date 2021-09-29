@@ -64,4 +64,4 @@ lazy val main = project
     unmanagedSources / excludeFilter := ".#*",
     scalacOptions ++= Seq( "-source:future-migration" ),
   )
-  .dependsOn(RootProject(file("/home/jm/Lib/Scala/git-LaTeX")))
+  .dependsOn(RootProject(file("/home/jm/Lib/Scala/LaTeX")))

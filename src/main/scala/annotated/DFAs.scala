@@ -9,8 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.annotated
-import org.maraist.graphviz.
-  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.DFA
 import org.maraist.fa.DFA.DFAelements
@@ -69,7 +68,7 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   import org.maraist.fa.impl.DotTraverseDFA
   protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
     new DotTraverseDFA[S, T, EdgeAnnotatedArrayDFA[S,T,A]](
-      summon[GraphvizOptions[S, T]], sb, summon[NodeLabeling[S, T]],
+      summon[GraphvizOptions[S, T]], sb,
       summon[TransitionLabeling[T]], stateList, getInitialState
     ) {
       protected override def getArrowLabel(

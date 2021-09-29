@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges.impl
-import org.maraist.graphviz.{GraphvizOptions,NodeLabeling,TransitionLabeling}
+import org.maraist.graphviz.{GraphvizOptions,TransitionLabeling}
 import org.maraist.fa.impl.{DOT, DotTraverseMixin}
 import org.maraist.fa.hyperedges.{HyperedgeDFAtraverser,HyperedgeDFA}
 import org.maraist.fa.DFA.{DFAtraverser}
@@ -62,7 +62,6 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: HyperedgeDFA[S,T]] {
 private[fa] class DotTraverseHyperedgeDFA[S, T, D <: HyperedgeDFA[S, T]](
   val graphvizOptions:GraphvizOptions[S, T],
   val sb:StringBuilder,
-  val nodeLabeling:NodeLabeling[S, T],
   val trLabeling:TransitionLabeling[T],
   val stateList:IndexedSeq[S],
   val initialState:S)

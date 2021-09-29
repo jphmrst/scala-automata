@@ -13,7 +13,6 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
 import org.maraist.util.IndexSetsTracker
-import org.maraist.graphviz.NodeLabeling
 import org.maraist.fa.hyperedges.HyperedgeNDFA
 import org.maraist.fa.impl.{AbstractArrayDFA, AbstractArrayNDFA}
 
@@ -117,8 +116,6 @@ with HyperedgeNDFA[S,T,ArrayHyperedgeDFA[Set[S],T]] {
         dfaStates, initialStateIdx, dfaFinals.toSet, transitionsSeq,
         dfaTransitions,
         dfaEHyperedges.map({case (k, v) => (k, v.toSet)}).toMap)
-    // result.nodeLabeling =
-    //   NodeLabeling.labelingSetOf("", "<br/>", "", nodeLabeling)
     result
   }
 }

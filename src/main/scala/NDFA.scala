@@ -10,8 +10,7 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
-import org.maraist.graphviz.
-  {Graphable, GraphvizOptions, NodeLabeling, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
 import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder,
     LabelsHolder, NondeterministicLabelledTransitionHolder,
@@ -67,7 +66,6 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
     stateList: IndexedSeq[S],
     sb: StringBuilder
   )(using
-    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions[S, T]
   ): Unit = {
@@ -86,7 +84,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
         sb ++= graphvizOptions.nodeShape
       }
       sb ++= ",label=<"
-      sb ++= nodeLabeling.getLabel(s, this)
+      sb ++= graphvizOptions.getNodeLabel(s, this)
       sb ++= ">];\n"
     }
 
@@ -130,7 +128,6 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
 
   /** {@inheritDoc} */
   def toDOT(using
-    nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions[S, T]
   ):String = {
