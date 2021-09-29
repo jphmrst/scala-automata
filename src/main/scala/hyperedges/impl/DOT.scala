@@ -60,7 +60,7 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: HyperedgeDFA[S,T]] {
   * @group graphviz
   */
 private[fa] class DotTraverseHyperedgeDFA[S, T, D <: HyperedgeDFA[S, T]](
-  val graphvizOptions:GraphvizOptions,
+  val graphvizOptions:GraphvizOptions[S, T],
   val sb:StringBuilder,
   val nodeLabeling:NodeLabeling[S, T],
   val trLabeling:TransitionLabeling[T],

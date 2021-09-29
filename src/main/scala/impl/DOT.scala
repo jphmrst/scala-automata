@@ -28,7 +28,7 @@ private[fa] object DOT {
   * @group graphviz
   */
 private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
-  val graphvizOptions: GraphvizOptions
+  val graphvizOptions: GraphvizOptions[S, T]
   val sb: StringBuilder
   val nodeLabeling: NodeLabeling[S, T]
   val trLabeling: TransitionLabeling[T]
@@ -89,7 +89,7 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: DFA[S,T]] {
   * @group graphviz
   */
 private[fa] open class DotTraverseDFA[S, T, D <: DFA[S,T]](
-  val graphvizOptions: GraphvizOptions,
+  val graphvizOptions: GraphvizOptions[S, T],
   val sb:  StringBuilder,
   val nodeLabeling: NodeLabeling[S, T],
   val trLabeling: TransitionLabeling[T],

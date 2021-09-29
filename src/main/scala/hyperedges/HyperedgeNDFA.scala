@@ -27,7 +27,7 @@ extends NDFA[S, T, ThisDFA] with Hyperedge[S, T] {
   )(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ):
       Unit = {
     super.internalsToDOT(stateList, sb)

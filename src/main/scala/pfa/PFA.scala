@@ -160,7 +160,7 @@ trait PFA[S,T]
   )(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions):
+    graphvizOptions: GraphvizOptions[S, T]):
       Unit = {
     traverse(new PFAdotTraverser[S,T,PFA[S,T]](
       sb, nodeLabeling, transitionLabeling, graphvizOptions))
@@ -170,7 +170,7 @@ trait PFA[S,T]
   def toDOT(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ):String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()

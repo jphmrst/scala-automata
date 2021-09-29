@@ -27,7 +27,7 @@ trait HyperedgeDFA[S,T] extends DFA[S,T] with Hyperedge[S, T] {
   )(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ):
       Unit = {
     super.internalsToDOT(stateList, sb)

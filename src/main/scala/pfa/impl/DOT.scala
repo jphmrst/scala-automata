@@ -21,7 +21,7 @@ private[fa] class PFAdotTraverser[S, T, P >: PFA[S,T] <: Graphable[S,T]](
   val sb: StringBuilder,
   val nodeLabeling: NodeLabeling[S, T],
   val trLabeling: TransitionLabeling[T],
-  val graphvizOptions: GraphvizOptions)
+  val graphvizOptions: GraphvizOptions[S, T])
 extends PFAtraverser[S, T, P]() {
 
   override def state(pfa: P, si: Int, s: S,

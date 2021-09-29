@@ -30,7 +30,7 @@ trait Hyperedge[S, T] {
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
     nodeLabeling: NodeLabeling[S, T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ):Unit = {
     var edge:Int = 0
     val stateCount = stateList.length

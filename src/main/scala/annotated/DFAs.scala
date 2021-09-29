@@ -69,7 +69,7 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   import org.maraist.fa.impl.DotTraverseDFA
   protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
     new DotTraverseDFA[S, T, EdgeAnnotatedArrayDFA[S,T,A]](
-      summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
+      summon[GraphvizOptions[S, T]], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, getInitialState
     ) {
       protected override def getArrowLabel(

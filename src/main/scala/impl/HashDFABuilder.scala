@@ -36,7 +36,7 @@ extends AbstractHashDFABuilder[
   type Traverser = DFAtraverser[S,T, ? >: this.type]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
     new DotTraverseDFA[S, T, this.type](
-      summon[GraphvizOptions], sb, summon[NodeLabeling[S, T]],
+      summon[GraphvizOptions[S, T]], sb, summon[NodeLabeling[S, T]],
       summon[TransitionLabeling[T]], stateList, initialState)
   protected def assembleDFA(statesSeq: IndexedSeq[S],
                             initialIdx: Int,

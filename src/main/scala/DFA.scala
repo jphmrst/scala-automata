@@ -97,7 +97,7 @@ trait DFA[S,T]
   )(using
     nodeLabeling: NodeLabeling[S, T],
     trLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions):
+    graphvizOptions: GraphvizOptions[S, T]):
       Unit = {
 
     // Initial state
@@ -118,7 +118,7 @@ trait DFA[S,T]
 
   /** {@inheritDoc} */
   override def toDOT
-    (using NodeLabeling[S, T], TransitionLabeling[T], GraphvizOptions):
+    (using NodeLabeling[S, T], TransitionLabeling[T], GraphvizOptions[S, T]):
       String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()

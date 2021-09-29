@@ -69,7 +69,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
   )(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ): Unit = {
 
     // Initial state
@@ -132,7 +132,7 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
   def toDOT(using
     nodeLabeling: NodeLabeling[S, T],
     transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions
+    graphvizOptions: GraphvizOptions[S, T]
   ):String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
