@@ -9,16 +9,16 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.pfa.impl
-import org.maraist.graphviz.{Graphable, GraphvizOptions}
-import org.maraist.fa.pfa.{PFA,PFAtraverser}
-import org.maraist.fa.impl.{DOT}
+import org.maraist.graphviz.{Graphable, GraphStyle}
+import org.maraist.fa.pfa.{PFA, PFAtraverser}
+import org.maraist.fa.impl.DOT
 
 /**
  * @group graphviz
  */
 private[fa] class PFAdotTraverser[S, T, P >: PFA[S,T] <: Graphable[S,T]](
   val sb: StringBuilder,
-  val graphvizOptions: GraphvizOptions[S, T])
+  val graphvizOptions: GraphStyle[S, T])
 extends PFAtraverser[S, T, P]() {
 
   override def state(pfa: P, si: Int, s: S,

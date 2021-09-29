@@ -10,7 +10,7 @@
 
 package org.maraist.fa.hyperedges.impl
 import scala.collection.mutable.{Builder,HashSet,HashMap}
-import org.maraist.graphviz.{GraphvizOptions}
+import org.maraist.graphviz.{GraphStyle}
 import org.maraist.fa.DFABuilder
 import org.maraist.fa.hyperedges.{
   HyperedgeDFAtraverser, HyperedgeDFA, HyperedgeDFABuilder}
@@ -40,7 +40,7 @@ class HashHyperedgeDFABuilder[S, T](initialState: S)
   type Traverser = HyperedgeDFAtraverser[S,T, this.type]
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
     new DotTraverseHyperedgeDFA[S,T, this.type](
-      summon[GraphvizOptions[S, T]], sb, stateList, initialState)
+      summon[GraphStyle[S, T]], sb, stateList, initialState)
 
   protected def assembleDFA(statesSeq: IndexedSeq[S],
                             initialIdx: Int,

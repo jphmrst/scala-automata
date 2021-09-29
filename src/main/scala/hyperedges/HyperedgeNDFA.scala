@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.graphviz.{Graphable, GraphvizOptions}
+import org.maraist.graphviz.{Graphable, GraphStyle}
 import org.maraist.fa.elements.HasBuilder
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.IndexedNDFA
@@ -24,7 +24,7 @@ extends NDFA[S, T, ThisDFA] with Hyperedge[S, T] {
   override protected def internalsToDOT(
     stateList: IndexedSeq[S], sb: StringBuilder
   )(using
-    graphvizOptions: GraphvizOptions[S, T]):
+    graphvizOptions: GraphStyle[S, T]):
       Unit = {
     super.internalsToDOT(stateList, sb)
     eHyperedgesToDOT(stateList, sb)

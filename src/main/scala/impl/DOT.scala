@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.impl
-import org.maraist.graphviz.{Graphable, GraphvizOptions}
+import org.maraist.graphviz.{Graphable, GraphStyle}
 import org.maraist.fa.DFA
 import org.maraist.fa.DFA.{DFAtraverser}
 
@@ -27,7 +27,7 @@ private[fa] object DOT {
   * @group graphviz
   */
 private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
-  val graphStyle: GraphvizOptions[S, T]
+  val graphStyle: GraphStyle[S, T]
   val sb: StringBuilder
   val stateList: IndexedSeq[S]
   val initialState: S
@@ -82,7 +82,7 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: DFA[S,T]] {
   * @group graphviz
   */
 private[fa] open class DotTraverseDFA[S, T, D <: DFA[S,T]](
-  val graphStyle: GraphvizOptions[S, T],
+  val graphStyle: GraphStyle[S, T],
   val sb:  StringBuilder,
   val stateList: IndexedSeq[S],
   val initialState: S)

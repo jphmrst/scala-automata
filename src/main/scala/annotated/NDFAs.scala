@@ -11,7 +11,7 @@
 package org.maraist.fa.annotated
 import scala.collection.immutable.IndexedSeq
 import scala.collection.mutable.{HashMap, HashSet}
-import org.maraist.graphviz.{GraphvizOptions}
+import org.maraist.graphviz.{GraphStyle}
 import org.maraist.util.IndexSetsTracker
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.NDFAelements

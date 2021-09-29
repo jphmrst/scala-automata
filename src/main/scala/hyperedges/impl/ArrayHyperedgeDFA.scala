@@ -10,7 +10,7 @@
 
 package org.maraist.fa.hyperedges.impl
 import scala.collection.mutable.HashMap
-import org.maraist.graphviz.{Graphable, GraphvizOptions}
+import org.maraist.graphviz.{Graphable, GraphStyle}
 import org.maraist.fa.hyperedges.{HyperedgeDFAtraverser, IndexedHyperedgeDFA}
 import org.maraist.fa.impl.{AbstractArrayDFA}
 
@@ -33,7 +33,7 @@ with IndexedHyperedgeDFA[S,T] {
 
   protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
     new DotTraverseHyperedgeDFA[S,T, ArrayHyperedgeDFA[S,T]](
-      summon[GraphvizOptions[S, T]], sb, stateList, getInitialState)
+      summon[GraphStyle[S, T]], sb, stateList, getInitialState)
 
   protected val hyperedgeMap = new HashMap[S,Set[Set[S]]]
   for((si,iss) <- hyperedgeIndexMap)

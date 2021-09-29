@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.graphviz.{GraphvizOptions}
+import org.maraist.graphviz.{GraphStyle}
 
 /**
   *  @group Hyperedge
@@ -28,7 +28,7 @@ trait Hyperedge[S, T] {
   protected def eHyperedgesToDOT(
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    graphvizOptions: GraphvizOptions[S, T]
+    graphvizOptions: GraphStyle[S, T]
   ):Unit = {
     var edge:Int = 0
     val stateCount = stateList.length

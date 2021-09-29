@@ -10,7 +10,7 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet}
-import org.maraist.graphviz.{Graphable, GraphvizOptions}
+import org.maraist.graphviz.{Graphable, GraphStyle}
 import org.maraist.fa.traits.
   { StateHolder, FinalStateSetHolder,
     InitialStateSetHolder, DeterministicLabelledTransitionHolder,
@@ -94,7 +94,7 @@ trait DFA[S,T]
    *  Graphviz representation of a DFA */
   protected def internalsToDOT(stateList: IndexedSeq[S], sb: StringBuilder
   )(using
-    graphvizOptions: GraphvizOptions[S, T]):
+    graphvizOptions: GraphStyle[S, T]):
       Unit = {
 
     // Initial state
@@ -114,7 +114,7 @@ trait DFA[S,T]
   }
 
   /** {@inheritDoc} */
-  override def toDOT(using GraphvizOptions[S, T]):
+  override def toDOT(using GraphStyle[S, T]):
       String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
