@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.impl
-import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions}
 import org.maraist.fa.DFA
 import org.maraist.fa.DFA.{DFAtraverser}
 
@@ -27,9 +27,8 @@ private[fa] object DOT {
   * @group graphviz
   */
 private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
-  val graphvizOptions: GraphvizOptions[S, T]
+  val graphStyle: GraphvizOptions[S, T]
   val sb: StringBuilder
-  val trLabeling: TransitionLabeling[T]
   val stateList: IndexedSeq[S]
   val initialState: S
 
@@ -40,14 +39,14 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= Integer.toString(si)
     sb ++= " [shape="
     if (isFinal) {
-      sb ++= graphvizOptions.finalNodeShape
+      sb ++= graphStyle.finalNodeShape
     } else {
-      sb ++= graphvizOptions.nodeShape
+      sb ++= graphStyle.nodeShape
     }
     sb ++= ",label=<<sup><font color=\"#0000ff\">"
     sb ++= si.toString()
     sb ++= "</font></sup>"
-    sb ++= graphvizOptions.getNodeLabel(s, dfa)
+    sb ++= graphStyle.getNodeLabel(s, dfa)
     sb ++= ">]\n"
   }
   def postState(): Unit = {
@@ -64,14 +63,10 @@ private[fa] trait DotTraverseMixin[S, T, D <: DFA[S,T]] {
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= getArrowLabel(dfa, si0, s0, ti0, t, si1, s1)
+    sb ++= graphStyle.getEdgeLabel(t, s0, s1, dfa)
     sb ++= "> ];\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
-
-  protected def getArrowLabel(
-    dfa: D, si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S
-  ): String = trLabeling.getLabel(t)
 }
 
 /**
@@ -87,9 +82,8 @@ private[fa] trait DOTQuietDFAMethods[S, T, D <: DFA[S,T]] {
   * @group graphviz
   */
 private[fa] open class DotTraverseDFA[S, T, D <: DFA[S,T]](
-  val graphvizOptions: GraphvizOptions[S, T],
+  val graphStyle: GraphvizOptions[S, T],
   val sb:  StringBuilder,
-  val trLabeling: TransitionLabeling[T],
   val stateList: IndexedSeq[S],
   val initialState: S)
     extends DFAtraverser[S, T, D]

@@ -12,7 +12,6 @@ package org.maraist.fa.pfa
 import scala.collection.mutable.{HashSet}
 import scala.collection.immutable.IndexedSeq
 import org.maraist.graphviz.Graphable
-import org.maraist.graphviz.TransitionLabeling
 import org.maraist.fa.traits.
   {IndexedStateHolder, IndexedLabelsHolder, IndexedInitialStateSetHolder,
     IndexedFinalStateSetHolder}

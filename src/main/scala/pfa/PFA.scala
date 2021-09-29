@@ -10,7 +10,7 @@
 
 package org.maraist.fa.pfa
 import scala.collection.mutable.{HashMap,HashSet}
-import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions}
 import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder}
 import org.maraist.fa.impl.{SingleInitialStateMixinElement}
@@ -157,18 +157,14 @@ trait PFA[S,T]
   protected def internalsToDOT(
     stateList:IndexedSeq[S], sb:StringBuilder
   )(using
-    transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions[S, T]):
-      Unit = {
+    graphvizOptions: GraphvizOptions[S, T]
+  ): Unit = {
     traverse(new PFAdotTraverser[S,T,PFA[S,T]](
-      sb, transitionLabeling, graphvizOptions))
+      sb, graphvizOptions))
   }
 
   /** {@inheritDoc} */
-  def toDOT(using
-    transitionLabeling: TransitionLabeling[T],
-    graphvizOptions: GraphvizOptions[S, T]
-  ):String = {
+  def toDOT(using graphvizOptions: GraphvizOptions[S, T]):String = {
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
     internalsToDOT(stateList,sb)

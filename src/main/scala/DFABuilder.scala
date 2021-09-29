@@ -10,7 +10,7 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder}
-import org.maraist.graphviz.{Graphable,TransitionLabeling}
+import org.maraist.graphviz.{Graphable}
 
 /** Builders for deterministic finite automata (DFAs)
   * @tparam S The type of all states of the automaton

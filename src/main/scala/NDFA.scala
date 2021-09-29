@@ -10,7 +10,7 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
-import org.maraist.graphviz.{Graphable, GraphvizOptions, TransitionLabeling}
+import org.maraist.graphviz.{Graphable, GraphvizOptions}
 import org.maraist.fa.traits.
   {StateHolder, FinalStateSetHolder, InitialStateSetHolder,
     LabelsHolder, NondeterministicLabelledTransitionHolder,
@@ -66,7 +66,6 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
     stateList: IndexedSeq[S],
     sb: StringBuilder
   )(using
-    transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions[S, T]
   ): Unit = {
 
@@ -104,18 +103,14 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
         for(s1 <- transitions(s0,t)) {
           writeArrow(
             sb, si0, s1, stateList,
-            getArrowLabel(t, s0, s1, transitionLabeling))
+            graphvizOptions.getEdgeLabel(t, s0, s1, this))
         }
       }
     }
   }
 
-  protected def
-    getArrowLabel(t: T, s0: S, s1: S, trLabeling: TransitionLabeling[T]):
-      String = trLabeling.getLabel(t)
-
-  private def writeArrow(sb:StringBuilder, si0:Int, s1:S,
-                         stateList:IndexedSeq[S], label:String):Unit = {
+  private def writeArrow(sb: StringBuilder, si0: Int, s1: S,
+                         stateList: IndexedSeq[S], label: String): Unit = {
     val si1 = stateList.indexOf(s1)
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
@@ -128,7 +123,6 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
 
   /** {@inheritDoc} */
   def toDOT(using
-    transitionLabeling: TransitionLabeling[T],
     graphvizOptions: GraphvizOptions[S, T]
   ):String = {
     val stateList = IndexedSeq.from(states)

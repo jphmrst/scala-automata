@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.hyperedges
-import org.maraist.graphviz.{GraphvizOptions, TransitionLabeling}
+import org.maraist.graphviz.{GraphvizOptions}
 
 /**
   *  @group Hyperedge

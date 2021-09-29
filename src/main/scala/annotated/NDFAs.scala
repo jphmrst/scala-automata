@@ -11,7 +11,7 @@
 package org.maraist.fa.annotated
 import scala.collection.immutable.IndexedSeq
 import scala.collection.mutable.{HashMap, HashSet}
-import org.maraist.graphviz.{TransitionLabeling}
+import org.maraist.graphviz.{GraphvizOptions}
 import org.maraist.util.IndexSetsTracker
 import org.maraist.fa.NDFA
 import org.maraist.fa.NDFA.NDFAelements
@@ -246,13 +246,6 @@ extends AbstractArrayNDFA[S, T, ThisDFA]
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
       dfaTransitions, tracker, appearsIn, edgeAnnotations
     )
-  }
-
-  override protected def
-    getArrowLabel(t: T, s0: S, s1: S, trLabeling: TransitionLabeling[T]):
-      String = annotation(s0, t, s1) match {
-    case None => trLabeling.getLabel(t)
-    case Some(a) => trLabeling.getLabel(t) + " [" + a.toString() + "]"
   }
 }
 
