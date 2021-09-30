@@ -12,7 +12,7 @@ package org.maraist.fa.annotated
 import org.maraist.graphviz.{Graphable, GraphStyle}
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.DFA
-import org.maraist.fa.DFA.DFAelements
+import org.maraist.fa.DFA.{DFAelements,DFAtraverser}
 import org.maraist.fa.impl.{AbstractArrayDFA, AbstractHashDFABuilder}
 
 /** Implementation of a edge-annotated DFA.
@@ -66,7 +66,8 @@ extends AbstractEdgeAnnotatedArrayDFA[S,T,A](
   type Traverser =
     org.maraist.fa.DFA.DFAtraverser[S, T, EdgeAnnotatedArrayDFA[S,T,A]]
   import org.maraist.fa.impl.DotTraverseDFA
-  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]) =
+  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S])(
+    using style: GraphStyle[S, T]) =
     new DotTraverseDFA[S, T, EdgeAnnotatedArrayDFA[S,T,A]](
       summon[GraphStyle[S, T]], sb, stateList, getInitialState
     )
@@ -199,8 +200,10 @@ extends AbstractHashEdgeAnnotatedDFABuilder[
       edgeAnnotationsArray
     )
 
-  // TODO
-  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S]):
-      Traverser = ???
+  type Traverser = DFAtraverser[S,T, ? >: this.type]
+  protected def dotTraverser(sb: StringBuilder, stateList: IndexedSeq[S])(
+    using style: GraphStyle[S, T]): Traverser =
+    new org.maraist.fa.impl.DotTraverseDFA[S, T, this.type](style, sb, stateList, initialState)
+
 }
 

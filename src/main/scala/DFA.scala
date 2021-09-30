@@ -40,22 +40,10 @@ trait DFA[S,T]
     with Graphable[S,T] {
   type Traverser <: DFAtraverser[S,T, ? >: this.type]
 
-  /** Check whether the automaton accepts the given sequence */
-  def accepts(ts: Seq[T]): Boolean
-
-  override def toString(): String = {
-    val bld: StringBuilder = new StringBuilder
-    for (st <- states) {
-      if (isInitialState(st)) bld ++= "> " else bld ++= "  "
-      bld ++= st.toString() + "\n"
-      for (tr <- labels)
-        transition(st, tr) match {
-          case Some(x) => bld ++= ("  - " + tr + " --> " + x + "\n")
-          case None =>
-        }
-    }
-    bld.toString()
-  }
+  protected def dotTraverser(
+    sb: StringBuilder, stateList: IndexedSeq[S])(
+    using style: GraphStyle[S, T]):
+      Traverser
 
   /** Traverse the structure of this DFA, states first, then transitions */
   def traverse(trav: Traverser) = {
@@ -86,16 +74,13 @@ trait DFA[S,T]
     }
   }
 
-  protected def dotTraverser(sb: StringBuilder,
-                             stateList: IndexedSeq[S]): Traverser
-
   /** Internal routine used by {@link #toDOT}.  Subclesses should
    *  override, but still call super.internalsToDOT, to extend the
    *  Graphviz representation of a DFA */
   protected def internalsToDOT(stateList: IndexedSeq[S], sb: StringBuilder
-  )(using
-    graphvizOptions: GraphStyle[S, T]):
+  )(using graphvizOptions: GraphStyle[S, T]):
       Unit = {
+    // println("        In DFA.dotTraverse with " + graphvizOptions)
 
     // Initial state
     sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
@@ -114,12 +99,30 @@ trait DFA[S,T]
   }
 
   /** {@inheritDoc} */
-  override def toDOT(using GraphStyle[S, T]):
+  override def toDOT(using options: GraphStyle[S, T]):
       String = {
+    // println("       In DFA.toDOT with " + options)
     val stateList = IndexedSeq.from(states)
     val sb = new StringBuilder()
-    internalsToDOT(stateList,sb)
+    internalsToDOT(stateList, sb)
     sb.toString()
+  }
+
+  /** Check whether the automaton accepts the given sequence */
+  def accepts(ts: Seq[T]): Boolean
+
+  override def toString(): String = {
+    val bld: StringBuilder = new StringBuilder
+    for (st <- states) {
+      if (isInitialState(st)) bld ++= "> " else bld ++= "  "
+      bld ++= st.toString() + "\n"
+      for (tr <- labels)
+        transition(st, tr) match {
+          case Some(x) => bld ++= ("  - " + tr + " --> " + x + "\n")
+          case None =>
+        }
+    }
+    bld.toString()
   }
 
   // ---------------------------------------------------------------

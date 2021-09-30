@@ -31,9 +31,11 @@ with IndexedHyperedgeDFA[S,T] {
 
   type Traverser = HyperedgeDFAtraverser[S, T, ArrayHyperedgeDFA[S,T]]
 
-  protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S]) =
+  protected def dotTraverser(sb:StringBuilder,stateList:IndexedSeq[S])(
+    using style: GraphStyle[S, T]
+  ) =
     new DotTraverseHyperedgeDFA[S,T, ArrayHyperedgeDFA[S,T]](
-      summon[GraphStyle[S, T]], sb, stateList, getInitialState)
+      style, sb, stateList, getInitialState)
 
   protected val hyperedgeMap = new HashMap[S,Set[Set[S]]]
   for((si,iss) <- hyperedgeIndexMap)
