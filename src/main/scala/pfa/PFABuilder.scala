@@ -51,7 +51,7 @@ trait PFABuilder[S,T]
   /** Removes any epsilon transition from `s1` to `s2` */
   def removeETransition(s1:S, s2:S): Unit
 
-  /** Returns the (possibly immutable) [[org.maraist.fa.PFA PFA]]
+  /** Returns the (possibly immutable) [[org.maraist.fa.pfa.PFA PFA]]
     * described to this builder */
   type ThisPFA <: PFA[S,T]
   def toPFA: ThisPFA

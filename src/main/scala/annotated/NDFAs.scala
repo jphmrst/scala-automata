@@ -304,7 +304,6 @@ extends AbstractEdgeAnnotatedArrayNDFA
       dfaTransitions, edgeAnnotations)
 }
 
-
 // -----------------------------------------------------------------
 // NDFA builder
 // -----------------------------------------------------------------

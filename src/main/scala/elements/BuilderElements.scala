@@ -17,8 +17,8 @@ case class RemoveState[S,T](state: S)
 case class RemoveFinalState[S,T](state: S)
 case class AddFinalState[S,T](state: S)
 
-/** [[Builder]]-pattern element for setting the initial state in a
-  * [[DFABuilder DFA builder]].
+/** [[scala.collection.mutable.Builder Builder]]-pattern element for
+  * setting the initial state in a [[DFABuilder DFA builder]].
   * @tparam S The type of all states of the automaton
   * @group builderElements
   */

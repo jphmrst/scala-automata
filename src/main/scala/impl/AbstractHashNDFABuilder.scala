@@ -58,7 +58,7 @@ abstract class AbstractHashNDFABuilder
   /** @deprecated */
   def toNDFA: ThisNDFA = result()
 
-  /** Creates an immutable [[org.maraist.fa.ArrayNDFA ArrayNDFA]]
+  /** Creates an immutable [[org.maraist.fa.impl.ArrayNDFA ArrayNDFA]]
     * corresponding to the automaton described to this builder.
     */
   def result(): ThisNDFA = {

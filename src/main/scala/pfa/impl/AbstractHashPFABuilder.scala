@@ -14,8 +14,8 @@ import scala.collection.mutable.HashSet
 import org.maraist.fa.pfa.{PFA, IndexedPFA, PFABuilder}
 import org.maraist.fa.impl.{HashSetStateBuilderMixin}
 
-/** Implementation of [[org.maraist.fa.PFABuilder PFABuilder]] using
- *  [[scala.collection.mutable.HashSet `HashSet`s]] and
+/** Implementation of [[org.maraist.fa.pfa.PFABuilder PFABuilder]]
+ *  using [[scala.collection.mutable.HashSet `HashSet`s]] and
  *  [[scala.collection.mutable.HashMap `HashMap`s]].
  * @param initialState The initial state of the automaton.  This builder must
  * be instantiated with one state, initially taken to be the initial state.

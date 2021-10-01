@@ -182,11 +182,13 @@ trait DFA[S,T]
   * @groupdesc DFA
   * @groupprio DFA 100
   *
-  * @groupname builderElements Arguments to [[Builder]]s for [[DFA]]s
+  * @groupname builderElements Arguments to
+  * [[scala.collection.mutable.Builder Builder]]s for [[DFA]]s
   * @groupdesc builderElements
   * @groupprio builderElements 150
   *
-  * @groupname builderPattern [[Builder]] pattern method
+  * @groupname builderPattern [[scala.collection.mutable.Builder Builder]]
+  * pattern method
   * @groupdesc builderPattern
   * @groupprio builderPattern 160
   */
@@ -290,7 +292,8 @@ object DFA {
 
   // Directives for the Builder pattern
 
-  /** All [[Builder]]-pattern elements pertaining to [[DFA]]s.
+  /** All [[scala.collection.mutable.Builder Builder]]-pattern elements
+    * pertaining to [[DFA]]s.
     *
     *  @tparam S The type of all states of the automaton
     *  @tparam T The type of labels on transitions of the automaton
@@ -306,7 +309,8 @@ object DFA {
 
   // Fetch a builder for the pattern.
 
-  /** [[Builder]] pattern method for [[DFA]]s.
+  /** [[scala.collection.mutable.Builder Builder]] pattern method for
+    * [[DFA]]s.
     *
     *  @tparam S The type of all states of the automaton
     *  @tparam T The type of labels on transitions of the automaton
@@ -316,7 +320,8 @@ object DFA {
   def newBuilder[S, T](initialState: S) =
     newBuilderFor[S, T, HashDFABuilder, DFA](initialState)
 
-  /** [[Builder]] pattern method for [[DFA]]s.
+  /** [[scala.collection.mutable.Builder Builder]] pattern method for
+    * [[DFA]]s.
     *
     *  @tparam S The type of all states of the automaton
     *  @tparam T The type of labels on transitions of the automaton
@@ -330,7 +335,8 @@ object DFA {
   ](initialState: S)(using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]) =
     impl.build[S,T](initialState)
 
-  /** Implementation of [[Builder]] pattern for [[DFA]]s.
+  /** Implementation of [[scala.collection.mutable.Builder Builder]]
+    * pattern for [[DFA]]s.
     *
     * @group builderPattern
     */
