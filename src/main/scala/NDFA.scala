@@ -109,8 +109,15 @@ trait NDFA[S, T, +ThisDFA <: IndexedDFA[Set[S],T]]
     }
   }
 
-  private def writeArrow(sb: StringBuilder, si0: Int, s1: S,
-                         stateList: IndexedSeq[S], label: String): Unit = {
+  /**
+    * Write the DOT source for drawing an arrow.  When overriding, the
+    * expectation is to call the superclass implementation in addition
+    * to whatever other work.
+    */
+  protected def writeArrow(
+    sb: StringBuilder, si0: Int, s1: S,
+    stateList: IndexedSeq[S], label: String):
+      Unit = {
     val si1 = stateList.indexOf(s1)
     sb ++= DOT.tabToVmark
     sb ++= Integer.toString(si0)
