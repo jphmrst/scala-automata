@@ -24,12 +24,8 @@ import org.maraist.fa.styles.AutomatonStyle
 trait NFABuilder[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT, -DZ[DS, DT] <: Z[DS, DT]] <: DFA[S, T, Z],
-  +N[
-    NS, NT, NG[X] <: G[X],
-    +ND[DS, DT, -DZ[DS, DT] <: Z[DS, DT]] <: D[DS, DT, DZ],
-    -NZ[NS, NT] <: Z[NS, NT]]
-    <: NFA[S, T, G, D, Z],
+  +D[DS, DT] <: DFA[S, T, Z],
+  +N[NS, NT] <: NFA[S, T, G, D, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends FABuilder[S, T, Z] with UnindexedNFA[S, T, G, D, Z] {

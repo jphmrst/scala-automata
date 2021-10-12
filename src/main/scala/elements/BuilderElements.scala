@@ -10,15 +10,30 @@
 
 package org.maraist.fa.elements
 import scala.collection.mutable.{Builder, HashMap, HashSet}
-import org.maraist.fa.DFA.IndexedDFA
 
 case class AddState[S,T](state: S)
 case class RemoveState[S,T](state: S)
 case class RemoveFinalState[S,T](state: S)
 case class AddFinalState[S,T](state: S)
 
+/** All [[scala.collection.mutable.Builder Builder]]-pattern elements
+  * pertaining to [[DFA]]s.
+  *
+  *  @tparam S The type of all states of the automaton
+  *  @tparam T The type of labels on transitions of the automaton
+  *
+  * @group builderElements
+  */
+type DFAelements[S, T] = (
+  SingleInitialStateMixinElement[S,T]
+    | StateBuilderElement[S,T]
+    | FinalStateSetBuilderElement[S,T]
+    | DeterministicLabelledTransitionMixinElement[S, T]
+)
+
 /** [[scala.collection.mutable.Builder Builder]]-pattern element for
-  * setting the initial state in a [[DFABuilder DFA builder]].
+  * setting the initial state in a
+  * [[org.maraist.fa.traits.DFABuilder DFA builder]].
   * @tparam S The type of all states of the automaton
   * @group builderElements
   */
@@ -31,3 +46,24 @@ case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
 
 case class AddETransition[S](state1: S, state2: S)
 case class RemoveETransition[S](state1: S, state2: S)
+
+type StateBuilderElement[S, T] = AddState[S,T] | RemoveState[S,T]
+
+type FinalStateSetBuilderElement[S, T] =
+  AddFinalState[S,T] | RemoveFinalState[S,T]
+
+type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
+
+type InitialStateSetTraitElements[S, T] =
+  AddInitialState[S] | RemoveInitialState[S]
+
+type DeterministicLabelledTransitionMixinElement[S, T] =
+  AddTransition[S, T] | RemoveTransition[S, T]
+
+type NondeterministicLabelledTransitionMixinElements[S, T] =
+  AddTransition[S, T] | RemoveTransition[S, T]
+
+type UnlabelledTransitionBuilderElements[S] =
+  AddETransition[S] | RemoveETransition[S]
+
+

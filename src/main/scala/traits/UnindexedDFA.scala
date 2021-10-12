@@ -21,7 +21,7 @@ trait UnindexedDFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 extends UnindexedFA[S, T, Z] {
 
   /** Returns the initial state. */
-  def getInitialState: S
+  def initialState: S
 
   /** Returns the state, if any, into which the automaton could
     * transition starting from `s` via a transition labelled `t`.

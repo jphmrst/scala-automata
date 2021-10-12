@@ -69,5 +69,5 @@ extends Graphable[S, T, Z] {
       do action(s0, t, s1)
 
   /** Returns `true` if this automaton accepts the given string. */
-  def accepts(string: Seq[S]): Boolean
+  def accepts(string: Seq[T]): Boolean
 }

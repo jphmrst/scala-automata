@@ -20,7 +20,7 @@ import org.maraist.fa.styles.AutomatonStyle
   */
 trait DFABuilder[
   S, T,
-  +D[DS, DT, -DZ[DS, DT] <: Z[DS, DT]] <: DFA[S, T, Z],
+  +D[DS, DT] <: DFA[S, T, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends FABuilder[S, T, Z] with UnindexedDFA[S, T, Z] {
@@ -29,7 +29,7 @@ extends FABuilder[S, T, Z] with UnindexedDFA[S, T, Z] {
   def removeTransition(s1: S, t: T): Unit
 
   /** Return the specified DFA. */
-  def toDFA: D[S, T, Z]
+  def toDFA: D[S, T]
 
   /** Set the initial state of the DFA. */
   def setInitialState(s: S): Unit

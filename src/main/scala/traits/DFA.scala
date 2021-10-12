@@ -11,17 +11,23 @@
 package org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
-/** Methods associated with a deterministic finite automaton (not
-  * using indexed storage).
+/** Methods associated with a deterministic finite automaton (using
+  * indexed storage).
   *
   * @tparam S Type representing states.
   * @tparam T Type representing transition labels.
   * @tparam Z Type of style options for Graphviz export
   */
-trait DFA[S, T, Z[S, T] <: AutomatonStyle[S, T]]
+trait DFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends UnindexedDFA[S, T, Z] {
 
   /** Returns the index of the initial state. */
   def initialStateIndex: Int
+
+  /** Returns the index of the state, if any, which is the target of a
+   * transition from the state numbered `si` via the transition
+   * numbered `ti`
+   */
+  def transitionIndex(si: Int, ti: Int): Option[Int]
 }

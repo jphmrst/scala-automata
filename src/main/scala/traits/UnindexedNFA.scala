@@ -23,11 +23,11 @@ import org.maraist.fa.styles.AutomatonStyle
 trait UnindexedNFA[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT, -DZ[DS, DT] <: Z[DS, DT]] <: DFA[S, T, Z],
+  +D[DS, DT] <: DFA[S, T, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends UnindexedFA[S, T, Z] {
 
   /** Return the specified DFA. */
-  def toDFA: D[G[S], T, Z]
+  def toDFA: D[G[S], T]
 }
