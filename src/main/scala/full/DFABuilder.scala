@@ -28,7 +28,7 @@ import org.maraist.fa.traits
 trait DFABuilder[
   S, T,
   +D[S, T] <: DFA[S, T, Z],
-  K[X, Y] >: DFAelements[X, Y] <: Matchable,
+  K >: DFAelements[S, T] <: Matchable,
   -Z[X, Y] <: AutomatonStyle[X, Y]
 ]
 
@@ -116,18 +116,16 @@ extends traits.DFABuilder[S, T, D, K, Z]
     result.toSet
   }
 
-//  protected def dispatchDFAElement(elem: K[S, T]): Unit = elem match {
-//    case AddState(s) => addState(s)
-//    case RemoveState(s) => removeState(s)
-//    case AddFinalState(s) => addFinalState(s)
-//    case RemoveFinalState(s) => removeFinalState(s)
-//    case SetInitialState(s) => setInitialState(s)
-//    case AddTransition(state1, trans, state2) =>
-//      addTransition(state1, trans, state2)
-//    case RemoveTransition(state, trans, state2) =>
-//      removeTransition(state, trans)
-//  }
-//
-//  override def addOne(elem: K[S, T]): Unit =
-//    dispatchDFAElement(elem)
+  override def addOne(elem: K): this.type = {
+    elem match {
+      case SetInitialState(s): SetInitialState[S] =>
+        setInitialState(s)
+      case AddTransition(state1, trans, state2): AddTransition[S, T] =>
+        addTransition(state1, trans, state2)
+      case RemoveTransition(state, trans, state2): RemoveTransition[S,T] =>
+        removeTransition(state, trans)
+      case _ => super.addOne(elem)
+    }
+    this
+  }
 }

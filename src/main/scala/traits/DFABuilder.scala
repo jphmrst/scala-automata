@@ -23,7 +23,7 @@ import org.maraist.fa.styles.AutomatonStyle
 trait DFABuilder[
   S, T,
   +D[DS, DT] <: DFA[DS, DT, Z],
-  -K[KS, KT] >: elements.DFAelements[KS, KT] <: Matchable,
+  -K >: elements.DFAelements[S, T] <: Matchable,
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends FABuilder[S, T, D, K, Z] with UnindexedDFA[S, T, Z] {
@@ -38,7 +38,7 @@ extends FABuilder[S, T, D, K, Z] with UnindexedDFA[S, T, Z] {
 //    * implementation.
 //    */
 //  // final
-//  def addOne(builder: K[S, T]): this.type
+//  def addOne(builder: K): this.type
 //  //   = {
 //  //   addBuilderElement(builder)
 //  //   this

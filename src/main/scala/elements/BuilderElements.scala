@@ -12,28 +12,10 @@ package org.maraist.fa.elements
 import scala.collection.mutable.{Builder}
 import org.maraist.fa.traits
 
-trait Element[X] {
-  def apply(fa: X): Unit
-}
-
-trait FAElement[S, T] extends Element[traits.FABuilder[S, T, ?, ?, ?]]
-
-case class AddState[S, T](state: S) extends FAElement[S, T] {
-  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
-    fa.addState(state)
-}
-case class RemoveState[S,T](state: S) extends FAElement[S, T] {
-  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
-    fa.removeState(state)
-}
-case class RemoveFinalState[S,T](state: S) extends FAElement[S, T] {
-  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
-    fa.removeFinalState(state)
-}
-case class AddFinalState[S,T](state: S) extends FAElement[S, T] {
-  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
-    fa.addFinalState(state)
-}
+case class AddState[S, T](state: S)
+case class RemoveState[S,T](state: S)
+case class RemoveFinalState[S,T](state: S)
+case class AddFinalState[S,T](state: S)
 
 /** All [[scala.collection.mutable.Builder Builder]]-pattern elements
   * pertaining to any [[traits.FA finite automaton]].

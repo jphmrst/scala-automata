@@ -10,7 +10,7 @@
 
 package org.maraist.fa.full
 import scala.collection.mutable.{HashMap,HashSet}
-import org.maraist.fa.elements.{FAelements, FAElement,
+import org.maraist.fa.elements.{FAelements,
   AddState, RemoveState, AddFinalState, RemoveFinalState}
 import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
@@ -27,7 +27,7 @@ import org.maraist.fa.traits
 trait FABuilder[
   S, T,
   +A[AS, AT] <: FA[AS, AT, Z],
-  K[X, Y] >: FAelements[X, Y] <: Matchable, // TODO revisit DFA vs. FA elements
+  K >: FAelements[S, T] <: Matchable, // TODO revisit DFA vs. FA elements
   -Z[X, Y] <: AutomatonStyle[X, Y]
 ]
 
@@ -39,13 +39,13 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
   /** Storage for all final state objects */
   protected val finalStatesSet: HashSet[S] = new HashSet[S]
 
-//  /** {@inheritDoc} When overriding this method, it is important to call
-//    * `super.clear()`.
-//    */
-//  override def clear(): Unit = {
-//    allStates.clear()
-//    finalStatesSet.clear()
-//  }
+  /** {@inheritDoc} When overriding this method, it is important to call
+    * `super.clear()`.
+    */
+  override def clear(): Unit = {
+    allStates.clear()
+    finalStatesSet.clear()
+  }
 
   override def addState(s:S):Unit = { allStates += s }
   override def removeState(s:S):Unit = {
@@ -68,9 +68,13 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
   override def finalStates: Set[S] = Set.from(finalStatesSet)
   override def isFinalState(s: S): Boolean = finalStatesSet.contains(s)
 
-//  protected def dispatchFAElement(elem: FAElement[S, T]): Unit = elem(this)
-//
-//  override def addOne(elem: K[S, T]): Unit = elem match {
-//    case e: FAElement[S, T] => dispatchFAElement(elem)
-//  }
+  override def addOne(elem: K): this.type = {
+    elem match {
+      case AddState(s): AddState[S,T] => addState(s)
+      case RemoveState(s): RemoveState[S,T] => removeState(s)
+      case RemoveFinalState(s): RemoveFinalState[S,T] => removeFinalState(s)
+      case AddFinalState(s): AddFinalState[S,T] => addFinalState(s)
+    }
+    this
+  }
 }

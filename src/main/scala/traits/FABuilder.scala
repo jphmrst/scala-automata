@@ -23,11 +23,11 @@ import org.maraist.fa.styles.AutomatonStyle
 trait FABuilder[
   S, T,
   +A[DS, DT] <: FA[DS, DT, Z],
-  -K[KS, KT] >: elements.FAelements[KS, KT] <: Matchable,
+  -K >: elements.FAelements[S, T] <: Matchable,
   -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
 ]
 
-extends /* Builder[K[S,T], A[S,T]] with */ UnindexedFA[S, T, Z] {
+extends Builder[K, A[S,T]] with UnindexedFA[S, T, Z] {
 
   /** Adds a state to the automaton.  This method should have no effect
     * if the state is already included. */

@@ -27,7 +27,7 @@ trait NFABuilder[
   G[X] <: Set[X],
   +D[DS, DT] <: DFA[DS, DT, Z],
   +N[NS, NT] <: NFA[NS, NT, G, D, Z],
-  -K[KS, KT] >: elements.NFAelements[KS, KT] <: Matchable,
+  -K >: elements.NFAelements[S, T] <: Matchable,
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends FABuilder[S, T, N, K, Z] with UnindexedNFA[S, T, G, D, Z] {

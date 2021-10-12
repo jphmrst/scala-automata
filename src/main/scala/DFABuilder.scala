@@ -26,7 +26,7 @@ import org.maraist.fa.full
  */
 class DFABuilder[S,T](var initialStateVar: S)
 
-extends full.DFABuilder[S, T, DFA, DFAelements, AutomatonStyle] {
+extends full.DFABuilder[S, T, DFA, DFAelements[S, T], AutomatonStyle] {
 
   protected def assembleDFA(statesSeq: IndexedSeq[S],
                             initialIdx: Int,
