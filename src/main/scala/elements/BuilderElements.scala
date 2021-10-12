@@ -9,15 +9,49 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.elements
-import scala.collection.mutable.{Builder, HashMap, HashSet}
+import scala.collection.mutable.{Builder}
+import org.maraist.fa.traits
 
-case class AddState[S,T](state: S)
-case class RemoveState[S,T](state: S)
-case class RemoveFinalState[S,T](state: S)
-case class AddFinalState[S,T](state: S)
+trait Element[X] {
+  def apply(fa: X): Unit
+}
+
+trait FAElement[S, T] extends Element[traits.FABuilder[S, T, ?, ?, ?]]
+
+case class AddState[S, T](state: S) extends FAElement[S, T] {
+  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
+    fa.addState(state)
+}
+case class RemoveState[S,T](state: S) extends FAElement[S, T] {
+  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
+    fa.removeState(state)
+}
+case class RemoveFinalState[S,T](state: S) extends FAElement[S, T] {
+  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
+    fa.removeFinalState(state)
+}
+case class AddFinalState[S,T](state: S) extends FAElement[S, T] {
+  override def apply(fa: traits.FABuilder[S, T, ?, ?, ?]): Unit =
+    fa.addFinalState(state)
+}
 
 /** All [[scala.collection.mutable.Builder Builder]]-pattern elements
-  * pertaining to [[DFA]]s.
+  * pertaining to any [[traits.FA finite automaton]].
+  *
+  *  @tparam S The type of all states of the automaton
+  *  @tparam T The type of labels on transitions of the automaton
+  *
+  * @group builderElements
+  */
+type FAelements[S, T] = (
+  AddState[S,T]
+    | RemoveState[S,T]
+    | AddFinalState[S,T]
+    | RemoveFinalState[S,T]
+)
+
+/** All [[scala.collection.mutable.Builder Builder]]-pattern elements
+  * pertaining to [[traits.DFA]]s.
   *
   *  @tparam S The type of all states of the automaton
   *  @tparam T The type of labels on transitions of the automaton
@@ -25,10 +59,24 @@ case class AddFinalState[S,T](state: S)
   * @group builderElements
   */
 type DFAelements[S, T] = (
-  SingleInitialStateMixinElement[S,T]
-    | StateBuilderElement[S,T]
-    | FinalStateSetBuilderElement[S,T]
-    | DeterministicLabelledTransitionMixinElement[S, T]
+  FAelements[S, T]
+    | SetInitialState[S]
+    | AddTransition[S, T] | RemoveTransition[S, T]
+)
+
+/** All [[scala.collection.mutable.Builder Builder]]-pattern elements
+  * pertaining to [[traits.NFA]]s.
+  *
+  *  @tparam S The type of all states of the automaton
+  *  @tparam T The type of labels on transitions of the automaton
+  *
+  * @group builderElements
+  */
+type NFAelements[S, T] = (
+  FAelements[S, T]
+    | AddInitialState[S] | RemoveInitialState[S]
+    | AddTransition[S, T] | RemoveTransition[S, T]
+    | AddETransition[S] | RemoveETransition[S]
 )
 
 /** [[scala.collection.mutable.Builder Builder]]-pattern element for
@@ -46,24 +94,5 @@ case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
 
 case class AddETransition[S](state1: S, state2: S)
 case class RemoveETransition[S](state1: S, state2: S)
-
-type StateBuilderElement[S, T] = AddState[S,T] | RemoveState[S,T]
-
-type FinalStateSetBuilderElement[S, T] =
-  AddFinalState[S,T] | RemoveFinalState[S,T]
-
-type SingleInitialStateMixinElement[S, T] = SetInitialState[S]
-
-type InitialStateSetTraitElements[S, T] =
-  AddInitialState[S] | RemoveInitialState[S]
-
-type DeterministicLabelledTransitionMixinElement[S, T] =
-  AddTransition[S, T] | RemoveTransition[S, T]
-
-type NondeterministicLabelledTransitionMixinElements[S, T] =
-  AddTransition[S, T] | RemoveTransition[S, T]
-
-type UnlabelledTransitionBuilderElements[S] =
-  AddETransition[S] | RemoveETransition[S]
 
 

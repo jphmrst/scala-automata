@@ -21,38 +21,23 @@ import org.maraist.fa.styles.AutomatonStyle
  *
  * @group DFA
  */
-trait DFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
+trait UnindexedDFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
+extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
 
-  protected val transitionsMatrix: Array[Array[Int]]
-
-  override val initialStateIndices: Set[Int] = Set(initialStateIndex)
-  override val initialState: S = state(initialStateIndex)
+  override val initialStates: Set[S] = Set(initialState)
+  override def transitions(s: S, t: T): Set[S] = Set.from(transition(s, t))
 
   import scala.util.control.NonLocalReturns.*
   override def accepts(string: Seq[T]): Boolean = returning {
-    var current = initialStateIndex
+    var current = initialState
     for(t <- string) {
-      val ti = transitionsSeq.indexOf(t)
-      current = transitionsMatrix(current)(ti)
-      if (current<0) throwReturn(false);
+      transition(current, t) match {
+        case Some(s) => { current = s }
+        case None => throwReturn(false)
+      }
     }
-    finalStateIndices.contains(current)
+    finalStates.contains(current)
   }
 
-  override def transition(s: S, t: T): Option[S] = {
-    val fromIdx: Int = stateSeq.indexOf(s)
-    val labelIdx: Int = transitionsSeq.indexOf(t)
-    val toIdx: Option[Int] = transitionIndex(fromIdx,labelIdx)
-    toIdx.map(stateSeq)
-  }
-
-  override def transitionIndex(si: Int, ti: Int): Option[Int] =
-    if (si > -1)
-      if (ti > -1) {
-        val si2 = transitionsMatrix(si)(ti)
-        if (si2 > -1) Some(si2) else None
-      } else None
-      else None
 }

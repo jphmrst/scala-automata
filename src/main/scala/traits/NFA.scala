@@ -23,7 +23,7 @@ import org.maraist.fa.styles.AutomatonStyle
 trait NFA[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT] <: DFA[S, T, Z],
+  +D[DS, DT] <: DFA[DS, DT, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends UnindexedNFA[S, T, G, D, Z] with FA[S, T, Z] {

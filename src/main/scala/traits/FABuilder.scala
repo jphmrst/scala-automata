@@ -9,17 +9,25 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.traits
+import scala.collection.mutable.Builder
+import org.maraist.fa.elements
 import org.maraist.fa.styles.AutomatonStyle
 
 /** Methods for the builder of any finite automaton.
   *
   * @tparam S Type representing states.
   * @tparam T Type representing transition labels.
-  * @tparam Z Type of style options for Graphviz export
+  * @tparam A Type of automaton constructed.
+  * @tparam Z Type of style options for Graphviz export.
   */
-trait FABuilder[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
+trait FABuilder[
+  S, T,
+  +A[DS, DT] <: FA[DS, DT, Z],
+  -K[KS, KT] >: elements.FAelements[KS, KT] <: Matchable,
+  -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
+]
 
-extends UnindexedFA[S, T, Z] {
+extends /* Builder[K[S,T], A[S,T]] with */ UnindexedFA[S, T, Z] {
 
   /** Adds a state to the automaton.  This method should have no effect
     * if the state is already included. */
@@ -41,4 +49,8 @@ extends UnindexedFA[S, T, Z] {
 
   /** Adds a transition labelled `t` from `s1` to `s2` */
   def addTransition(s1: S, t: T, s2: S): Unit
+
+  /** Internal, low-level method for removing all transitions emerging
+    * from a particular state.  Does no consistency checking.  */
+  protected def deleteTransitionsFrom(s: S): Unit
 }

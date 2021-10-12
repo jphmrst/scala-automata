@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.traits
+import org.maraist.fa.elements
 import org.maraist.fa.styles.AutomatonStyle
 
 /** Methods for builders of a nondeterministic finite automaton.
@@ -24,11 +25,12 @@ import org.maraist.fa.styles.AutomatonStyle
 trait NFABuilder[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT] <: DFA[S, T, Z],
-  +N[NS, NT] <: NFA[S, T, G, D, Z],
+  +D[DS, DT] <: DFA[DS, DT, Z],
+  +N[NS, NT] <: NFA[NS, NT, G, D, Z],
+  -K[KS, KT] >: elements.NFAelements[KS, KT] <: Matchable,
   -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends FABuilder[S, T, Z] with UnindexedNFA[S, T, G, D, Z] {
+extends FABuilder[S, T, N, K, Z] with UnindexedNFA[S, T, G, D, Z] {
 
   /** Add an initial state to the NFA. */
   def addInitialState(s: S): Unit

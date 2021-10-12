@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.traits
+import org.maraist.fa.elements
 import org.maraist.fa.styles.AutomatonStyle
 
 /** Methods for builders of a deterministic finite automaton.
@@ -16,21 +17,30 @@ import org.maraist.fa.styles.AutomatonStyle
   * @tparam S Type representing states.
   * @tparam T Type representing transition labels.
   * @tparam D Type of DFA constructed by this builder.
+  * @tparam K Builder elements for this builder.
   * @tparam Z Type of style options for Graphviz export
   */
 trait DFABuilder[
   S, T,
-  +D[DS, DT] <: DFA[S, T, Z],
+  +D[DS, DT] <: DFA[DS, DT, Z],
+  -K[KS, KT] >: elements.DFAelements[KS, KT] <: Matchable,
   -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends FABuilder[S, T, Z] with UnindexedDFA[S, T, Z] {
+extends FABuilder[S, T, D, K, Z] with UnindexedDFA[S, T, Z] {
 
   /** Removes any transition labelled `t` from `s1`. */
   def removeTransition(s1: S, t: T): Unit
 
-  /** Return the specified DFA. */
-  def toDFA: D[S, T]
-
   /** Set the initial state of the DFA. */
   def setInitialState(s: S): Unit
+
+//  /** Primary {@link scala.collection.mutable.Builder Builder} method
+//    * implementation.
+//    */
+//  // final
+//  def addOne(builder: K[S, T]): this.type
+//  //   = {
+//  //   addBuilderElement(builder)
+//  //   this
+//  // }
 }

@@ -1,0 +1,76 @@
+// Copyright (C) 2017, 2021 John Maraist
+// See the LICENSE.txt file distributed with this work for additional
+// information regarding copyright ownership.
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+// implied, for NON-COMMERCIAL use.  See the License for the specific
+// language governing permissions and limitations under the License.
+
+package org.maraist.fa.full
+import scala.collection.mutable.{HashMap,HashSet}
+import org.maraist.fa.elements.{FAelements, FAElement,
+  AddState, RemoveState, AddFinalState, RemoveFinalState}
+import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.traits
+
+/** Implementation of a builder for some automaton type using
+ *  [[scala.collection.mutable.HashSet `HashSet`s]] and
+ *  [[scala.collection.mutable.HashMap `HashMap`s]].
+ * @tparam S The type of all states of the automaton
+ * @tparam T The type of labels on (non-epsilon) transitions of the automaton
+ * @tparam D Type of automaton constructed by this builder.
+ * @tparam K Builder elements for this builder.
+ * @tparam Z Type of style options for Graphviz export
+ */
+trait FABuilder[
+  S, T,
+  +A[AS, AT] <: FA[AS, AT, Z],
+  K[X, Y] >: FAelements[X, Y] <: Matchable, // TODO revisit DFA vs. FA elements
+  -Z[X, Y] <: AutomatonStyle[X, Y]
+]
+
+extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
+
+  /** Storage for all state objects */
+  protected val allStates: HashSet[S] = new HashSet[S]
+
+  /** Storage for all final state objects */
+  protected val finalStatesSet: HashSet[S] = new HashSet[S]
+
+//  /** {@inheritDoc} When overriding this method, it is important to call
+//    * `super.clear()`.
+//    */
+//  override def clear(): Unit = {
+//    allStates.clear()
+//    finalStatesSet.clear()
+//  }
+
+  override def addState(s:S):Unit = { allStates += s }
+  override def removeState(s:S):Unit = {
+    allStates -= s
+    removeFinalState(s)
+    // TODO --- what if it's initial // removeInitialState(s)
+    deleteTransitionsFrom(s)
+  }
+  override def size: Int = allStates.size
+  override def states: Set[S] = Set.from(allStates)
+  override def isState(s:S): Boolean = allStates.contains(s)
+
+  override def removeFinalState(s: S): Unit = { finalStatesSet -= s }
+
+  override def addFinalState(s: S): Unit = {
+    finalStatesSet += s
+    addState(s)
+  }
+
+  override def finalStates: Set[S] = Set.from(finalStatesSet)
+  override def isFinalState(s: S): Boolean = finalStatesSet.contains(s)
+
+//  protected def dispatchFAElement(elem: FAElement[S, T]): Unit = elem(this)
+//
+//  override def addOne(elem: K[S, T]): Unit = elem match {
+//    case e: FAElement[S, T] => dispatchFAElement(elem)
+//  }
+}

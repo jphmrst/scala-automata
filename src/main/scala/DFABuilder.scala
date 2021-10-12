@@ -9,66 +9,31 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa
-import scala.collection.mutable.{Builder}
-import org.maraist.graphviz.{Graphable}
+import org.maraist.graphviz.{GraphStyle}
+import scala.collection.mutable.HashSet
+import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.elements.*
+import org.maraist.fa.full
 
-/** Builders for deterministic finite automata (DFAs)
-  * @tparam S The type of all states of the automaton
-  * @tparam T The type of labels on (non-epsilon) transitions of the
-  * automaton
-  * @tparam ThisDFA The concrete type of DFA returned by this builder
-  * @group DFA
-  */
-trait DFABuilder[
-  S, T,
-  +ThisDFA <: DFA[S,T],
-  K >: DFA.DFAelements[S,T] <: Matchable
-]
-    extends DFA[S,T]
-    with Builder[K, ThisDFA] {
+/**
+ * Concrete builder class for {@link org.maraist.fa.DFA DFAs} based on hash
+ * tables.
+ *
+ * @tparam S The type of all states of the automaton
+ * @tparam T The type of labels on transitions of the automaton
+ *
+ *  @group DFA
+ */
+class DFABuilder[S,T](var initialStateVar: S)
 
-  /** Returns the (possibly immutable) [[org.maraist.fa.DFA DFA]]
-    * described to this builder */
-  def result(): ThisDFA
+extends full.DFABuilder[S, T, DFA, DFAelements, AutomatonStyle] {
 
-  /** Adds a state to the automaton */
-  def addState(s:S):Unit
-  /** Removes a state from the automaton */
-  def removeState(s:S):Unit
-
-  /** Sets the initial state of the automaton */
-  def setInitialState(s:S):Unit
-  /** Adds a final state to the automaton */
-  def addFinalState(s:S):Unit
-  /** Causes a state not to be considered a final state, but does
-    *  ''not'' remove it from the automaton */
-  def removeFinalState(s:S):Unit
-
-  /** Adds a transition labelled `t` from `s1` to `s2`, removing any
-    *  previous transition labelled `t` from `s1`.
-    */
-  def addTransition(s1:S, t:T, s2:S): Unit
-  /** Removes any transition labelled `t` from `s1` to `s2` */
-  def removeTransition(s1:S, t:T): Unit
-
-  /** This {@link scala.collection.mutable.Builder Builder} method
-    * is not implemented at this time.
-    */
-  def clear(): Unit = throw new UnsupportedOperationException()
-
-  /** Helper method for the [[scala.collection.mutable.Builder]]
-    * implementation.
-    */
-  protected def addBuilderElement(builder: K): Unit
-
-  /** Primary {@link scala.collection.mutable.Builder Builder} method
-    * implementation.
-    */
-  final def addOne(builder: K): this.type = {
-    addBuilderElement(builder)
-    this
-  }
-
-  /** @deprecated Use {@link #result} */
-  def toDFA: ThisDFA
+  protected def assembleDFA(statesSeq: IndexedSeq[S],
+                            initialIdx: Int,
+                            finalStateIndices: HashSet[Int],
+                            transitionsSeq: IndexedSeq[T],
+                            idxLabels: Array[Array[Int]]): DFA[S, T] =
+    new DFA[S, T](
+      statesSeq, initialIdx, finalStateIndices.toSet, transitionsSeq,
+      idxLabels)
 }

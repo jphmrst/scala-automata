@@ -20,7 +20,7 @@ import org.maraist.fa.styles.AutomatonStyle
   */
 trait DFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends UnindexedDFA[S, T, Z] {
+extends FA[S, T, Z] with UnindexedDFA[S, T, Z] {
 
   /** Returns the index of the initial state. */
   def initialStateIndex: Int
