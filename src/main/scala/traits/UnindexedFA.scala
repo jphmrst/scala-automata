@@ -52,21 +52,16 @@ extends Graphable[S, T, Z] {
   def transitions(s: S, t: T): Set[S]
 
   /** Perform some action for each state in the automaton. */
-  def foreachState(action: (s: S) => Unit): Unit =
-    for(s <- states) do action(s)
+  def foreachState(action: (s: S) => Unit): Unit
 
   /** Perform some action for each initial state in the automaton. */
-  def foreachInitialState(action: (s: S) => Unit): Unit =
-    for(s <- initialStates) do action(s)
+  def foreachInitialState(action: (s: S) => Unit): Unit
 
   /** Perform some action for each final state in the automaton. */
-  def foreachFinalState(action: (s: S) => Unit): Unit =
-    for(s <- finalStates) do action(s)
+  def foreachFinalState(action: (s: S) => Unit): Unit
 
   /** Perform some action for each transition in the automaton. */
-  def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit =
-    for (s0 <- states; t <- labels; s1 <- transitions(s0, t))
-      do action(s0, t, s1)
+  def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit
 
   /** Returns `true` if this automaton accepts the given string. */
   def accepts(string: Seq[T]): Boolean

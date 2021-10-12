@@ -27,7 +27,19 @@ trait UnindexedFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends traits.UnindexedFA[S, T, Z] {
 
-  /** {@inheritDoc} */
+  override def foreachState(action: (s: S) => Unit): Unit =
+    for(s <- states) do action(s)
+
+  override def foreachInitialState(action: (s: S) => Unit): Unit =
+    for(s <- initialStates) do action(s)
+
+  override def foreachFinalState(action: (s: S) => Unit): Unit =
+    for(s <- finalStates) do action(s)
+
+  override def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit =
+    for (s0 <- states; t <- labels; s1 <- transitions(s0, t))
+      do action(s0, t, s1)
+
   override def toDOT(using Z[S, T]):
       String = {
     // println("       In DFA.toDOT with " + options)
