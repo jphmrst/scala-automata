@@ -28,6 +28,14 @@ trait UnindexedNFA[
 
 extends UnindexedFA[S, T, Z] {
 
+  /** Return the set of states at the end of an epsilon transition from
+    * `s`. */
+  def eTransitions(s: S): Set[S]
+
+  /** Perform some action for each epsilon transition in the
+    * automaton. */
+  def foreachETransition(action: (s1: S, s2: S) => Unit): Unit
+
   /** Return the specified DFA. */
   def toDFA: D[G[S], T]
 }

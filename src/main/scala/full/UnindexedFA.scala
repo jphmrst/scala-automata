@@ -68,17 +68,27 @@ extends traits.UnindexedFA[S, T, Z] {
       plotState(sb, style, si, s, isInitialState(s), isFinalState(s))
     }
     afterStatePlot(sb, stateList)
-    for(si0 <- 0 until stateList.length) {
-      val s0 = stateList(si0)
-      foreachTransition((s0, t, s1) =>
-        plotPresentEdge(
-          sb, style, si0, s0,
-          theLabels.indexOf(t), t,
-          stateList.indexOf(s1), s1
-        )
-      )
-    }
+    plotTransitions(stateList, theLabels, sb, style)
     finishPlot(sb)
+  }
+
+  protected def plotTransitions(
+    stateList: IndexedSeq[S],
+    theLabels: IndexedSeq[T],
+    sb: StringBuilder,
+    style: Z[S, T]):
+      Unit = {
+    foreachTransition((s0, t, s1) =>
+      plotPresentEdge(
+        sb, style,
+        stateList.indexOf(s0), s0,
+        theLabels.indexOf(t), t,
+        stateList.indexOf(s1), s1))
+    foreachETransition((s0, s1) =>
+      plotPresentEdge(
+        sb, style,
+        stateList.indexOf(s0), s0,
+        stateList.indexOf(s1), s1))
   }
 
   protected def initPlot(sb: StringBuilder, states: Int, labels: Int): Unit = {
@@ -131,6 +141,19 @@ extends traits.UnindexedFA[S, T, Z] {
     sb ++= " [ label=<"
     sb ++= style.edgeLabel(t, s0, s1, this)
     sb ++= "> ];\n"
+    //println(si0 + "--[" + t + "]-->" + si1);
+  }
+
+  protected def plotPresentEdge(
+    sb: StringBuilder, style: Z[S, T],
+    si0: Int, s0:S, si1: Int, s1:S):
+      Unit = {
+    sb ++= DOT.tabToVmark
+    sb ++= Integer.toString(si0)
+    sb ++= DOT.graphvizArrowToVmark
+    sb ++= Integer.toString(si1)
+    // sb ++= " [  ]"
+    sb ++= ";\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
 }

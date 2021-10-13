@@ -63,6 +63,11 @@ extends Graphable[S, T, Z] {
   /** Perform some action for each transition in the automaton. */
   def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit
 
+  /** Perform some action for each epsilon transition in the
+    * automaton. Note that in many (deterministic) automata, this
+    * method is a no-op, but in included for an easy consistency. */
+  def foreachETransition(action: (s1: S, s2: S) => Unit): Unit
+
   /** Returns `true` if this automaton accepts the given string. */
   def accepts(string: Seq[T]): Boolean
 }

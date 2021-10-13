@@ -28,6 +28,8 @@ extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
   override val initialStates: Set[S] = Set(initialState)
   override def transitions(s: S, t: T): Set[S] = Set.from(transition(s, t))
 
+  override def foreachETransition(action: (s1: S, s2: S) => Unit): Unit = { }
+
   import scala.util.control.NonLocalReturns.*
   override def accepts(string: Seq[T]): Boolean = returning {
     var current = initialState

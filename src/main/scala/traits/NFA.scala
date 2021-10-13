@@ -28,6 +28,14 @@ trait NFA[
 
 extends UnindexedNFA[S, T, G, D, Z] with FA[S, T, Z] {
 
+  /** Retrieve the indices of states found at the end of transitions labeled
+    * `t` and starting from `s`. */
+  def transitionIndices(s: S, t: T): Set[Int]
+
+  /** Retrieve the indices of states found at the end of unlabeled
+    * transitions starting from `s`. */
+  def eTransitionIndices(s: S): Set[Int]
+
   /** Return the specified DFA. */
   def toDFA: D[G[S], T]
 }

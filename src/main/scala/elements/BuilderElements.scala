@@ -77,4 +77,8 @@ case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
 case class AddETransition[S](state1: S, state2: S)
 case class RemoveETransition[S](state1: S, state2: S)
 
-
+// type NDFABuilders[S,T] = (
+//   AddETransition[S] | RemoveETransition[S]
+//     | AddTransition[S,T]
+//     | RemoveTransition[S,T]
+// )

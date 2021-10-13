@@ -8,86 +8,106 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.impl
+package org.maraist.fa.full
 import scala.collection.mutable.{ArrayBuffer,ListBuffer,HashSet,Queue}
 import org.maraist.util.IndexSetsTracker
-import org.maraist.fa.NDFA.IndexedNDFA
+import org.maraist.fa.traits
+import org.maraist.fa.styles.AutomatonStyle
 
 /** Immutable [[org.maraist.fa.NDFA NDFA]] implementation using
   * [[scala.collection.immutable.IndexedSeq `IndexedSeq`s]] and
   * `Array`s.
   *
-  * @param stateSeq IndexedSeq of the actual state objects
-  * @param initialStateSet Set of indices into `stateSeq` of the initial states
-  * @param finalStateSet Set of indices into `stateSeq` of the final states
-  * @param transitionsSeq IndexedSeq of the actual objects used as transition
-  * labels
-  * @param labels Matrix (2x2 array) mapping the set of states at the end of
-  * transitions from the state and with the given label, the latter two given
-  * by their index in `stateSeq` and `transitionsSeq` respectively
-  * @param epsilons Array mapping each state to the states mapped from it by an
-  * &epsilon;-transition
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
-  * @tparam ThisDFA Specific class of the assembled DFA
-  * {@link org.maraist.fa.ArrayDFA ArrayDFA}.
+  * @tparam Z Type of style options for Graphviz export
   *
-  * @group NDFA
+  * @group NFA
   */
-abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
-  private val stateSeq: IndexedSeq[S],
-  private val initialStateSet: Set[Int],
-  private val finalStateSet: Set[Int],
-  private val transitionsSeq: IndexedSeq[T],
-  private val transitionsArray: Array[? <: Array[? <: Set[Int]]],
-  private val epsilons: Array[? <: Set[Int]])
-    extends IndexedNDFA[S,T,ThisDFA] {
+trait NFA[
+  S, T,
+  G[X] <: Set[X],
+  +D[DS, DT] <: DFA[DS, DT, Z],
+  -Z[S, T] <: AutomatonStyle[S, T]]
 
-  def size: Int = stateSeq.length
-  def states: IndexedSeq[S] = stateSeq
-  def labels: IndexedSeq[T] = transitionsSeq
-  /** Retrieve the state with index `i` */
-  def state(i:Int):S = stateSeq(i)
-  def label(i: Int):T = transitionsSeq(i)
-  def labelIndex(t:T):Int = transitionsSeq.indexOf(t)
-  def transitionIndex(si: Int,ti: Int): Option[Int] = ???
+extends traits.NFA[S, T, G, D, Z]
+    with FA[S, T, Z] {
+
+  /**
+    * IndexedSeq of the actual state objects
+    */
+  protected val stateSeq: IndexedSeq[S]
+
+  /**
+    * Set of indices into `stateSeq` of the final states
+    */
+  protected val transitionsSeq: IndexedSeq[T]
+
+  /**
+    * IndexedSeq of the actual objects used as transition labels
+    */
+  protected val transitionsArray: Array[? <: Array[? <: Set[Int]]]
+
+  /**
+    * IndexedSeq of the actual objects used as transition labels
+    */
+  protected val epsilonsArray: Array[? <: Set[Int]]
+
+  /**
+    * IndexedSeq of the indices of final states.
+    */
+  val finalStateIndices: Set[Int]
+
+  /**
+    * IndexedSeq of the indices of inital states.
+    */
+  val initialStateIndices: Set[Int]
+
+  override def state(i: Int): S = stateSeq(i)
+  override def label(i: Int): T = transitionsSeq(i)
+  override def labelIndex(t: T): Int = transitionsSeq.indexOf(t)
   /** Retrieve the index of state `s` */
-  def indexOf(s:S):Int = stateSeq.indexOf(s)
-  /** Retrieve the indices of initial states */
-  def initialStateIndices: Set[Int] = initialStateSet.toSet
-  /** Retrieve the indices of finals states */
-  def finalStateIndices: Set[Int] = finalStateSet.toSet
-  def getInitialStates: Set[S] = initialStateSet.map(stateSeq)
-  def finalStates: Set[S] = finalStateSet.map(stateSeq)
-  def isState(s:S):Boolean = stateSeq.contains(s)
-  def isInitialState(s:S):Boolean = initialStateSet.contains(indexOf(s))
-  def isFinalState(s:S):Boolean = finalStateSet.contains(indexOf(s))
+  override def indexOf(s: S): Int = stateSeq.indexOf(s)
+  override def initialStates: Set[S] = initialStateIndices.map(stateSeq).toSet
+  override def finalStates: Set[S] = finalStateIndices.map(stateSeq).toSet
+  override def isState(s: S): Boolean = stateSeq.contains(indexOf(s))
+  override def isInitialState(s: S): Boolean =
+    initialStateIndices.contains(indexOf(s))
+  override def isFinalState(s: S): Boolean =
+    finalStateIndices.contains(indexOf(s))
 
-  def transitions(s:S, t:T):Set[S] = transitionIndices(s,t).map(stateSeq)
-  /** Retrieve the indices of states found at the end of transitions labeled
-    * `t` and starting from `s` */
-  def transitionIndices(s:S, t:T):Set[Int] =
+  override def transitions(s: S, t: T): Set[S] = transitionIndices(s,t).map(stateSeq)
+  override def transitionIndices(s: S, t: T): Set[Int] =
     transitionsArray(indexOf(s))(transitionsSeq.indexOf(t))
-  def eTransitions(s:S):Set[S] = {
+  override def eTransitions(s: S): Set[S] = {
     val eti = eTransitionIndices(s)
     // println(eti)
     eti.map(stateSeq)
   }
-  /** Retrieve the indices of states found at the end of &epsilon;-transitions
-    * starting from `s` */
-  def eTransitionIndices(s:S):Set[Int] = {
+  override def eTransitionIndices(s: S): Set[Int] = {
     val index = indexOf(s)
     if (index<0) {
       throw new IllegalArgumentException(s.toString() + " not a state in NDFA")
     }
-    epsilons(index)
+    epsilonsArray(index)
   }
 
-  protected def epsilonCloseIndex(si:Int): (Set[Int],Boolean) = {
-    val queue = Set(si)
-    epsilonCloseIndices(queue)
-  }
-  protected def epsilonCloseIndices(source:Set[Int]): (Set[Int],Boolean) = {
+  /** {@inheritDoc} The default implementation is to convert the NFA to
+    * a DFA, and check acceptance there.  This is not necessarily
+    * good. */
+  override def accepts(string: Seq[T]): Boolean = toDFA.accepts(string)
+
+  /** Perform some action for each epsilon transition in the
+    * automaton. */
+  override def foreachETransition(action: (s1: S, s2: S) => Unit): Unit =
+    for(s1 <- states; s2 <- eTransitions(s1))
+      do action(s1, s2)
+
+  protected def epsilonCloseIndex(si: Int): (Set[Int], Boolean) =
+    epsilonCloseIndices(Set(si))
+
+  protected def epsilonCloseIndices(source: Set[Int]):
+      (Set[Int], Boolean) = {
     // println("    * Closing " + source)
     // println("      Epsilons " + epsilons)
     // for (ep <- epsilons) { println("        " + ep) }
@@ -95,7 +115,7 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
     var isFinal = false
 
     for(id <- source) {
-      if (finalStateSet.contains(id)) isFinal=true
+      if (finalStateIndices.contains(id)) isFinal=true
       result += id
     }
 
@@ -103,21 +123,21 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
     while (!queue.isEmpty) {
       val thisIdx:Int = queue.dequeue()
       // println("    ** "+thisIdx)
-      for(newIdx <- epsilons(thisIdx)) {
+      for(newIdx <- epsilonsArray(thisIdx)) {
         // println("    ** ** "+newIdx)
         if (!result.result().contains(newIdx)) {
           result += newIdx
           queue += newIdx
-          if (finalStateSet.contains(newIdx)) isFinal=true
+          if (finalStateIndices.contains(newIdx)) isFinal=true
         }
       }
     }
     (result.result(), isFinal)
   }
 
-  def seedAdditionalInitialStates(tracker:IndexSetsTracker):Unit = { }
+  def seedAdditionalInitialStates(tracker: IndexSetsTracker): Unit = { }
 
-  def toDFA: ThisDFA = {// scalastyle:ignore cyclomatic.complexity method.length
+  override def toDFA: D[G[S], T] = {// scalastyle:ignore cyclomatic.complexity method.length
     // Set up components of ArrayDFA.  We can't convert to a
     // transitions array until the end, so for now we build a map over
     // state/transition label indices.  Note that we just use the same
@@ -208,9 +228,9 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
   }
 
   /**
-    * This method is implemented by subclasses where
-    * [[org.maraist.fa.NDFA#ThisDFA ThisDFA]] is concretized, to
-    * provide a DFA implementation of the specific type.
+    * This method is implemented by subclasses where `D[S, T]` is
+    * concretized, to provide a DFA implementation of the specific
+    * type.
     *
     * @param appearsIn Maps from the index of an NFA state to a set of
     * indices of the DFA states in which that NFA state is a member.
@@ -223,5 +243,69 @@ abstract class AbstractArrayNDFA[S, T, +ThisDFA <: AbstractArrayDFA[Set[S],T]](
     dfaTransitions: Array[Array[Int]],
     tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]]
-  ): ThisDFA
+  ): D[G[S], T]
+
+  override def toString():String = {
+    val bld:StringBuilder = new StringBuilder
+    for (st <- states) {
+      if (isInitialState(st)) bld ++= "> " else bld ++= "  "
+      bld ++= st.toString() + "\n"
+      for (tr <- labels)
+        bld ++= ("  - " + tr + " --> " + transitions(st, tr) + "\n")
+    }
+    bld.toString()
+  }
+
+  // =================================================================
+  // TODO --- Adapt this old code to the foreach methods, and hoist
+  // higher in the mixins hierarchy.
+
+  def dump(): Unit = {
+    dumpHeader()
+    dumpStates()
+    dumpTransitions()
+    dumpFooter()
+  }
+
+  protected def dumpHeader(): Unit = println("---------- NDFA dump")
+  protected def dumpFooter(): Unit = println("----------")
+
+  protected def dumpStates(): Unit = {
+    println("States:")
+    for(state <- states) {
+      dumpState(state)
+    }
+  }
+
+  protected def dumpState(s: S): Unit = {
+    print("- " + s)
+    if (isInitialState(s) || isFinalState(s)) print(" (")
+    if (isInitialState(s)) print("initial")
+    if (isInitialState(s) && isFinalState(s)) print(", ")
+    if (isFinalState(s)) print("final")
+    if (isInitialState(s) || isFinalState(s)) print(")")
+    println()
+  }
+
+  protected def dumpTransitions(): Unit = {
+    println("Transitions:")
+    for(src <- states) {
+      for(label <- labels) {
+        for(dest <- transitions(src, label)) {
+          dumpTransition(src, label, dest)
+        }
+      }
+      for(dest <- eTransitions(src)) {
+        dumpTransition(src, dest)
+      }
+    }
+  }
+
+  protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    println("- " + src + " -[ " + label + " ]-> " + dest)
+  }
+
+  protected def dumpTransition(src: S, dest: S): Unit = {
+    println("- " + src + " --> " + dest)
+  }
 }
