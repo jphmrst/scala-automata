@@ -33,4 +33,9 @@ extends FA[S, T, Z] with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
     * index `srcIdx` with the label with index `labelIdx`.
     */
   def annotationIndex(srcIdx: Int, labelIdx: Int): Option[A]
+
+  /** Return the annotation (if any) on the unlabelled transition from
+    * the state at index `srcIdx` to the state with index `destIdx`.
+    */
+  def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[A]
 }
