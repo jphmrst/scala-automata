@@ -34,8 +34,8 @@ with UnindexedFA[S, T, Z] {
   override def annotated(src: S, dest: S, label: T): Boolean =
     annotation(src, label, dest).isDefined
 
-  override def annotated(src: S, dest: S): Boolean =
-    annotation(src, dest).isDefined
+  override def eAnnotated(src: S, dest: S): Boolean =
+    eAnnotation(src, dest).isDefined
 
   // =================================================================
 
@@ -51,7 +51,7 @@ with UnindexedFA[S, T, Z] {
 
   override protected def dumpTransition(src: S, dest: S): Unit = {
     println("- " + src + " -{ ")
-    annotation(src, dest) match {
+    eAnnotation(src, dest) match {
       case None => { print(" (unann.)") }
       case Some(a) => { print(" : " + a) }
     }

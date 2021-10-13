@@ -40,11 +40,11 @@ extends UnindexedFA[S, T, Z] {
     * `dest`.  For automata without e-transitions, this method will
     * always return `None`.
     */
-  def annotation(src: S, dest: S): Option[A]
+  def eAnnotation(src: S, dest: S): Option[A]
 
   /** Check whether there is an annotation on the unlabeled transition
     * from `src` to `dest`.  For automata without e-transitions, this
     * method will always return `false`.
     */
-  def annotated(src: S, dest: S): Boolean
+  def eAnnotated(src: S, dest: S): Boolean
 }
