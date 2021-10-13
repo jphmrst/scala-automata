@@ -76,3 +76,23 @@ case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
 
 case class AddETransition[S](state1: S, state2: S)
 case class RemoveETransition[S](state1: S, state2: S)
+
+case class SetAnnotation[S,T,A](src: S, label: T, dest: S, annotation: A)
+case class RemoveAnnotation[S,T,A](src: S, label: T, dest: S)
+
+type LabelledEdgeAnnotationElements[S,T,A] =
+  SetAnnotation[S,T,A] | RemoveAnnotation[S,T,A]
+
+type AnnotatedDFAelement[S,T,A] =
+  DFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
+
+case class SetEAnnotation[S,A](src: S, dest: S, annotation: A)
+case class RemoveEAnnotation[S,A](src: S, dest: S)
+
+type UnlabelledEdgeAnnotationElements[S,A] =
+  SetEAnnotation[S,A] | RemoveEAnnotation[S,A]
+
+type AnnotatedNFAelement[S,T,A] = (
+  NFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
+    | UnlabelledEdgeAnnotationElements[S,A]
+)
