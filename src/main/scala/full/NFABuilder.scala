@@ -98,7 +98,10 @@ extends traits.NFABuilder[S, T, G, D, N, K, Z]
       }
     }
 
-  def addInitialState(s: S): Unit = { initialStatesVar += s }
+  def addInitialState(s: S): Unit = {
+    addState(s)
+    initialStatesVar += s
+  }
 
   def removeInitialState(s: S): Unit = { initialStatesVar -= s }
 
@@ -167,7 +170,7 @@ extends traits.NFABuilder[S, T, G, D, N, K, Z]
     }
 
     // println(epsilonsArray)
-    assembleNDFA(
+    assembleNFA(
       statesSeq,
       initialStatesVar.map(statesSeq.indexOf(_)).toSet,
       finals.toSet,
@@ -175,7 +178,7 @@ extends traits.NFABuilder[S, T, G, D, N, K, Z]
       epsilonsArray)
   }
 
-  protected def assembleNDFA(
+  protected def assembleNFA(
     statesSeq: IndexedSeq[S],
     initials: Set[Int],
     finals: Set[Int],
@@ -204,8 +207,6 @@ extends traits.NFABuilder[S, T, G, D, N, K, Z]
     this
   }
 
-  // TODO In the fullness of time, this will be an override of an
-  // UnindexedFA method.
-  protected def dumpHeader(): Unit =
+  override protected def dumpHeader(): Unit =
     println("---------- NDFABuilder dump")
 }

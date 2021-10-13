@@ -27,6 +27,8 @@ trait UnindexedFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends traits.UnindexedFA[S, T, Z] {
 
+  protected def checkState: Unit = { }
+
   override def foreachState(action: (s: S) => Unit): Unit =
     for(s <- states) do action(s)
 
@@ -59,9 +61,6 @@ extends traits.UnindexedFA[S, T, Z] {
     sb: StringBuilder
   )(using style: Z[S, T]):
       Unit = {
-    // Initial state
-    sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
-
     initPlot(sb, stateList.size, theLabels.size)
     for(si <- 0 until stateList.length) {
       val s = stateList(si)
@@ -123,9 +122,22 @@ extends traits.UnindexedFA[S, T, Z] {
     stateList: IndexedSeq[S]):
       Unit = {
     // Arrow for the initial state
-    sb ++= "\tinit -> V"
     foreachInitialState((s) => {
-      sb ++= Integer.toString(stateList.indexOf(s))
+      val idx = Integer.toString(stateList.indexOf(s))
+
+      // Dummy state for arrow base.
+      sb ++= "\tinit"
+      sb ++= idx
+      sb ++= " [shape=none, margin=0, label=\"\"];"
+      // sb ++= " // "
+      // sb ++= (if s == null then "null" else s.toString())
+      // sb ++= "\n"
+
+      // Arrow from the dummy state to the initial state.
+      sb ++= "\tinit"
+      sb ++= idx
+      sb ++= " -> V"
+      sb ++= idx
     })
     sb ++= ";\n"
   }
@@ -155,5 +167,48 @@ extends traits.UnindexedFA[S, T, Z] {
     // sb ++= " [  ]"
     sb ++= ";\n"
     //println(si0 + "--[" + t + "]-->" + si1);
+  }
+
+  // =================================================================
+
+  def dump: Unit = {
+    dumpHeader()
+    dumpStates()
+    dumpTransitions()
+    dumpFooter()
+  }
+
+  protected def dumpHeader(): Unit = println("---------- FA dump")
+  protected def dumpFooter(): Unit = println("----------")
+
+  protected def dumpStates(): Unit = {
+    println("States:")
+    for(state <- states) {
+      dumpState(state)
+    }
+  }
+
+  protected def dumpState(s: S): Unit = {
+    print("- " + s)
+    if (isInitialState(s) || isFinalState(s)) print(" (")
+    if (isInitialState(s)) print("initial")
+    if (isInitialState(s) && isFinalState(s)) print(", ")
+    if (isFinalState(s)) print("final")
+    if (isInitialState(s) || isFinalState(s)) print(")")
+    println()
+  }
+
+  protected def dumpTransitions(): Unit = {
+    println("Transitions:")
+    foreachTransition((src, label, dest) => dumpTransition(src, label, dest))
+    foreachETransition((src, dest) => dumpTransition(src, dest))
+  }
+
+  protected def dumpTransition(src: S, label: T, dest: S): Unit = {
+    println("- " + src + " -[ " + label + " ]-> " + dest)
+  }
+
+  protected def dumpTransition(src: S, dest: S): Unit = {
+    println("- " + src + " --> " + dest)
   }
 }

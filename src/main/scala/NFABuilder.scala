@@ -22,7 +22,7 @@ class NFABuilder[S,T]
 
 extends full.NFABuilder[S, T, Set, DFA, NFA, NFAelements[S,T], AutomatonStyle] {
 
-  override protected def assembleNDFA(
+  override protected def assembleNFA(
     statesSeq: IndexedSeq[S],
     initials: Set[Int],
     finals: Set[Int],

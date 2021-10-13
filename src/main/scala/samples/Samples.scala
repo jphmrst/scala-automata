@@ -35,7 +35,7 @@ object Samples extends Sampler {
   /**
    * Return a fresh copy of a sample DFA builder
    */
-  def dfa1B: Builder[DFAelements[String,Int], DFA[String,Int]] = {
+  def dfa1B = {
     val builder = DFA.newBuilder[String,Int]("A")
     builder += AddState[String,Int]("B")
     builder += AddState("C")
@@ -297,10 +297,10 @@ object Samples extends Sampler {
     val cleaner = newCleaner()
     section(guide,"Package FA")
 
-    // This one uses the Builder API, so loses the relationship to Graphable
-    // graphable(guide,cleaner,dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
+    graphable(guide,cleaner, dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
 
-    // println("First call to graphable")
+    println("dfa1")
+    dfa1.dump
     graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
     // println(" - back")
     samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")

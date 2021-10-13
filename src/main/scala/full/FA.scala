@@ -54,4 +54,13 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
     sb.toString()
   }
 
+  override protected def checkState: Unit = {
+    for (i <- initialStateIndices; if i < 0 || i >= stateSeq.size)
+      do throw IllegalStateException("Initial state index out of bounds")
+    for (i <- finalStateIndices; if i < 0 || i >= stateSeq.size)
+      do throw IllegalStateException("Initial state index out of bounds")
+  }
+
+  override protected def dumpHeader(): Unit =
+    println("---------- FA dump")
 }

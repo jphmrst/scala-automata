@@ -35,6 +35,8 @@ class NFA[S, T](
 
 extends full.NFA[S, T, Set, DFA, AutomatonStyle] {
 
+  checkState
+
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]], initialStateIdx: Int, dfaFinals: Set[Int],
     transitionsSeq: IndexedSeq[T], dfaTransitions: Array[Array[Int]],

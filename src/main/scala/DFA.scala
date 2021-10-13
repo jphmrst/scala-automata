@@ -28,6 +28,7 @@ class DFA[S,T](
 )
 
 extends full.DFA[S, T, AutomatonStyle] {
+  checkState
 
 //  def dump(): Unit = {
 //    dumpHeader()
@@ -102,5 +103,6 @@ object DFA {
     *
     * @group builderPattern
     */
-  def newBuilder[S, T](initialState: S) = new DFABuilder[S, T](initialState)
+  def newBuilder[S, T](initialState: S): DFABuilder[S, T] =
+    new DFABuilder[S, T](initialState)
 }

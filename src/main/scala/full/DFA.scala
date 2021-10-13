@@ -55,4 +55,7 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
         if (si2 > -1) Some(si2) else None
       } else None
       else None
+
+  override protected def dumpHeader(): Unit =
+    println("---------- DFA dump")
 }

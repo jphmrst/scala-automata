@@ -256,56 +256,5 @@ extends traits.NFA[S, T, G, D, Z]
     bld.toString()
   }
 
-  // =================================================================
-  // TODO --- Adapt this old code to the foreach methods, and hoist
-  // higher in the mixins hierarchy.
-
-  def dump(): Unit = {
-    dumpHeader()
-    dumpStates()
-    dumpTransitions()
-    dumpFooter()
-  }
-
-  protected def dumpHeader(): Unit = println("---------- NDFA dump")
-  protected def dumpFooter(): Unit = println("----------")
-
-  protected def dumpStates(): Unit = {
-    println("States:")
-    for(state <- states) {
-      dumpState(state)
-    }
-  }
-
-  protected def dumpState(s: S): Unit = {
-    print("- " + s)
-    if (isInitialState(s) || isFinalState(s)) print(" (")
-    if (isInitialState(s)) print("initial")
-    if (isInitialState(s) && isFinalState(s)) print(", ")
-    if (isFinalState(s)) print("final")
-    if (isInitialState(s) || isFinalState(s)) print(")")
-    println()
-  }
-
-  protected def dumpTransitions(): Unit = {
-    println("Transitions:")
-    for(src <- states) {
-      for(label <- labels) {
-        for(dest <- transitions(src, label)) {
-          dumpTransition(src, label, dest)
-        }
-      }
-      for(dest <- eTransitions(src)) {
-        dumpTransition(src, dest)
-      }
-    }
-  }
-
-  protected def dumpTransition(src: S, label: T, dest: S): Unit = {
-    println("- " + src + " -[ " + label + " ]-> " + dest)
-  }
-
-  protected def dumpTransition(src: S, dest: S): Unit = {
-    println("- " + src + " --> " + dest)
-  }
+  override protected def dumpHeader(): Unit = println("---------- NDFA dump")
 }

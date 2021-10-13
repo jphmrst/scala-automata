@@ -128,4 +128,7 @@ extends traits.DFABuilder[S, T, D, K, Z]
     }
     this
   }
+
+  override protected def dumpHeader(): Unit =
+    println("---------- DFABuilder dump")
 }

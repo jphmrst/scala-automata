@@ -77,4 +77,7 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
     }
     this
   }
+
+  override protected def dumpHeader(): Unit =
+    println("---------- FABuilder dump")
 }
