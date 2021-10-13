@@ -30,13 +30,14 @@ trait DFABuilder[
   +D[S, T] <: DFA[S, T, Z],
   K >: DFAelements[S, T] <: Matchable,
   -Z[X, Y] <: AutomatonStyle[X, Y]
-]
+](initState: S)
 
 extends traits.DFABuilder[S, T, D, K, Z]
     with UnindexedDFA[S, T, Z]
     with FABuilder[S, T, D, K, Z] {
 
-  protected var initialStateVar: S
+  protected var initialStateVar: S = initState
+
   protected val transitionsMap = new HashMap[S, HashMap[T, S]]
 
   def result(): D[S, T] = {
@@ -75,11 +76,13 @@ extends traits.DFABuilder[S, T, D, K, Z]
 
   override def initialState: S = initialStateVar
 
-  override def setInitialState(s:S):Unit = {
+  override def setInitialState(s: S): Unit = {
     addState(s)
     initialStateVar = s
   }
-  override def isInitialState(s:S):Boolean = initialStateVar.equals(s)
+
+  override def isInitialState(s: S): Boolean =
+    initialStateVar.equals(s)
 
   override def addTransition(s1: S, t: T, s2: S): Unit = {
     addState(s1)

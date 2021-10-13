@@ -300,7 +300,7 @@ object Samples extends Sampler {
     graphable(guide,cleaner, dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
 
     println("dfa1")
-    dfa1.dump
+    // dfa1.dump
     graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
     // println(" - back")
     samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")

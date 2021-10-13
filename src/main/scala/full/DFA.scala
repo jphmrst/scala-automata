@@ -27,8 +27,9 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
 
   protected val transitionsMatrix: Array[Array[Int]]
 
-  override val initialStateIndices: Set[Int] = Set(initialStateIndex)
+  override def initialStateIndices: Set[Int] = Set(initialStateIndex)
   override val initialState: S = state(initialStateIndex)
+  override val initialStates: Set[S] = Set(initialState)
 
   import scala.util.control.NonLocalReturns.*
   override def accepts(string: Seq[T]): Boolean = returning {
