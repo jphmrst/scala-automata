@@ -45,22 +45,7 @@ extends full.NFA[S, T, Set, DFA, AutomatonStyle] {
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq, dfaTransitions)
 }
 
-object NDFA {
-
-  /********************************************
-  def newBuilder[S, T, SetType[_], MapType[_,_]](initialState: S)(
-    using impl: HasBuilder[
-      NDFA.NDFAelements,
-      ?,
-      [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
-    ]
-  ) = impl.build[S,T]()
-
-  given HasBuilder[NDFAelements, HashNDFABuilder, [X,Y] =>> NDFA[X, Y, IndexedDFA[Set[X], Y]]
-  ] with {
-    override def build[S,T](): HashNDFABuilder[S, T] =
-      new HashNDFABuilder[S, T]
-  }
-   * *********************************************/
+object NFA {
+  def newBuilder[S, T] = new NFABuilder[S,T]
 }
 

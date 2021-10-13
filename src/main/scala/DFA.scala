@@ -29,57 +29,6 @@ class DFA[S,T](
 
 extends full.DFA[S, T, AutomatonStyle] {
 
-//  /** Internal routine used by {@link #toDOT}.  Subclesses should
-//   *  override, but still call super.internalsToDOT, to extend the
-//   *  Graphviz representation of a DFA */
-//  protected def internalsToDOT(stateList: IndexedSeq[S], sb: StringBuilder
-//  )(using graphvizOptions: GraphStyle[S, T]):
-//      Unit = {
-//    // println("        In DFA.dotTraverse with " + graphvizOptions)
-//
-//    // Initial state
-//    sb ++= "\tinit [shape=none, margin=0, label=\"\"];\n"
-//
-//    traverse(dotTraverser(sb, stateList))
-//    for(si0 <- 0 until stateList.length) {
-//      val s0 = stateList(si0)
-//      for(t <- labels) {
-//        transition(s0,t) match {
-//          case Some(s1) => {
-//          }
-//          case None => { }
-//        }
-//      }
-//    }
-//  }
-//
-//  /** {@inheritDoc} */
-//  override def toDOT(using options: GraphStyle[S, T]):
-//      String = {
-//    // println("       In DFA.toDOT with " + options)
-//    val stateList = IndexedSeq.from(states)
-//    val sb = new StringBuilder()
-//    internalsToDOT(stateList, sb)
-//    sb.toString()
-//  }
-
-//  override def toString(): String = {
-//    val bld: StringBuilder = new StringBuilder
-//    for (st <- states) {
-//      if (isInitialState(st)) bld ++= "> " else bld ++= "  "
-//      bld ++= st.toString() + "\n"
-//      for (tr <- labels)
-//        transition(st, tr) match {
-//          case Some(x) => bld ++= ("  - " + tr + " --> " + x + "\n")
-//          case None =>
-//        }
-//    }
-//    bld.toString()
-//  }
-
-  // ---------------------------------------------------------------
-  // Dumping out the DFA as text
-
 //  def dump(): Unit = {
 //    dumpHeader()
 //    dumpStates()
@@ -145,42 +94,13 @@ extends full.DFA[S, T, AutomatonStyle] {
   * @groupprio builderPattern 160
   */
 object DFA {
-
-//  // Fetch a builder for the pattern.
-//
-//  /** [[scala.collection.mutable.Builder Builder]] pattern method for
-//    * [[DFA]]s.
-//    *
-//    *  @tparam S The type of all states of the automaton
-//    *  @tparam T The type of labels on transitions of the automaton
-//    *
-//    * @group builderPattern
-//    */
-//  def newBuilder[S, T](initialState: S) =
-//    newBuilderFor[S, T, HashDFABuilder, DFA](initialState)
-//
-//  /** [[scala.collection.mutable.Builder Builder]] pattern method for
-//    * [[DFA]]s.
-//    *
-//    *  @tparam S The type of all states of the automaton
-//    *  @tparam T The type of labels on transitions of the automaton
-//    *
-//    * @group builderPattern
-//    */
-//  def newBuilderFor[
-//    S, T,
-//    Bldr[X,Y] <: Builder[DFAelements[X,Y],Impl[X, Y]],
-//    Impl[X, Y] <: DFA[X,Y]
-//  ](initialState: S)(using impl: HasBuilderWithInit[DFAelements, Bldr, Impl]) =
-//    impl.build[S,T](initialState)
-//
-//  /** Implementation of [[scala.collection.mutable.Builder Builder]]
-//    * pattern for [[DFA]]s.
-//    *
-//    * @group builderPattern
-//    */
-//  given hashBd: HasBuilderWithInit[DFAelements, HashDFABuilder, DFA] with {
-//    override def build[S,T](init: S): HashDFABuilder[S, T] =
-//        new HashDFABuilder[S, T](init)
-//  }
+  /** [[scala.collection.mutable.Builder Builder]] pattern method for
+    * [[DFA]]s.
+    *
+    *  @tparam S The type of all states of the automaton
+    *  @tparam T The type of labels on transitions of the automaton
+    *
+    * @group builderPattern
+    */
+  def newBuilder[S, T](initialState: S) = new DFABuilder[S, T](initialState)
 }
