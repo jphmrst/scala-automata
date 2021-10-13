@@ -11,26 +11,21 @@
 package org.maraist.fa.samples
 import scala.language.adhocExtensions
 import java.io.File
-import scala.collection.mutable.{Builder,HashMap,HashSet}
+import scala.collection.mutable.Builder
 import org.maraist.util.FilesCleaner
-import org.maraist.fa.{DFA, NDFA, NDFABuilder}
-import org.maraist.fa.impl.HashNDFABuilder
-import org.maraist.fa.elements.
-  {AddState, RemoveState, RemoveFinalState, AddFinalState,
-    RemoveTransition, AddTransition}
-import org.maraist.fa.DFA.{DFAelements, IndexedDFA}
-import org.maraist.fa.pfa.PFABuilder
-import org.maraist.fa.pfa.impl.HashPFABuilder
-import org.maraist.fa.hyperedges.
-  {HyperedgeDFA, HyperedgeDFABuilder, HyperedgeNDFA, HyperedgeNDFABuilder,
-    IndexedHyperedgeDFA}
-import org.maraist.fa.hyperedges.Builders.HyperedgeDFAelements
-import org.maraist.fa.hyperedges.impl.
-  {ArrayHyperedgeDFA, HashHyperedgeDFABuilder, HashHyperedgeNDFABuilder}
-import org.maraist.fa.annotated.
-  {Elements, EdgeAnnotatedNDFA, EdgeAnnotatedDFA,
-    NDFAEdgeAnnotationsBuilder, HashEdgeAnnotatedNDFABuilder}
-import org.maraist.latex.{LaTeXdoc,Sampler}
+import org.maraist.latex.{LaTeXdoc, Sampler}
+import org.maraist.fa.{
+  DFA, NFA, DFABuilder, NFABuilder
+  // , PFA, PFABuilder
+  // , HyperedgeDFA, HyperedgeNFA, HyperedgeDFABuilder, HyperedgeNFABuilder
+  // , EdgeAnnotatedDFA, EdgeAnnotatedNFA,
+  // EdgeAnnotatedDFABuilder, EdgeAnnotatedNFABuilder
+}
+import org.maraist.fa.elements.{
+  AddState, RemoveState, RemoveFinalState, AddFinalState,
+  RemoveTransition, AddTransition,
+  DFAelements, NFAelements
+}
 
 /**
  * Sample automata, and printing a guide to them.
@@ -49,7 +44,7 @@ object Samples extends Sampler {
     builder += AddTransition("A", 2, "C")
     builder += AddTransition("B", 3, "D")
 
-    // val builder = new HashDFABuilder[String,Int]("A")
+    // val builder = new DFABuilder[String,Int]("A")
     // builder.addState("B")
     // builder.addState("C")
     // builder.addFinalState("D")
@@ -69,10 +64,10 @@ object Samples extends Sampler {
   }
 
   /**
-   * Return a fresh copy of a sample NDFA builder
+   * Return a fresh copy of a sample NFA builder
    */
   def ndfa2B = {
-    val builder = new HashNDFABuilder[String,Int]()
+    val builder = new NFABuilder[String,Int]()
     builder.addInitialState("A")
     builder.addState("B")
     builder.addState("C")
@@ -85,15 +80,15 @@ object Samples extends Sampler {
   }
 
   /**
-   * Return an NDFA, derived from a fresh copy of the sample builder
+   * Return an NFA, derived from a fresh copy of the sample builder
    * {@link ndfa2B}
    */
-  def ndfa2: NDFA[String,Int,?] = {
-    ndfa2B.toNDFA
+  def ndfa2: NFA[String,Int] = {
+    ndfa2B.result()
   }
 
   /**
-   * Return a DFA converted from a fresh copy of the sample NDFA builder
+   * Return a DFA converted from a fresh copy of the sample NFA builder
    * {@link ndfa2B}
    */
   def ndfa2dfa: DFA[Set[String],Int] = {
@@ -102,12 +97,11 @@ object Samples extends Sampler {
 
   /**
    * Return a fresh copy of a sample DFA-with-hyperedge builder
-   */
   def hdfa3B: HyperedgeDFABuilder[
-    String, Int, ArrayHyperedgeDFA[String,Int],
+    String, Int, HyperedgeDFA[String,Int],
     HyperedgeDFAelements[String,Int]
   ] = {
-    val builder = new HashHyperedgeDFABuilder[String,Int]("A")
+    val builder = new HyperedgeDFABuilder[String,Int]("A")
     builder.addState("B")
     builder.addState("C")
     builder.addFinalState("D")
@@ -117,21 +111,21 @@ object Samples extends Sampler {
     builder.addEHyperedge("C", Set[String]("B", "D"))
     builder
   }
+   */
 
   /**
    * Return a DFA converted from a fresh copy of the sample
    * DFA-with-hyperedge builder {@link hdfa3B}
-   */
   def hdfa3: HyperedgeDFA[String,Int] = {
-    val res: ArrayHyperedgeDFA[String,Int] = hdfa3B.result()
+    val res: HyperedgeDFA[String,Int] = hdfa3B.result()
     res
   }
+   */
 
   /**
-   * Return a fresh copy of a sample NDFA-with-hyperedge builder
-   */
-  def hndfa4B: HyperedgeNDFABuilder[String, Int, IndexedHyperedgeDFA[Set[String], Int], HyperedgeNDFA[String,Int, IndexedHyperedgeDFA[Set[String], Int]]] = {
-    val builder = new HashHyperedgeNDFABuilder[String,Int]
+   * Return a fresh copy of a sample NFA-with-hyperedge builder
+  def hndfa4B: HyperedgeNFABuilder[String, Int, HyperedgeDFA[Set[String], Int], HyperedgeNFA[String,Int, HyperedgeDFA[Set[String], Int]]] = {
+    val builder = new HyperedgeNFABuilder[String,Int]
     builder.addInitialState("Z")
     builder.addState("A")
     builder.addState("B")
@@ -160,25 +154,27 @@ object Samples extends Sampler {
     builder.addEHyperedge("C", Set[String]("G", "H"))
     builder
   }
+   */
 
   /**
-   * Return a NDFA converted from a fresh copy of the sample
-   * NDFA-with-hyperedge builder {@link hndfa4B}
-   */
-  def hndfa4: HyperedgeNDFA[String, Int, IndexedHyperedgeDFA[Set[String], Int]] = {
-    hndfa4B.toNDFA
+   * Return a NFA converted from a fresh copy of the sample
+   * NFA-with-hyperedge builder {@link hndfa4B}
+  def hndfa4: HyperedgeNFA[String, Int, HyperedgeDFA[Set[String], Int]] = {
+    hndfa4B.result()
   }
+   */
 
   /**
    * Return a DFA converted from a fresh copy of the sample
-   * NDFA-with-hyperedge builder {@link hndfa4B}
-   */
+   * NFA-with-hyperedge builder {@link hndfa4B}
   def hndfa4dfa: HyperedgeDFA[Set[String],Int] = {
     hndfa4.toDFA
   }
+   */
 
+  /**
   def dlhPfa57:PFABuilder[Int,String] = {
-    val res = new HashPFABuilder[Int,String]
+    val res = new PFABuilder[Int,String]
     res.addInitialState(1, 1.0)
     res.addFinalState(2, 0.4)
     res.addFinalState(3, 0.2)
@@ -199,24 +195,28 @@ object Samples extends Sampler {
 
     res
    }
+   */
 
+  /**
   def dlhPfa57_erem: PFABuilder[Int,String] = {
     val res = dlhPfa57
     res.removeEpsilonTransitions
     res
   }
+   */
 
-  def ann01_builder: NDFAEdgeAnnotationsBuilder[
+  /**
+  def ann01_builder: NFAEdgeAnnotationsBuilder[
     String, Char, Int, Set[Int],
-    ? <: IndexedDFA[Set[String],Char] & EdgeAnnotatedDFA[Set[String],Char,Set[Int]],
-    ? <: EdgeAnnotatedNDFA[String,Char,Int,Set[Int],?],
-    Elements.AnnotatedNDFAelement[String,Char,Int]
+    ? <: DFA[Set[String],Char] & EdgeAnnotatedDFA[Set[String],Char,Set[Int]],
+    ? <: EdgeAnnotatedNFA[String,Char,Int,Set[Int]],
+    Elements.AnnotatedNFAelement[String,Char,Int]
   ] = {
     import org.maraist.fa.annotated.setCombiner
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder = EdgeAnnotatedNDFA.newBuilder[String, Char, Int, Set[Int]]
+    val builder = EdgeAnnotatedNFA.newBuilder[String, Char, Int, Set[Int]]
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2a")
@@ -240,47 +240,54 @@ object Samples extends Sampler {
     // builder.dump()
     builder
   }
+   */
 
-  def ann01_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
+  /**
+  def ann01_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
     val builder = ann01_builder
     val res = builder.result()
     // res.dump()
     res
   }
+   */
 
+  /**
   def ann01_dfa: EdgeAnnotatedDFA[Set[String], Char, Set[Int]] = {
     val res = ann01_nfa.toDFA
     // res.dump()
     res
   }
+   */
 
-  def ann02_nfa: EdgeAnnotatedNDFA[String, Char, Int, Set[Int], ?] = {
+  /**
+  def ann02_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int], ?] = {
     import org.maraist.fa.annotated.setCombiner
     import org.maraist.fa.elements.*
     import org.maraist.fa.annotated.Elements.*
 
-    val builder = new HashEdgeAnnotatedNDFABuilder[String, Char, Set[Int], Int]
+    val builder = new EdgeAnnotatedNFABuilder[String, Char, Set[Int], Int]
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2")
     builder.result()
   }
+    */
 
   def samplesFromNfaBuilder[
-    S, T, ThisDFA <: IndexedDFA[Set[S],T],
-    ThisNDFA <: NDFA[S,T,ThisDFA],
-    K >: NDFA.NDFAelements[S,T] <: Matchable
+    S, T, ThisDFA <: DFA[Set[S],T],
+    ThisNFA <: NFA[S,T],
+    K >: NFAelements[S,T] <: Matchable
   ](
     doc: LaTeXdoc,
     cleaner: FilesCleaner,
-    builder: NDFABuilder[S, T, ThisDFA, ThisNDFA, K],
+    builder: NFABuilder[S, T],
     tag: String,
     width: String
   ): Unit = {
     doc ++= "\\clearpage\n"
     graphable(
       doc, cleaner, builder, tag + "Builder", tag + " NFA builder", width)
-    val nfa = builder.toNDFA
+    val nfa = builder.result()
     graphable(doc, cleaner, nfa, tag + "NFA", tag + " NFA",  width)
     val dfa = nfa.toDFA
     graphable(doc, cleaner, dfa, tag + "DFA", tag + " DFA",  width)
@@ -298,23 +305,23 @@ object Samples extends Sampler {
     // println(" - back")
     samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")
 
-    guide ++= "\\clearpage\n"
-    graphable(guide, cleaner, hdfa3B, "hdfa3B", "hdfa3B", "5in")
-    graphable(guide, cleaner, hdfa3,  "hdfa3",  "hdfa3",  "5in")
+//    guide ++= "\\clearpage\n"
+//    graphable(guide, cleaner, hdfa3B, "hdfa3B", "hdfa3B", "5in")
+//    graphable(guide, cleaner, hdfa3,  "hdfa3",  "hdfa3",  "5in")
 
-    samplesFromNfaBuilder(guide,cleaner,hndfa4B, "hndfa4", "5in")
+//    samplesFromNfaBuilder(guide,cleaner,hndfa4B, "hndfa4", "5in")
 
-    guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
-    graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
+//    guide ++= "\\clearpage\n"
+//    graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
+//    graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
 
     // samplesFromNfaBuilder(guide, cleaner, ann01_builder, "ann01", "4in")
-    guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
-    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
+//    guide ++= "\\clearpage\n"
+//    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
+//    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
 
-    guide ++= "\\clearpage\n"
-    graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
+//    guide ++= "\\clearpage\n"
+//    graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
 
     cleaner
   }
