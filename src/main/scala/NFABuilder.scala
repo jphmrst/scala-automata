@@ -8,31 +8,30 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.impl
+package org.maraist.fa
 import scala.collection.mutable.{Builder,HashSet}
 import org.maraist.fa.elements.*
-import org.maraist.fa.NDFA
-import org.maraist.fa.NDFA.*
+import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.full
 
 /**
   *
   *  @group NDFA
   */
-class HashNDFABuilder[S,T]
-    extends AbstractHashNDFABuilder[S,T,ArrayDFA[Set[S],T],ArrayNDFA[S,T], NDFAelements[S,T]]
-{
+class NFABuilder[S,T]
 
-  def toDFA: ArrayDFA[Set[S],T] = toNDFA.toDFA
-  protected def assembleNDFA(
+extends full.NFABuilder[S, T, Set, DFA, NFA, NFAelements[S,T], AutomatonStyle] {
+
+  override protected def assembleNDFA(
     statesSeq: IndexedSeq[S],
     initials: Set[Int],
     finals: Set[Int],
     transitionsSeq: IndexedSeq[T],
-    labelsArray: Array[Array[HashSet[Int]]],
-    epsilonsArray: Array[HashSet[Int]]
-  ): ArrayNDFA[S,T] =
-    new ArrayNDFA[S,T](
-      statesSeq, initials, finals, transitionsSeq,
-      labelsArray.map(_.map(_.toSet)),
-      epsilonsArray.map(_.toSet))
+    labelsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]]
+  ): NFA[S, T] =
+    new NFA[S, T](
+      statesSeq, transitionsSeq, initials, finals,
+      epsilonsArray.map(_.toSet),
+      labelsArray.map(_.map(_.toSet)))
 }
