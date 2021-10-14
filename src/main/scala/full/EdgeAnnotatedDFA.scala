@@ -38,11 +38,16 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
   override def annotationIndex(srcIdx: Int, labelIdx: Int): Option[A] =
     edgeAnnotations(srcIdx)(labelIdx)
 
+  override def annotation(src: S, label: T, dest: S): Option[A] =
+    annotationIndex(indexOf(src), labelIndex(label), indexOf(dest))
+
+  override def annotationIndex(srcIdx: Int, labelIdx: Int, destIdx: Int):
+      Option[A] =
+    transitionIndex(srcIdx, labelIdx).flatMap(
+      ((d: Int) =>
+        if d == destIdx then annotationIndex(srcIdx, labelIdx) else None))
+
   override def eAnnotation(src: S, dest: S): Option[A] = None
 
   override def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[A] = None
-
-  override def annotation(src: S, label: T, dest: S): Option[A] =
-    transition(src, label).flatMap(
-      ((d: S) => if d.equals(dest) then annotation(src, label) else None))
 }

@@ -22,29 +22,19 @@ import org.maraist.fa.styles.AutomatonStyle
   *
   * @group Annotated
   */
-trait UnindexedEdgeAnnotatedFA[S, T, A, -Z[X, Y] <: AutomatonStyle[X, Y]]
+trait EdgeAnnotatedFA[S, T, A, -Z[X, Y] <: AutomatonStyle[X, Y]]
 
-extends UnindexedFA[S, T, Z] {
+extends FA[S, T, Z] with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
-  /** Return the annotation (if any) on the transition from `src` to
-    * `dest` labelled `label`.
+  /** Return the annotation (if any) on the transition from the state at
+    * index `srcIdx` to the state at index `destIdx` via the label
+    * with index `labelIdx`.
     */
-  def annotation(src: S, label: T, dest: S): Option[A]
+  def annotationIndex(srcIdx: Int, labelIdx: Int, destIdx: Int): Option[A]
 
-  /** Check whether there is an annotation on the transition from `src`
-    * to `dest` labelled `label`.
+  /** Return the annotation (if any) on the unlabelled transition from
+    * the state at index `srcIdx` to the state with index `destIdx`.
     */
-  def annotated(src: S, dest: S, label: T): Boolean
+  def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[A]
 
-  /** Return the annotation (if any) on the e-transition from `src` to
-    * `dest`.  For automata without e-transitions, this method will
-    * always return `None`.
-    */
-  def eAnnotation(src: S, dest: S): Option[A]
-
-  /** Check whether there is an annotation on the unlabeled transition
-    * from `src` to `dest`.  For automata without e-transitions, this
-    * method will always return `false`.
-    */
-  def eAnnotated(src: S, dest: S): Boolean
 }
