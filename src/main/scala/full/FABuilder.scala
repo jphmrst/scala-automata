@@ -39,8 +39,8 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
   /** Storage for all final state objects */
   protected val finalStatesSet: HashSet[S] = new HashSet[S]
 
-  /** {@inheritDoc} When overriding this method, it is important to call
-    * `super.clear()`.
+  /** Clear this builder.  When overriding this method, it is important
+    * to call `super.clear()`.
     */
   override def clear(): Unit = {
     allStates.clear()

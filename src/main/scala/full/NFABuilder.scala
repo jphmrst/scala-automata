@@ -14,9 +14,9 @@ import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
 import org.maraist.fa.elements.*
 
-/** Implementation of [[org.maraist.fa.NDFABuilder NDFABuilder]] using
-  * [[scala.collection.mutable.HashMap `HashMap`s]] and
-  * [[scala.collection.mutable.HashSet `HashSet`s]]
+/** Implementation of [[org.maraist.fa.traits.NFABuilder NFABuilder]]
+  * using [[scala.collection.mutable.HashMap `HashMap`s]] and
+  * [[scala.collection.mutable.HashSet `HashSet`s]].
   * @constructor Returns a builder holding an initially empty automaton
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
@@ -135,8 +135,12 @@ extends traits.NFABuilder[S, T, G, D, N, K, Z]
     for(v <- epsilons.valuesIterator) v -= s
   }
 
-  /** Creates an immutable [[org.maraist.fa.impl.ArrayNDFA ArrayNDFA]]
-    * corresponding to the automaton described to this builder.
+  /** Creates an immutable [[NFA NFA]] corresponding to the automaton
+    * described to this builder.  This method creates elements of the
+    * internal state of the NFA, and passes them to the abstract
+    * method [[#assembleNFA]]: the actual definition of
+    * [[#assembleNFA]] is in the concrete classes (of package
+    * [[org.maraist.fa]]) implementing this trait.
     */
   def result(): N[S, T] = {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)

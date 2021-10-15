@@ -14,7 +14,8 @@ import org.maraist.fa.util.IndexSetsTracker
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
-/** Immutable [[org.maraist.fa.NDFA NDFA]] implementation using
+/** Immutable [[org.maraist.fa.traits.NFA NFA]] implementation mixin
+  * extending the [[FA][FA mixin]], using
   * [[scala.collection.immutable.IndexedSeq `IndexedSeq`s]] and
   * `Array`s.
   *
