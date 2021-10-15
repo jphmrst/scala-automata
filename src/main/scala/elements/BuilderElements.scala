@@ -13,9 +13,9 @@ import scala.collection.mutable.{Builder}
 import org.maraist.fa.traits
 
 case class AddState[S, T](state: S)
-case class RemoveState[S,T](state: S)
-case class RemoveFinalState[S,T](state: S)
-case class AddFinalState[S,T](state: S)
+case class RemoveState[S, T](state: S)
+case class RemoveFinalState[S, T](state: S)
+case class AddFinalState[S, T](state: S)
 
 /** All [[scala.collection.mutable.Builder Builder]]-pattern elements
   * pertaining to any [[traits.FA finite automaton]].
@@ -26,10 +26,10 @@ case class AddFinalState[S,T](state: S)
   * @group builderElements
   */
 type FAelements[S, T] = (
-  AddState[S,T]
-    | RemoveState[S,T]
-    | AddFinalState[S,T]
-    | RemoveFinalState[S,T]
+  AddState[S, T]
+    | RemoveState[S, T]
+    | AddFinalState[S, T]
+    | RemoveFinalState[S, T]
 )
 
 /** All [[scala.collection.mutable.Builder Builder]]-pattern elements
@@ -71,28 +71,31 @@ case class SetInitialState[S](state: S)
 case class AddInitialState[S](state: S)
 case class RemoveInitialState[S](state: S)
 
-case class AddTransition[S,T](state1: S, trans: T, state2: S)
-case class RemoveTransition[S,T](state1: S, trans: T, state2: S)
+case class AddTransition[S, T](state1: S, trans: T, state2: S)
+case class RemoveTransition[S, T](state1: S, trans: T, state2: S)
 
 case class AddETransition[S](state1: S, state2: S)
 case class RemoveETransition[S](state1: S, state2: S)
 
-case class SetAnnotation[S,T,A](src: S, label: T, dest: S, annotation: A)
-case class RemoveAnnotation[S,T,A](src: S, label: T, dest: S)
+case class SetAnnotation[S, T, A](src: S, label: T, dest: S, annotation: A)
+case class RemoveAnnotation[S, T, A](src: S, label: T, dest: S)
 
-type LabelledEdgeAnnotationElements[S,T,A] =
-  SetAnnotation[S,T,A] | RemoveAnnotation[S,T,A]
+type LabelledEdgeAnnotationElements[S, T, A] =
+  SetAnnotation[S, T, A] | RemoveAnnotation[S, T, A]
 
-type AnnotatedDFAelement[S,T,A] =
-  DFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
+type EdgeAnnotatedFAelements[S, T, A] =
+  FAelements[S, T] | LabelledEdgeAnnotationElements[S, T, A]
 
-case class SetEAnnotation[S,A](src: S, dest: S, annotation: A)
-case class RemoveEAnnotation[S,A](src: S, dest: S)
+type EdgeAnnotatedDFAelements[S, T, A] =
+  DFAelements[S, T] | LabelledEdgeAnnotationElements[S, T, A]
 
-type UnlabelledEdgeAnnotationElements[S,A] =
-  SetEAnnotation[S,A] | RemoveEAnnotation[S,A]
+case class SetEAnnotation[S, A](src: S, dest: S, annotation: A)
+case class RemoveEAnnotation[S, A](src: S, dest: S)
 
-type AnnotatedNFAelement[S,T,A] = (
-  NFAelements[S,T] | LabelledEdgeAnnotationElements[S,T,A]
-    | UnlabelledEdgeAnnotationElements[S,A]
+type UnlabelledEdgeAnnotationElements[S, A] =
+  SetEAnnotation[S, A] | RemoveEAnnotation[S, A]
+
+type EdgeAnnotatedNFAelements[S, T, A] = (
+  NFAelements[S, T] | LabelledEdgeAnnotationElements[S, T, A]
+    | UnlabelledEdgeAnnotationElements[S, A]
 )

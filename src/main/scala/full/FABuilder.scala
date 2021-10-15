@@ -27,7 +27,7 @@ import org.maraist.fa.traits
 trait FABuilder[
   S, T,
   +A[AS, AT] <: FA[AS, AT, Z],
-  K >: FAelements[S, T] <: Matchable, // TODO revisit DFA vs. FA elements
+  -K >: FAelements[S, T] <: Matchable, // TODO revisit DFA vs. FA elements
   -Z[X, Y] <: AutomatonStyle[X, Y]
 ]
 

@@ -23,7 +23,7 @@ import org.maraist.fa.styles.AutomatonStyle
 trait EdgeAnnotatedNFA[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT] <: EdgeAnnotatedDFA[DS, DT, DA, Z],
+  +D[DS, DT, A] <: EdgeAnnotatedDFA[DS, DT, A, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends EdgeAnnotatedFA[S, T, NA, Z]

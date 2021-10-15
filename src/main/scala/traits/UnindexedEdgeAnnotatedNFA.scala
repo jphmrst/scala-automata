@@ -23,9 +23,9 @@ import org.maraist.fa.styles.AutomatonStyle
 trait UnindexedEdgeAnnotatedNFA[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT] <: EdgeAnnotatedDFA[DS, DT, DA, Z],
+  +D[DS, DT, A] <: EdgeAnnotatedDFA[DS, DT, A, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
 extends UnindexedEdgeAnnotatedFA[S, T, NA, Z]
 
-with UnindexedNFA[S, T, G, D, Z]
+with UnindexedNFA[S, T, G, [DS, DT] =>> D[DS, DT, DA], Z]
