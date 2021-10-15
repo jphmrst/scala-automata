@@ -31,14 +31,4 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
     * labelled `label`.
     */
   def removeAnnotation(src: S, label: T, dest: S): Unit
-
-//  /** Set the annotation on the unlabelled transition from `src` to
-//    * `dest`.
-//    */
-//  def setEAnnotation(src: S, dest: S, annotation: NA): Unit
-//
-//  /** Remove any annotation from the unlabelled transition from `src` to
-//    * `dest`.
-//    */
-//  def removeEAnnotation(src: S, dest: S): Unit
 }

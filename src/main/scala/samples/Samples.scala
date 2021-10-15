@@ -15,11 +15,10 @@ import scala.collection.mutable.Builder
 import org.maraist.util.FilesCleaner
 import org.maraist.latex.{LaTeXdoc, Sampler}
 import org.maraist.fa.{
-  DFA, NFA, DFABuilder, NFABuilder
+  DFA, NFA, DFABuilder, NFABuilder, EdgeAnnotatedDFA, EdgeAnnotatedDFABuilder
   // , PFA, PFABuilder
   // , HyperedgeDFA, HyperedgeNFA, HyperedgeDFABuilder, HyperedgeNFABuilder
-  // , EdgeAnnotatedDFA, EdgeAnnotatedNFA,
-  // EdgeAnnotatedDFABuilder, EdgeAnnotatedNFABuilder
+  // , EdgeAnnotatedNFA, EdgeAnnotatedNFABuilder
 }
 import org.maraist.fa.elements.{
   AddState, RemoveState, RemoveFinalState, AddFinalState,

@@ -10,7 +10,7 @@
 
 package org.maraist.fa
 import scala.collection.mutable.{Builder, HashMap, HashSet, Queue}
-import org.maraist.util.IndexSetsTracker
+import org.maraist.fa.util.IndexSetsTracker
 import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
 
@@ -40,7 +40,7 @@ extends full.NFA[S, T, Set, DFA, AutomatonStyle] {
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]], initialStateIdx: Int, dfaFinals: Set[Int],
     transitionsSeq: IndexedSeq[T], dfaTransitions: Array[Array[Int]],
-    tracker: org.maraist.util.IndexSetsTracker,
+    tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]]):
       DFA[Set[S], T] =
     new DFA(

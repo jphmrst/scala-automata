@@ -8,7 +8,7 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.util
+package org.maraist.fa.util
 
 protected trait TrackTree {
   def expanded():Boolean

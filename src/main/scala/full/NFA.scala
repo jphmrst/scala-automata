@@ -10,7 +10,7 @@
 
 package org.maraist.fa.full
 import scala.collection.mutable.{ArrayBuffer,ListBuffer,HashSet,Queue}
-import org.maraist.util.IndexSetsTracker
+import org.maraist.fa.util.IndexSetsTracker
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
