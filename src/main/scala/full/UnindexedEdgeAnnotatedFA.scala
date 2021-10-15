@@ -31,7 +31,7 @@ extends traits.UnindexedEdgeAnnotatedFA[S, T, A, Z]
 
 with UnindexedFA[S, T, Z] {
 
-  override def annotated(src: S, dest: S, label: T): Boolean =
+  override def annotated(src: S, label: T, dest: S): Boolean =
     annotation(src, label, dest).isDefined
 
   override def eAnnotated(src: S, dest: S): Boolean =

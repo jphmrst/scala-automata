@@ -34,7 +34,7 @@ extends UnindexedFA[S, T, Z] {
   /** Check whether there is an annotation on the transition from `src`
     * to `dest` labelled `label`.
     */
-  def annotated(src: S, dest: S, label: T): Boolean
+  def annotated(src: S, label: T, dest: S): Boolean
 
   /** Return the annotation (if any) on the e-transition from `src` to
     * `dest`.  For automata without e-transitions, this method will

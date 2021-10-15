@@ -83,7 +83,7 @@ with traits.EdgeAnnotatedDFABuilder[S, T, A, D, K, Z] {
       case None => None
       case Some(d) => if dest.equals(d) then annotation(src, label) else None
     }
-  override def annotated(src: S, dest: S, label: T): Boolean =
+  override def annotated(src: S, label: T, dest: S): Boolean =
     annotation(src, label, dest).isDefined
 
   override def eAnnotated(src: S, dest: S): Boolean = false

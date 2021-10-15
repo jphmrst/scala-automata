@@ -9,7 +9,6 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa
-import org.maraist.graphviz.{Graphable, GraphStyle}
 import org.maraist.fa.full
 import org.maraist.fa.styles.AutomatonStyle
 

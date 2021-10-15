@@ -51,6 +51,17 @@ with traits.EdgeAnnotatedNFA[S, T, NA, DA, G, D, Z] {
   def annotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
 
+  def annotated(src: S, label: T, dest: S): Boolean =
+    annotation(src, label, dest).isDefined
+
+  def eAnnotated(src: S, dest: S): Boolean = eAnnotation(src, dest).isDefined
+
+  def eAnnotation(src: S, dest: S): Option[NA] =
+    eAnnotationIndex(indexOf(src), indexOf(dest))
+
+  def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
+    unlabelledEdgeAnnotations(srcIdx)(destIdx)
+
   override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
     print("- " + src + " -[ " + label)
     annotation(src, label, dest) match {
