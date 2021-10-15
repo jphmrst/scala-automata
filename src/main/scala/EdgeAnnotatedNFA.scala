@@ -13,7 +13,7 @@ import org.maraist.fa.full
 import org.maraist.fa.util.{EdgeAnnotationCombiner,IndexSetsTracker}
 import org.maraist.fa.styles.AutomatonStyle
 
-class EdgeAnnotatedNFA[S, T, DA, NA](
+class EdgeAnnotatedNFA[S, T, NA, DA](
   override val stateSeq: IndexedSeq[S],
   override val initialStateIndices: Set[Int],
   override val finalStateIndices: Set[Int],

@@ -20,7 +20,11 @@ trait EdgeAnnotatedNFABuilder[
   -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
 ]
 
-extends FABuilder[S, T, [NS, NT] =>> N[NS, NT, NA, DA], K, Z]
+extends NFABuilder[
+  S, T, G,
+  [DS, DT] =>> D[DS, DT, DA],
+  [NS, NT] =>> N[NS, NT, NA, DA],
+  K, Z]
 
 with EdgeAnnotatedFABuilder[
   S, T, NA, [NS, NT, NNA] =>> N[NS, NT, NNA, DA], K, Z]

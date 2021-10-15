@@ -28,7 +28,7 @@ trait NFABuilder[
   G[X] <: Set[X],
   +D[X, Y] <: DFA[X, Y, Z],
   +N[X, Y] <: NFA[X, Y, G, D, Z],
-  K >: NFAelements[S,T] <: Matchable,
+  -K >: NFAelements[S,T] <: Matchable,
   -Z[X, Y] <: AutomatonStyle[X, Y]
 ]
 

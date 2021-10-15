@@ -8,6 +8,16 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
+package org.maraist.fa.full
+import scala.collection.mutable.{HashMap, HashSet}
+import org.maraist.fa.elements.*
+import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.traits
+
+// -----------------------------------------------------------------
+// DFA builder
+// -----------------------------------------------------------------
+
 /** Partial implementation of a builder for DFAs using
   * [[scala.collection.mutable.HashSet `HashSet`s]] and
   * [[scala.collection.mutable.HashMap `HashMap`s]].
@@ -19,16 +29,6 @@
   *
   * @group DFA
   */
-package org.maraist.fa.full
-import scala.collection.mutable.{HashMap, HashSet}
-import org.maraist.fa.elements.*
-import org.maraist.fa.styles.AutomatonStyle
-import org.maraist.fa.traits
-
-// -----------------------------------------------------------------
-// DFA builder
-// -----------------------------------------------------------------
-
 trait EdgeAnnotatedDFABuilder[
   S, T, A,
   +D[DS, DT, DA] <: EdgeAnnotatedDFA[DS, DT, DA, Z],

@@ -23,8 +23,10 @@ import org.maraist.fa.styles.AutomatonStyle
 trait EdgeAnnotatedDFA[S, T, A, -Z[X, Y] <: AutomatonStyle[X, Y]]
 
 extends EdgeAnnotatedFA[S, T, A, Z]
-    with UnindexedEdgeAnnotatedDFA[S, T, A, Z]
-    with DFA[S, T, Z] {
+
+with UnindexedEdgeAnnotatedDFA[S, T, A, Z]
+
+with DFA[S, T, Z] {
 
   /** Return the annotation (if any) on the transition from the state at
     * index `srcIdx` with the label with index `labelIdx`.

@@ -26,6 +26,6 @@ trait EdgeAnnotatedNFA[
   +D[DS, DT, A] <: EdgeAnnotatedDFA[DS, DT, A, Z],
   -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends EdgeAnnotatedFA[S, T, NA, Z]
+extends NFA[S, T, G, [DS, DT] =>> D[DS, DT, DA], Z]
 
-with UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, Z]
+with EdgeAnnotatedFA[S, T, NA, Z]
