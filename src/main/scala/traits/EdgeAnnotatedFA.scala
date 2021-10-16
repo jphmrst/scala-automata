@@ -10,7 +10,7 @@
 
 package org.maraist.fa.traits
 import org.maraist.fa.util.EdgeAnnotationCombiner
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 /** Methods provided by an edge-annotated nondeterministic
   * (non-indexed) finite automata (NFA).
@@ -22,9 +22,12 @@ import org.maraist.fa.styles.AutomatonStyle
   *
   * @group Annotated
   */
-trait EdgeAnnotatedFA[S, T, A, -Z[X, Y] <: AutomatonStyle[X, Y]]
+trait EdgeAnnotatedFA[S, T, A,
+  -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
 
-extends FA[S, T, Z] with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
+extends FA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]]
+
+with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
   /** Return the annotation (if any) on the transition from the state at
     * index `srcIdx` to the state at index `destIdx` via the label

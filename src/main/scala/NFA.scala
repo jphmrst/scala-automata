@@ -14,14 +14,15 @@ import org.maraist.fa.util.IndexSetsTracker
 import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
 
-/** Methods provided by nondeterministic finite automata (NDFAs)
+/** Methods provided by nondeterministic finite automata (NDFAs).
   *
   * Trait specifying methods provided by all NDFAs, and providing
   * default implementations for derivations from the core methods.
   *
-  * @tparam S The type of all states of the automaton
+  * @tparam S The type of all states of the automaton.
   * @tparam T The type of labels on (non-epsilon) transitions of the
-  * automaton
+  * automaton.
+  *
   * @group NDFA
   */
 class NFA[S, T](
@@ -33,7 +34,7 @@ class NFA[S, T](
   override val transitionsArray: Array[Array[Set[Int]]]
 )
 
-extends full.NFA[S, T, Set, DFA, AutomatonStyle] {
+extends full.NFA[S, T, Set, DFA, AutomatonStyle, AutomatonStyle] {
 
   checkState
 

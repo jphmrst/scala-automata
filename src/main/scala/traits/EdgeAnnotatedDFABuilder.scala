@@ -2,7 +2,7 @@
 package org.maraist.fa.traits
 import scala.collection.mutable.Builder
 import org.maraist.fa.elements
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 /** Methods for the builder of any finite automaton.
   *
@@ -15,7 +15,7 @@ trait EdgeAnnotatedDFABuilder[
   S, T, A,
   +D[DS, DT, DA] <: EdgeAnnotatedDFA[DS, DT, DA, Z],
   -K >: elements.EdgeAnnotatedDFAelements[S, T, A] <: Matchable,
-  -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
+  -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ]
 
 extends EdgeAnnotatedFABuilder[S, T, A, D, K, Z]

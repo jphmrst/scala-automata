@@ -23,10 +23,11 @@ import org.maraist.fa.styles.AutomatonStyle
 trait UnindexedNFA[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT] <: DFA[DS, DT, Z],
-  -Z[S, T] <: AutomatonStyle[S, T]]
+  +D[DS, DT] <: DFA[DS, DT, DZ],
+  -NZ[S, T] <: AutomatonStyle[S, T],
+  -DZ[S, T] <: AutomatonStyle[S, T]]
 
-extends UnindexedFA[S, T, Z] {
+extends UnindexedFA[S, T, NZ] {
 
   /** Return the set of states at the end of an epsilon transition from
     * `s`. */

@@ -10,19 +10,26 @@
 
 package org.maraist.fa.full
 import org.maraist.fa.util.{EdgeAnnotationCombiner, IndexSetsTracker}
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
 
 trait EdgeAnnotatedNFA[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, Z],
-  -Z[S, T] <: AutomatonStyle[S, T]]
+  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
+  -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
+  -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
   (using combiner: EdgeAnnotationCombiner[NA, DA])
 
-extends NFA[S, T, G, [DS, DT] =>> D[DS, DT, DA], Z]
+extends NFA[
+  S, T, G,
+  [DS, DT] =>> D[DS, DT, DA],
+  [ZS, ZT] =>> NZ[ZS, ZT, NA],
+  [ZS, ZT] =>> DZ[ZS, ZT, DA]]
 
-with traits.EdgeAnnotatedNFA[S, T, NA, DA, G, D, Z] {
+with traits.EdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
+
+with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
 
   protected def labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]]
   protected def unlabelledEdgeAnnotations: Array[Array[Option[NA]]]
@@ -50,11 +57,6 @@ with traits.EdgeAnnotatedNFA[S, T, NA, DA, G, D, Z] {
     */
   def annotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
-
-  def annotated(src: S, label: T, dest: S): Boolean =
-    annotation(src, label, dest).isDefined
-
-  def eAnnotated(src: S, dest: S): Boolean = eAnnotation(src, dest).isDefined
 
   def eAnnotation(src: S, dest: S): Option[NA] =
     eAnnotationIndex(indexOf(src), indexOf(dest))

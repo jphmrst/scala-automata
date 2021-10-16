@@ -20,7 +20,8 @@ import org.maraist.fa.full
   */
 class NFABuilder[S,T]
 
-extends full.NFABuilder[S, T, Set, DFA, NFA, NFAelements[S,T], AutomatonStyle] {
+extends full.NFABuilder[
+  S, T, Set, DFA, NFA, NFAelements[S,T], AutomatonStyle, AutomatonStyle] {
 
   override protected def assembleNFA(
     statesSeq: IndexedSeq[S],

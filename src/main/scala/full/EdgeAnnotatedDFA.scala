@@ -10,7 +10,7 @@
 
 package org.maraist.fa.full
 import org.maraist.fa.util.EdgeAnnotationCombiner
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
 
 /** Implementation of a edge-annotated DFA.
@@ -22,11 +22,11 @@ import org.maraist.fa.traits
  *
  * @group DFA
  */
-trait EdgeAnnotatedDFA[S, T, A, Z[X, Y] <: AutomatonStyle[X, Y]]
+trait EdgeAnnotatedDFA[S, T, A, Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
 
 extends traits.EdgeAnnotatedDFA[S, T, A, Z]
 
-with DFA[S, T, Z]
+with DFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]]
 
 with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 

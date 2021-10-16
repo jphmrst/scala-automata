@@ -12,7 +12,7 @@ package org.maraist.fa.full
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.util.EdgeAnnotationCombiner
 import org.maraist.fa.elements.*
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
 
 /** Partial implementation of a builder for edge-annotated NFAs using
@@ -29,22 +29,25 @@ import org.maraist.fa.traits
 trait EdgeAnnotatedNFABuilder[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, Z],
-  +N[NS, NT, NNA, NDA] <: EdgeAnnotatedNFA[NS, NT, NNA, NDA, G, D, Z],
+  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
+  +N[NS, NT, NNA, NDA] <: EdgeAnnotatedNFA[NS, NT, NNA, NDA, G, D, NZ, DZ],
   -K >: EdgeAnnotatedNFAelements[S, T, NA] <: Matchable,
-  -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
+  -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
+  -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ](using combiner: EdgeAnnotationCombiner[NA, DA])
 
 extends NFABuilder[
   S, T, G,
   [DS, DT] =>> D[DS, DT, DA],
   [DS, DT] =>> N[DS, DT, NA, DA],
-  K, Z
+  K,
+  [ZS, ZT] =>> NZ[ZS, ZT, NA],
+  [ZS, ZT] =>> DZ[ZS, ZT, DA]
 ]
 
-with traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, Z]
+with traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
 
-with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, Z] {
+with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
 
   protected val labelledEdgeAnnotations:
       HashMap[S, HashMap[T, HashMap[S, NA]]] =

@@ -11,7 +11,7 @@
 package org.maraist.fa.full
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.elements.*
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
 
 // -----------------------------------------------------------------
@@ -33,10 +33,14 @@ trait EdgeAnnotatedDFABuilder[
   S, T, A,
   +D[DS, DT, DA] <: EdgeAnnotatedDFA[DS, DT, DA, Z],
   -K >: EdgeAnnotatedDFAelements[S, T, A] <: Matchable,
-  -Z[ZS, ZT] <: AutomatonStyle[ZS, ZT]
+  -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ]
 
-extends DFABuilder[S, T, [DS, DT] =>> D[DS, DT, A], K, Z]
+extends DFABuilder[
+  S, T,
+  [DS, DT] =>> D[DS, DT, A],
+  K,
+  [ZS, ZT] =>> Z[ZS, ZT, A]]
 
 with traits.EdgeAnnotatedDFABuilder[S, T, A, D, K, Z] {
 

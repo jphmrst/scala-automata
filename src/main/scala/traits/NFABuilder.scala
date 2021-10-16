@@ -25,12 +25,15 @@ import org.maraist.fa.styles.AutomatonStyle
 trait NFABuilder[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT] <: DFA[DS, DT, Z],
-  +N[NS, NT] <: NFA[NS, NT, G, D, Z],
+  +D[DS, DT] <: DFA[DS, DT, DZ],
+  +N[NS, NT] <: NFA[NS, NT, G, D, NZ, DZ],
   -K >: elements.NFAelements[S, T] <: Matchable,
-  -Z[S, T] <: AutomatonStyle[S, T]]
+  -NZ[S, T] <: AutomatonStyle[S, T],
+  -DZ[S, T] <: AutomatonStyle[S, T]]
 
-extends FABuilder[S, T, N, K, Z] with UnindexedNFA[S, T, G, D, Z] {
+extends FABuilder[S, T, N, K, NZ]
+
+with UnindexedNFA[S, T, G, D, NZ, DZ] {
 
   /** Add an initial state to the NFA. */
   def addInitialState(s: S): Unit

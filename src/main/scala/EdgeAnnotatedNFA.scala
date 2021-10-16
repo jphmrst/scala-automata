@@ -11,7 +11,7 @@
 package org.maraist.fa
 import org.maraist.fa.full
 import org.maraist.fa.util.{EdgeAnnotationCombiner,IndexSetsTracker}
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 class EdgeAnnotatedNFA[S, T, NA, DA](
   override val stateSeq: IndexedSeq[S],
@@ -25,7 +25,8 @@ class EdgeAnnotatedNFA[S, T, NA, DA](
   using combiner: EdgeAnnotationCombiner[NA, DA])
 
 extends full.EdgeAnnotatedNFA[
-  S, T, NA, DA, Set, EdgeAnnotatedDFA, AutomatonStyle] {
+  S, T, NA, DA, Set, EdgeAnnotatedDFA,
+  EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle] {
 
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],

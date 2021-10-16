@@ -23,10 +23,13 @@ import org.maraist.fa.styles.AutomatonStyle
 trait NFA[
   S, T,
   G[X] <: Set[X],
-  +D[DS, DT] <: DFA[DS, DT, Z],
-  -Z[S, T] <: AutomatonStyle[S, T]]
+  +D[DS, DT] <: DFA[DS, DT, DZ],
+  -NZ[S, T] <: AutomatonStyle[S, T],
+  -DZ[S, T] <: AutomatonStyle[S, T]]
 
-extends UnindexedNFA[S, T, G, D, Z] with FA[S, T, Z] {
+extends UnindexedNFA[S, T, G, D, NZ, DZ]
+
+with FA[S, T, NZ] {
 
   /** Retrieve the indices of states found at the end of transitions labeled
     * `t` and starting from `s`. */

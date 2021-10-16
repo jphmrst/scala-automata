@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.traits
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 /** Methods for builders of a deterministic finite automaton.
   *
@@ -23,9 +23,14 @@ import org.maraist.fa.styles.AutomatonStyle
 trait UnindexedEdgeAnnotatedNFA[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT, A] <: EdgeAnnotatedDFA[DS, DT, A, Z],
-  -Z[S, T] <: AutomatonStyle[S, T]]
+  +D[DS, DT, A] <: EdgeAnnotatedDFA[DS, DT, A, DZ],
+  -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
+  -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
 
-extends UnindexedEdgeAnnotatedFA[S, T, NA, Z]
+extends UnindexedEdgeAnnotatedFA[S, T, NA, NZ]
 
-with UnindexedNFA[S, T, G, [DS, DT] =>> D[DS, DT, DA], Z]
+with UnindexedNFA[
+  S, T, G,
+  [DS, DT] =>> D[DS, DT, DA],
+  [ZS, ZT] =>> NZ[ZS, ZT, NA],
+  [ZS, ZT] =>> DZ[ZS, ZT, DA]]

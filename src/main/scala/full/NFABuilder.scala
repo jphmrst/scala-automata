@@ -26,14 +26,16 @@ import org.maraist.fa.elements.*
 trait NFABuilder[
   S, T,
   G[X] <: Set[X],
-  +D[X, Y] <: DFA[X, Y, Z],
-  +N[X, Y] <: NFA[X, Y, G, D, Z],
+  +D[X, Y] <: DFA[X, Y, DZ],
+  +N[X, Y] <: NFA[X, Y, G, D, NZ, DZ],
   -K >: NFAelements[S,T] <: Matchable,
-  -Z[X, Y] <: AutomatonStyle[X, Y]
+  -NZ[X, Y] <: AutomatonStyle[X, Y],
+  -DZ[X, Y] <: AutomatonStyle[X, Y]
 ]
 
-extends traits.NFABuilder[S, T, G, D, N, K, Z]
-    with FABuilder[S, T, N, K, Z] {
+extends traits.NFABuilder[S, T, G, D, N, K, NZ, DZ]
+
+with FABuilder[S, T, N, K, NZ] {
 
   protected var initialStatesVar = new HashSet[S]
   protected val transitionsMap = new HashMap[S, HashMap[T, HashSet[S]]]

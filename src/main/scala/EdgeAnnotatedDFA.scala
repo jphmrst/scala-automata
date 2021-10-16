@@ -10,7 +10,7 @@
 
 package org.maraist.fa
 import org.maraist.fa.full
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 /** Implementation of a edge-annotated DFA based on arrays and indexed
   * sequences.
@@ -30,7 +30,7 @@ class EdgeAnnotatedDFA[S, T, A](
   protected val edgeAnnotations: Array[Array[Option[A]]]
 )
 
-extends full.EdgeAnnotatedDFA[S, T, A, AutomatonStyle]
+extends full.EdgeAnnotatedDFA[S, T, A, EdgeAnnotatedAutomatonStyle]
 
 object EdgeAnnotatedDFA {
   def newBuilder[S, T, A](initialState: S) =

@@ -9,7 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.traits
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 
 /** Implementation of a edge-annotated DFA.
  * @param initialStateIndex Index of the initial state of the automaton.
@@ -20,9 +20,13 @@ import org.maraist.fa.styles.AutomatonStyle
  *
  * @group DFA
  */
-trait UnindexedEdgeAnnotatedDFA[S, T, A, -Z[X, Y] <: AutomatonStyle[X, Y]]
+trait UnindexedEdgeAnnotatedDFA[
+  S, T, A,
+  -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
 
-extends UnindexedEdgeAnnotatedFA[S, T, A, Z] with UnindexedDFA[S, T, Z] {
+extends UnindexedEdgeAnnotatedFA[S, T, A, Z]
+
+with UnindexedDFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   /** Return the annotation (if any) on the transition from the given
     * state and with the given label.

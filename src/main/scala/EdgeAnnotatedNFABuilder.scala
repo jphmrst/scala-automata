@@ -12,7 +12,7 @@ package org.maraist.fa
 import scala.collection.mutable.{HashMap, HashSet}
 import org.maraist.fa.util.EdgeAnnotationCombiner
 import org.maraist.fa.elements.EdgeAnnotatedNFAelements
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.full
 
 class EdgeAnnotatedNFABuilder[S, T, NA, DA](
@@ -20,7 +20,8 @@ class EdgeAnnotatedNFABuilder[S, T, NA, DA](
 
 extends full.EdgeAnnotatedNFABuilder[
   S, T, NA, DA, Set, EdgeAnnotatedDFA, EdgeAnnotatedNFA,
-  EdgeAnnotatedNFAelements[S, T, NA], AutomatonStyle
+  EdgeAnnotatedNFAelements[S, T, NA],
+  EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle
 ] {
 
   override protected def assembleNFA(

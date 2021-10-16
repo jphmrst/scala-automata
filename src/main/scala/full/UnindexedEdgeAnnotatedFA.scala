@@ -10,7 +10,7 @@
 
 package org.maraist.fa.full
 import org.maraist.fa.util.EdgeAnnotationCombiner
-import org.maraist.fa.styles.AutomatonStyle
+import org.maraist.fa.styles.{EdgeAnnotatedAutomatonStyle, DOT}
 import org.maraist.fa.traits
 
 /** Methods provided by an edge-annotated nondeterministic finite
@@ -25,17 +25,61 @@ import org.maraist.fa.traits
   *
   * @group Annotated
   */
-trait UnindexedEdgeAnnotatedFA[S, T, A, Z[X, Y] <: AutomatonStyle[X, Y]]
+trait UnindexedEdgeAnnotatedFA[
+  S, T, A,
+  -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
+]
 
 extends traits.UnindexedEdgeAnnotatedFA[S, T, A, Z]
 
-with UnindexedFA[S, T, Z] {
+with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   override def annotated(src: S, label: T, dest: S): Boolean =
     annotation(src, label, dest).isDefined
 
   override def eAnnotated(src: S, dest: S): Boolean =
     eAnnotation(src, dest).isDefined
+
+  // =================================================================
+
+  override protected def plotPresentEdge(
+    sb: StringBuilder, style: Z[S, T, A],
+    si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S):
+      Unit = {
+    sb ++= DOT.tabToVmark
+    sb ++= Integer.toString(si0)
+    sb ++= DOT.graphvizArrowToVmark
+    sb ++= Integer.toString(si1)
+    sb ++= " [ label=<"
+    sb ++= style.edgeLabel(t, s0, s1, this)
+    annotation(s0, t, s1) match {
+      case None => { }
+      case Some(a) => {
+        sb ++= "<br/>"
+        sb ++= style.annotationLabel(a, t, s0, s1)
+      }
+    }
+    sb ++= "> ];\n"
+  }
+
+  override protected def plotPresentEdge(
+    sb: StringBuilder, style: Z[S, T, A],
+    si0: Int, s0:S, si1: Int, s1:S):
+      Unit = {
+    sb ++= DOT.tabToVmark
+    sb ++= Integer.toString(si0)
+    sb ++= DOT.graphvizArrowToVmark
+    sb ++= Integer.toString(si1)
+    eAnnotation(s0, s1) match {
+      case None => { }
+      case Some(a) => {
+        sb ++= " [ label=< &epsilon;<br/>"
+        sb ++= style.eAnnotationLabel(a, s0, s1)
+        sb ++= "> ]"
+      }
+    }
+    sb ++= ";\n"
+  }
 
   // =================================================================
 
