@@ -40,3 +40,8 @@ extends full.EdgeAnnotatedNFA[
         dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
         dfaTransitions, edgeAnnotations)
 }
+
+object EdgeAnnotatedNFA {
+  def newBuilder[S, T, NA, DA](using EdgeAnnotationCombiner[NA, DA]) =
+    new EdgeAnnotatedNFABuilder[S, T, NA, DA]()
+}

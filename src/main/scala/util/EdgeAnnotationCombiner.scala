@@ -45,7 +45,7 @@ trait EdgeAnnotationCombiner[NA, DA] {
     }
 }
 
-object EdgeAnnotationsCombiner {
+object EdgeAnnotationCombiner {
   /** Default [[EdgeAnnotationCombiner]] using set union. */
   given singleSetCombiner[A]: EdgeAnnotationCombiner[A, Set[A]] with {
     def single(a: A): Set[A] = Set(a)

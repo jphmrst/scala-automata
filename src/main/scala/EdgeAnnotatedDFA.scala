@@ -33,4 +33,6 @@ class EdgeAnnotatedDFA[S, T, A](
 extends full.EdgeAnnotatedDFA[S, T, A, AutomatonStyle]
 
 object EdgeAnnotatedDFA {
+  def newBuilder[S, T, A](initialState: S) =
+    new EdgeAnnotatedDFABuilder[S, T, A](initialState)
 }

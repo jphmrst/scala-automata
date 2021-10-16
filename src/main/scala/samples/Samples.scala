@@ -15,16 +15,13 @@ import scala.collection.mutable.Builder
 import org.maraist.util.FilesCleaner
 import org.maraist.latex.{LaTeXdoc, Sampler}
 import org.maraist.fa.{
-  DFA, NFA, DFABuilder, NFABuilder, EdgeAnnotatedDFA, EdgeAnnotatedDFABuilder
+  DFA, NFA, DFABuilder, NFABuilder, EdgeAnnotatedDFA, EdgeAnnotatedDFABuilder,
+  EdgeAnnotatedNFA, EdgeAnnotatedNFABuilder
   // , PFA, PFABuilder
   // , HyperedgeDFA, HyperedgeNFA, HyperedgeDFABuilder, HyperedgeNFABuilder
-  // , EdgeAnnotatedNFA, EdgeAnnotatedNFABuilder
 }
-import org.maraist.fa.elements.{
-  AddState, RemoveState, RemoveFinalState, AddFinalState,
-  RemoveTransition, AddTransition,
-  DFAelements, NFAelements
-}
+import org.maraist.fa.util.EdgeAnnotationCombiner
+import org.maraist.fa.elements.*
 
 /**
  * Sample automata, and printing a guide to them.
@@ -204,18 +201,15 @@ object Samples extends Sampler {
   }
    */
 
-  /**
-  def ann01_builder: NFAEdgeAnnotationsBuilder[
-    String, Char, Int, Set[Int],
-    ? <: DFA[Set[String],Char] & EdgeAnnotatedDFA[Set[String],Char,Set[Int]],
-    ? <: EdgeAnnotatedNFA[String,Char,Int,Set[Int]],
-    Elements.AnnotatedNFAelement[String,Char,Int]
+  def ann01_builder: EdgeAnnotatedNFABuilder[
+    String, Char, Int, Set[Int]
   ] = {
-    import org.maraist.fa.annotated.setCombiner
+    given g[A]: EdgeAnnotationCombiner[A, Set[A]] =
+      EdgeAnnotationCombiner.singleSetCombiner[A]
     import org.maraist.fa.elements.*
-    import org.maraist.fa.annotated.Elements.*
 
-    val builder = EdgeAnnotatedNFA.newBuilder[String, Char, Int, Set[Int]]
+    val builder =
+      EdgeAnnotatedNFA.newBuilder[String, Char, Int, Set[Int]](using g)
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2a")
@@ -239,38 +233,31 @@ object Samples extends Sampler {
     // builder.dump()
     builder
   }
-   */
 
-  /**
-  def ann01_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int], ? <: EdgeAnnotatedDFA[Set[String], Char, Set[Int]]] = {
+  def ann01_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int]] = {
     val builder = ann01_builder
     val res = builder.result()
     // res.dump()
     res
   }
-   */
 
-  /**
   def ann01_dfa: EdgeAnnotatedDFA[Set[String], Char, Set[Int]] = {
     val res = ann01_nfa.toDFA
     // res.dump()
     res
   }
-   */
 
-  /**
-  def ann02_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int], ?] = {
-    import org.maraist.fa.annotated.setCombiner
-    import org.maraist.fa.elements.*
-    import org.maraist.fa.annotated.Elements.*
+  def ann02_nfa: EdgeAnnotatedNFA[String, Char, Int, Set[Int]] = {
+    given g[A]: EdgeAnnotationCombiner[A, Set[A]] =
+      EdgeAnnotationCombiner.singleSetCombiner[A]
 
-    val builder = new EdgeAnnotatedNFABuilder[String, Char, Set[Int], Int]
+    val builder =
+      new EdgeAnnotatedNFABuilder[String, Char, Int, Set[Int]](using g)
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2")
     builder.result()
   }
-    */
 
   def samplesFromNfaBuilder[
     S, T, ThisDFA <: DFA[Set[S],T],
@@ -315,12 +302,12 @@ object Samples extends Sampler {
 //    graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
 
     // samplesFromNfaBuilder(guide, cleaner, ann01_builder, "ann01", "4in")
-//    guide ++= "\\clearpage\n"
-//    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
-//    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
+    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
 
-//    guide ++= "\\clearpage\n"
-//    graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")
 
     cleaner
   }
