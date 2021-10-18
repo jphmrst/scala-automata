@@ -155,10 +155,15 @@ extends traits.UnindexedFA[S, T, Z] {
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
     sb ++= " [ label=<"
-    sb ++= style.edgeLabel(t, s0, s1, this)
+    sb ++= edgeText(style, si0, s0, ti0, t, si1, s1)
     sb ++= "> ];\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
+
+  protected def edgeText(
+    style: Z[S, T], si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S
+  ): String =
+    style.edgeLabel(t, s0, s1, this)
 
   protected def plotPresentEdge(
     sb: StringBuilder, style: Z[S, T],
@@ -168,10 +173,18 @@ extends traits.UnindexedFA[S, T, Z] {
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
-    // sb ++= " [  ]"
+    val text = edgeText(style, si0, s0, si1, s1)
+    if !text.equals("") then {
+       sb ++= " [ "
+       sb ++= text
+       sb ++= " ]"
+    }
     sb ++= ";\n"
     //println(si0 + "--[" + t + "]-->" + si1);
   }
+
+  protected def edgeText(style: Z[S, T], si0: Int, s0:S, si1: Int, s1:S):
+      String = ""
 
   // =================================================================
 

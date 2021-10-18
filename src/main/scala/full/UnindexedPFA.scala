@@ -107,8 +107,27 @@ with UnindexedFA[S, T, Z] {
     sb ++= si.toString()
     sb ++= " [ label=<<font color=\"blue\">"
     sb ++= prob.toString()
-    sb ++= DOT.endFontAndDot
+    sb ++= DOT.endFont
+    sb ++= DOT.endLabelAndDot
   }
 
+  override protected def edgeText(
+    style: Z[S, T], si0: Int, s0: S, ti0: Int, t: T, si1: Int, s1: S
+  ): String =
+    (style.edgeLabel(t, s0, s1, this)
+      ++ "; <font color=\"blue\">"
+      ++ transitionProb(s0, t, s1).toString()
+      ++ "</font>")
+
+  override protected def edgeText(
+    style: Z[S, T], si0: Int, s0: S, si1: Int, s1: S
+  ): String = {
+    val prob = eTransitionProb(s0, s1)
+    if (prob > 0.0)
+      then ("<font color=\"blue\">"
+        ++ prob.toString()
+        ++ "</font>")
+    else ""
+  }
 
 }

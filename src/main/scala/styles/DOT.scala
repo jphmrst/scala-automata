@@ -17,5 +17,6 @@ private[fa] object DOT {
   val tabToVmark: String = "\tV"
   val graphvizArrow: String = " -> "
   val graphvizArrowToVmark: String = " -> V"
-  val endFontAndDot: String = "</font>> ];\n"
+  val endFont: String = "</font>"
+  val endLabelAndDot: String = "> ];\n"
 }
