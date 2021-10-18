@@ -123,23 +123,27 @@ extends traits.UnindexedFA[S, T, Z] {
       Unit = {
     // Arrow for the initial state
     foreachInitialState((s) => {
-      val idx = Integer.toString(stateList.indexOf(s))
-
-      // Dummy state for arrow base.
-      sb ++= "\tinit"
-      sb ++= idx
-      sb ++= " [shape=none, margin=0, label=\"\"];"
-      // sb ++= " // "
-      // sb ++= (if s == null then "null" else s.toString())
-      // sb ++= "\n"
-
-      // Arrow from the dummy state to the initial state.
-      sb ++= "\tinit"
-      sb ++= idx
-      sb ++= " -> V"
-      sb ++= idx
+      plotInitialStateMarker(sb, s, stateList.indexOf(s))
     })
     sb ++= ";\n"
+  }
+
+  protected def plotInitialStateMarker(sb: StringBuilder, s: S, idx: Int):
+      Unit = {
+
+    // Dummy state for arrow base.
+    sb ++= "\tinit"
+    sb ++= idx.toString
+    sb ++= " [shape=none, margin=0, label=\"\"];"
+    // sb ++= " // "
+    // sb ++= (if s == null then "null" else s.toString())
+    // sb ++= "\n"
+
+    // Arrow from the dummy state to the initial state.
+    sb ++= "\tinit"
+    sb ++= idx.toString
+    sb ++= " -> V"
+    sb ++= idx.toString
   }
 
   protected def plotPresentEdge(
