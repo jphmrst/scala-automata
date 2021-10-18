@@ -1,0 +1,37 @@
+#+TITLE: Scala-automata version history
+
+** Versions 0.2.x
+
+*** Version 0.2.0
+    Overhaul of organization of traits and classes.  There are now
+    three main subdirectories in the source tree:
+
+    - =src/main/scala/traits= :: Contains traits with abstract methods
+      only, no mixin implementations.  When writing methods which
+      receive general automata, but do not locally extend
+      implementations, consider using these traits as formal parameter
+      types (caveat: there may be more type parameters in these traits
+      than you want to address).
+
+    - =src/main/scala/full= :: Mixins traits providing mostly-complete
+      implementations of the abstract traits above.  These mixins
+      expect a rich specification of type variables, and some also
+      expect constructor arguments.
+
+      When writing subclasses of the automata in this library, these
+      traits are almost certainly the right ones to extend.
+
+    - =src/main/scala= :: Instantiable classes.  These classes have
+      significantly simpler signatures than the mixins in
+      =src/main/scala/full=, and as such are much easier to use as-is
+      in other libraries, but these classes are difficult to extend
+      robustly.
+
+    Removes a number of classes, including simplifying the
+    Graphviz/LaTeX output.
+
+    This version is the first in which this document appears, and the
+    first posted to the Scaladex.
+
+** Versions 0.1.x
+   Original organization of classes
