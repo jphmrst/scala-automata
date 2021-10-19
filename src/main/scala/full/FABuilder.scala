@@ -16,14 +16,15 @@ import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
 
 /** Implementation of a builder for some automaton type using
- *  [[scala.collection.mutable.HashSet `HashSet`s]] and
- *  [[scala.collection.mutable.HashMap `HashMap`s]].
- * @tparam S The type of all states of the automaton
- * @tparam T The type of labels on (non-epsilon) transitions of the automaton
- * @tparam D Type of automaton constructed by this builder.
- * @tparam K Builder elements for this builder.
- * @tparam Z Type of style options for Graphviz export
- */
+  * [[scala.collection.mutable.HashSet `HashSet`s]] and
+  * [[scala.collection.mutable.HashMap `HashMap`s]].
+  *
+  * @tparam S The type of all states of the automaton
+  * @tparam T The type of labels on (non-epsilon) transitions of the automaton
+  * @tparam D Type of automaton constructed by this builder.
+  * @tparam K Builder elements for this builder.
+  * @tparam Z Type of style options for Graphviz export
+  */
 trait FABuilder[
   S, T,
   +A[AS, AT] <: FA[AS, AT, Z],
@@ -31,10 +32,11 @@ trait FABuilder[
   -Z[X, Y] <: AutomatonStyle[X, Y]
 ]
 
-extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
+extends traits.FABuilder[S, T, A, K, Z]
 
-  /** Storage for all state objects */
-  protected val allStates: HashSet[S] = new HashSet[S]
+with UnindexedFA[S, T, Z]
+
+with StatesBuilder[S, T] {
 
   /** Storage for all final state objects */
   protected val finalStatesSet: HashSet[S] = new HashSet[S]
@@ -43,25 +45,13 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
     * to call `super.clear()`.
     */
   override def clear(): Unit = {
-    allStates.clear()
+    super.clear()
     finalStatesSet.clear()
   }
 
-  override def addState(s:S):Unit = { allStates += s }
-
   /** Internal, low-level method for removing all transitions emerging
     * from a particular state.  Does no consistency checking.  */
-  protected def deleteTransitionsFrom(s: S): Unit
-
-  override def removeState(s:S):Unit = {
-    allStates -= s
-    removeFinalState(s)
-    // TODO --- what if it's initial // removeInitialState(s)
-    deleteTransitionsFrom(s)
-  }
-  override def size: Int = allStates.size
-  override def states: Set[S] = Set.from(allStates)
-  override def isState(s:S): Boolean = allStates.contains(s)
+  override protected def deleteTransitionsFrom(s: S): Unit
 
   override def removeFinalState(s: S): Unit = { finalStatesSet -= s }
 
