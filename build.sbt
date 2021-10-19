@@ -24,20 +24,18 @@ licenses += (
   url("https://github.com/jphmrst/scala-automata/blob/master/LICENSE.txt"))
 publishMavenStyle := true
 
-// disable publish with scala version, otherwise artifact name will
-// include scala version
-// e.g cassper_2.11
-crossPaths := false
-
 // add sonatype repository settings
 // snapshot versions publish to sonatype snapshot repository
 // other versions publish to sonatype staging repository
-publishTo := Some(
+pomIncludeRepository := { _ => false }
+val nexus = "https://s01.oss.sonatype.org/"
+publishTo := {
   if (isSnapshot.value)
-    Opts.resolver.sonatypeSnapshots
+    Some("snapshots" at nexus + "content/repositories/snapshots")
   else
-    Opts.resolver.sonatypeStaging
-)
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
+}
+publishMavenStyle := true
 
 ThisBuild / versionScheme := Some("semver-spec")
 
@@ -50,7 +48,7 @@ libraryDependencies += "org.maraist" %% "scala-latex" % "2.0.0"
 unmanagedSources / excludeFilter := ".#*"
 Global / excludeLintKeys ++= Set(scalacOptions)
 Compile / doc / scalacOptions ++= Seq(
-  "-groups",
+  // "-groups",
   "-doc-root-content", "src/root.scaladoc"
 )
 
