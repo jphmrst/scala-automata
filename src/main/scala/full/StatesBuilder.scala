@@ -9,11 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
-import scala.collection.mutable.{HashMap,HashSet}
-import org.maraist.fa.elements.{FAelements,
-  AddState, RemoveState, AddFinalState, RemoveFinalState}
-import org.maraist.fa.styles.AutomatonStyle
-import org.maraist.fa.traits
+import scala.collection.mutable.HashSet
 
 /** Mixin bringing implementations of adding/removing states using
   * [[scala.collection.mutable.HashSet `HashSet`s]] and
@@ -21,9 +17,6 @@ import org.maraist.fa.traits
   *
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
-  * @tparam D Type of automaton constructed by this builder.
-  * @tparam K Builder elements for this builder.
-  * @tparam Z Type of style options for Graphviz export
   */
 trait StatesBuilder[S, T] {
 
@@ -34,9 +27,7 @@ trait StatesBuilder[S, T] {
 
   protected def deleteTransitionsFrom(s: S): Unit
 
-  def clear(): Unit = {
-    allStates.clear()
-  }
+  def clear(): Unit = allStates.clear()
 
   def addState(s:S):Unit = { allStates += s }
 

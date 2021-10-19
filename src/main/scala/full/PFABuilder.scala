@@ -8,11 +8,12 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.pfa.impl
+package org.maraist.fa.full
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
-import org.maraist.fa.pfa.{PFA, IndexedPFA, PFABuilder}
-import org.maraist.fa.impl.{HashSetStateBuilderMixin}
+import org.maraist.fa.traits
+import org.maraist.fa.elements
+import org.maraist.fa.styles.ProbabilisticAutomatonStyle
 
 /** Implementation of [[org.maraist.fa.pfa.PFABuilder PFABuilder]]
  *  using [[scala.collection.mutable.HashSet `HashSet`s]] and
@@ -24,42 +25,56 @@ import org.maraist.fa.impl.{HashSetStateBuilderMixin}
  *
  * @group DFA
  */
-abstract class AbstractHashPFABuilder[S,T]
-extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
-  private val transitionsMap = new HashMap[S,HashMap[T,HashMap[S,Double]]]
-  private val eTransitionsMap = new HashMap[S,HashMap[S,Double]]
-  private val initialProb = new HashMap[S,Double]
-  private val finalProb = new HashMap[S,Double]
+abstract class PFABuilder[
+  S, T,
+  +A[AS, AT] <: PFA[AS, AT, Z],
+  -K >: elements.PFAelements[S, T] <: Matchable,
+  -Z[ZS, ZT] <: ProbabilisticAutomatonStyle[ZS, ZT]]
 
-  def initialStateProb(s:S): Double = initialProb.get(s) match {
+extends traits.PFABuilder[S, T, A, K, Z] with StatesBuilder[S, T] {
+
+  protected val transitionsMap = new HashMap[S, HashMap[T, HashMap[S, Double]]]
+  protected val eTransitionsMap = new HashMap[S, HashMap[S, Double]]
+  protected val initialProb = new HashMap[S, Double]
+  protected val finalProb = new HashMap[S, Double]
+
+  override def clear(): Unit = {
+    super.clear()
+    transitionsMap.clear()
+    eTransitionsMap.clear()
+    initialProb.clear()
+    finalProb.clear()
+  }
+
+  def initialStateProb(s: S): Double = initialProb.get(s) match {
     case Some(p) => p
     case None => 0.0
   }
 
-  def finalStateProb(s:S): Double = finalProb.get(s) match {
+  def finalStateProb(s: S): Double = finalProb.get(s) match {
     case Some(p) => p
     case None => 0.0
   }
 
-  def addInitialState(s:S, prob:Double):Unit = {
+  def addInitialState(s: S, prob: Double): Unit = {
     addState(s)
     initialProb(s) = prob
   }
 
-  def removeInitialState(s:S):Unit = { initialProb.remove(s) }
+  def removeInitialState(s: S): Unit = { initialProb.remove(s) }
 
-  def addFinalState(s:S, prob:Double):Unit = {
+  def addFinalState(s: S, prob: Double): Unit = {
     addState(s)
     finalProb(s) = prob
   }
 
-  def removeFinalState(s:S):Unit = { finalProb.remove(s) }
+  def removeFinalState(s: S): Unit = { finalProb.remove(s) }
 
-  private[fa] def deleteInitialState(s:S):Unit = { initialProb.remove(s) }
-  private[fa] def deleteFinalState(s:S):Unit = { finalProb.remove(s) }
-  private[fa] def deleteTransitionsFrom(s:S) = {
+  private[fa] def deleteInitialState(s: S): Unit = { initialProb.remove(s) }
+  private[fa] def deleteFinalState(s: S): Unit = { finalProb.remove(s) }
+  protected def deleteTransitionsFrom(s: S) = {
     transitionsMap -= s
-    for(lmap:HashMap[T,HashMap[S,Double]] <- transitionsMap.valuesIterator)
+    for(lmap: HashMap[T,HashMap[S,Double]] <- transitionsMap.valuesIterator)
       for(v <- lmap.keysIterator)
         if (lmap(v).contains(s)) {
           lmap(v) -= s
@@ -67,28 +82,28 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
         }
   }
 
-  def addTransition(s1:S, t:T, s2:S, prob:Double):Unit = {
+  def addTransition(s1: S, t: T, s2: S, prob: Double): Unit = {
     allStates += s1
     allStates += s2
     if (!transitionsMap.contains(s1)) {
       transitionsMap += (s1 -> new HashMap[T,HashMap[S,Double]])
     }
 
-    val sub1:HashMap[T,HashMap[S,Double]] = transitionsMap(s1)
+    val sub1: HashMap[T, HashMap[S, Double]] = transitionsMap(s1)
     if (!sub1.contains(t)) {
       sub1 += (t -> new HashMap[S,Double])
     }
 
-    val sub2:HashMap[S,Double] = sub1(t)
+    val sub2: HashMap[S,Double] = sub1(t)
     sub2 += (s2 -> prob)
   }
-  def removeTransition(s1:S, t:T, s2:S):Unit =
+  def removeTransition(s1: S, t: T, s2: S): Unit =
     if (transitionsMap.contains(s1))
       transitionsMap(s1) -= t
 
-  def transition(s0:S, t:T, s1:S):Double = {
+  def transition(s0: S, t: T, s1: S): Double = {
     if (transitionsMap.contains(s0)) {
-      val sub:HashMap[T,HashMap[S,Double]] = transitionsMap(s0)
+      val sub: HashMap[T,HashMap[S,Double]] = transitionsMap(s0)
       if (sub.contains(t)) {
         val sub2 = sub(t)
         if (sub2.contains(s1)) sub2(s1) else 0.0
@@ -96,7 +111,7 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
     } else 0.0
   }
 
-  def eTransition(s0:S, s1:S): Double = {
+  def eTransition(s0: S, s1: S): Double = {
     eTransitionsMap.get(s0) match {
       case Some(submap) => {
         submap.get(s1) match {
@@ -108,7 +123,7 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
     }
   }
 
-  def addETransition(s1:S, s2:S, prob:Double): Unit = {
+  def addETransition(s1: S, s2: S, prob: Double): Unit = {
     eTransitionsMap.get(s1) match {
       case Some(submap) => { submap(s2) = prob }
       case None => {
@@ -119,17 +134,17 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
     }
   }
 
-  def removeETransition(s1:S, s2:S): Unit = {
+  def removeETransition(s1: S, s2: S): Unit = {
     eTransitionsMap.get(s1) match {
       case Some(submap) => { submap.remove(s2) }
       case None => { }
     }
   }
 
-  def transition(s0:S, t:T):Map[S,Double] = {
+  def transition(s0: S, t: T): Map[S,Double] = {
     val result = new HashMap[S,Double]()
     if (transitionsMap.contains(s0)) {
-      val sub:HashMap[T,HashMap[S,Double]] = transitionsMap(s0)
+      val sub: HashMap[T,HashMap[S,Double]] = transitionsMap(s0)
       if (sub.contains(t)) {
         for ((s1,prob) <- sub(t)) {
           if (prob>0.0)
@@ -149,7 +164,7 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
   }
 
   import scala.util.control.NonLocalReturns.*
-  override def accepts(ts:Seq[T]): Double = returning {
+  override def acceptsProb(ts: Seq[T]): Double = returning {
     var current = List.from(for(s<-initialProb.keys) yield (initialProb(s),s))
     for(t <- ts) {
       val oldCurrent = current
@@ -164,14 +179,14 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
       if (current.size == 0) throwReturn(0.0)
     }
 
-    var result:Double = 0.0
+    var result: Double = 0.0
     for ((p,s) <- current) { result += p }
     result
   }
 
-  def normalize:Unit = { // scalastyle:ignore cyclomatic.complexity
+  def normalize: Unit = { // scalastyle: ignore cyclomatic.complexity
     val totalOut = new HashMap[S,Double]
-    var totalInit:Double = 0.0
+    var totalInit: Double = 0.0
     for(s1 <- allStates) {
       totalInit += initialStateProb(s1)
       totalOut(s1) = finalStateProb(s1)
@@ -210,23 +225,20 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
     }
   }
 
-  /** @deprecated */
-  def toPFA: ThisPFA = result()
-
-  def result(): ThisPFA = { // scalastyle:ignore cyclomatic.complexity method.length
+  def result(): A[S, T] = { // scalastyle: ignore cyclomatic.complexity method.length
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val initialProbs = Array.ofDim[Double](statesSeq.length)
     val finalProbs = Array.ofDim[Double](statesSeq.length)
     val totalOut = Array.ofDim[Double](statesSeq.length)
-    val idxLabels:Array[Array[Array[Double]]] =
+    val idxLabels: Array[Array[Array[Double]]] =
       Array.ofDim[Double](statesSeq.length, transitionsSeq.length,
                           statesSeq.length)
-    val eLabels:Array[Array[Double]] = Array.ofDim[Double](statesSeq.length,
+    val eLabels: Array[Array[Double]] = Array.ofDim[Double](statesSeq.length,
                                                            statesSeq.length)
     var totalInit = 0.0
     for(si0 <- 0 until statesSeq.length) {
-      val s0:S = statesSeq(si0)
+      val s0: S = statesSeq(si0)
 
       val thisInit  = initialStateProb(s0)
       val thisFinal = finalStateProb(s0)
@@ -239,12 +251,12 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
         val s0map = transitionsMap(s0)
 
         for(ti <- 0 until transitionsSeq.length) {
-          val t:T = transitionsSeq(ti)
+          val t: T = transitionsSeq(ti)
           if (s0map.contains(t)) {
             val tMap = s0map(t)
 
             for(si1 <- 0 until statesSeq.length) {
-              val s1:S = statesSeq(si1)
+              val s1: S = statesSeq(si1)
               if (tMap.contains(s1)) {
                 idxLabels(si0)(ti)(si1) = tMap(s1)
                 totalOut(si0) += tMap(s1)
@@ -285,5 +297,5 @@ extends HashSetStateBuilderMixin[S,T] with PFABuilder[S,T] {
                             finalProbs: Array[Double],
                             transitionsSeq: IndexedSeq[T],
                             idxLabels: Array[Array[Array[Double]]],
-                            eTransLabels: Array[Array[Double]]): ThisPFA
+                            eTransLabels: Array[Array[Double]]): A[S, T]
 }
