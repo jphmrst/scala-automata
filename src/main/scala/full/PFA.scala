@@ -63,22 +63,10 @@ with UnindexedPFA[S, T, Z] {
   override val initialStateIndices: Set[Int] =
     (for(i <- 0 until size; if initialProbs(i) > 0.0) yield i).toSet
 
-  override def accepts(s: Seq[T]): Boolean = acceptsProb(s) > 0.0
-
-  override def transitions(s: S, t: T): Set[S] = {
-    val builder = Set.newBuilder[S]
-    for((dest, prob) <- possibleTransitions(s, t); if prob > 0.0)
-      do builder += dest
-    builder.result
-  }
-
   override def eTransitionProb(s0: S, s1: S): Double =
     eTransitionsMatrix(indexOf(s0))(indexOf(s1))
 
   override def finalStateProb(s: S): Double = finalProbs(indexOf(s))
-
-  override def foreachETransition(action: (S, S) => Unit): Unit =
-    foreachETransition((s1: S, s2: S, _ : Double) => action(s1, s2))
 
   override def foreachETransition(action: (S, S, Double) => Unit): Unit =
     for(

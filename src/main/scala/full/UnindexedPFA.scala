@@ -130,4 +130,15 @@ with UnindexedFA[S, T, Z] {
     else ""
   }
 
+  override def accepts(s: Seq[T]): Boolean = acceptsProb(s) > 0.0
+
+  override def foreachETransition(action: (S, S) => Unit): Unit =
+    foreachETransition((s1: S, s2: S, _ : Double) => action(s1, s2))
+
+  override def transitions(s: S, t: T): Set[S] = {
+    val builder = Set.newBuilder[S]
+    for((dest, prob) <- possibleTransitions(s, t); if prob > 0.0)
+      do builder += dest
+    builder.result
+  }
 }
