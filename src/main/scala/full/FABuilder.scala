@@ -48,6 +48,11 @@ extends traits.FABuilder[S, T, A, K, Z] with UnindexedFA[S, T, Z] {
   }
 
   override def addState(s:S):Unit = { allStates += s }
+
+  /** Internal, low-level method for removing all transitions emerging
+    * from a particular state.  Does no consistency checking.  */
+  protected def deleteTransitionsFrom(s: S): Unit
+
   override def removeState(s:S):Unit = {
     allStates -= s
     removeFinalState(s)

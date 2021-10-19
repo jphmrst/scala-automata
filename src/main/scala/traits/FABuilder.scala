@@ -49,8 +49,4 @@ extends Builder[K, A[S,T]] with UnindexedFA[S, T, Z] {
 
   /** Adds a transition labelled `t` from `s1` to `s2` */
   def addTransition(s1: S, t: T, s2: S): Unit
-
-  /** Internal, low-level method for removing all transitions emerging
-    * from a particular state.  Does no consistency checking.  */
-  protected def deleteTransitionsFrom(s: S): Unit
 }
