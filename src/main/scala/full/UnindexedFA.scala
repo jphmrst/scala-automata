@@ -175,9 +175,9 @@ extends traits.UnindexedFA[S, T, Z] {
     sb ++= Integer.toString(si1)
     val text = edgeText(style, si0, s0, si1, s1)
     if !text.equals("") then {
-       sb ++= " [ "
+       sb ++= " [ label=<"
        sb ++= text
-       sb ++= " ]"
+       sb ++= "> ]"
     }
     sb ++= ";\n"
     //println(si0 + "--[" + t + "]-->" + si1);

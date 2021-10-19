@@ -16,8 +16,7 @@ import org.maraist.util.FilesCleaner
 import org.maraist.latex.{LaTeXdoc, Sampler}
 import org.maraist.fa.{
   DFA, NFA, DFABuilder, NFABuilder, EdgeAnnotatedDFA, EdgeAnnotatedDFABuilder,
-  EdgeAnnotatedNFA, EdgeAnnotatedNFABuilder
-  // , PFA, PFABuilder
+  EdgeAnnotatedNFA, EdgeAnnotatedNFABuilder, PFA, PFABuilder
   // , HyperedgeDFA, HyperedgeNFA, HyperedgeDFABuilder, HyperedgeNFABuilder
 }
 import org.maraist.fa.util.EdgeAnnotationCombiner
@@ -168,7 +167,6 @@ object Samples extends Sampler {
   }
    */
 
-  /**
   def dlhPfa57:PFABuilder[Int,String] = {
     val res = new PFABuilder[Int,String]
     res.addInitialState(1, 1.0)
@@ -191,15 +189,12 @@ object Samples extends Sampler {
 
     res
    }
-   */
 
-  /**
   def dlhPfa57_erem: PFABuilder[Int,String] = {
     val res = dlhPfa57
     res.removeEpsilonTransitions
     res
   }
-   */
 
   def ann01_builder: EdgeAnnotatedNFABuilder[
     String, Char, Int, Set[Int]
@@ -283,13 +278,13 @@ object Samples extends Sampler {
     val cleaner = newCleaner()
     section(guide,"Package FA")
 
-    graphable(guide,cleaner, dfa1B,    "dfa1B",    "dfa1B",     "1.75in")
+    graphable(guide,cleaner, dfa1B,    "dfa1B",    "dfa1B",     "3in")
 
     println("dfa1")
     // dfa1.dump
-    graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "4in")
+    graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "3in")
     // println(" - back")
-    samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "4in")
+    samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "5.5in")
 
 //    guide ++= "\\clearpage\n"
 //    graphable(guide, cleaner, hdfa3B, "hdfa3B", "hdfa3B", "5in")
@@ -297,14 +292,14 @@ object Samples extends Sampler {
 
 //    samplesFromNfaBuilder(guide,cleaner,hndfa4B, "hndfa4", "5in")
 
-//    guide ++= "\\clearpage\n"
-//    graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "3in")
-//    graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "3in")
+    guide ++= "\\clearpage\n"
+    graphable(guide,cleaner,dlhPfa57, "dlhPfa57", "dlhPfa57",  "6in")
+    graphable(guide,cleaner,dlhPfa57_erem, "dlhPfa57er", "dlhPfa57er",  "6in")
 
     // samplesFromNfaBuilder(guide, cleaner, ann01_builder, "ann01", "4in")
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann01_nfa, "ann01NFA", "ann01NFA",  "6in")
-    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "8in")
+    graphable(guide,cleaner,ann01_dfa, "ann01.toDFA", "ann01.toDFA",  "7.5in")
 
     guide ++= "\\clearpage\n"
     graphable(guide,cleaner,ann02_nfa, "ann02NFA", "ann02NFA",  "2in")

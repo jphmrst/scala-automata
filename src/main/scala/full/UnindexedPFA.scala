@@ -107,8 +107,7 @@ with UnindexedFA[S, T, Z] {
     sb ++= si.toString()
     sb ++= " [ label=<<font color=\"blue\">"
     sb ++= prob.toString()
-    sb ++= DOT.endFont
-    sb ++= DOT.endLabelAndDot
+    sb ++= "</font>> ]"
   }
 
   override protected def edgeText(

@@ -52,7 +52,7 @@ with StatesMixin[S, T] with UnindexedPFA[S, T, Z] {
   }
 
   def eTransitionProb(s0: S, s1: S): Double =
-    eTransitionsMap.get(s0).map(_(s1)).getOrElse(0.0)
+    eTransitionsMap.get(s0).flatMap(_.get(s1)).getOrElse(0.0)
 
   def foreachETransition(action: (S, S, Double) => Unit): Unit =
     for ((s0, curry) <- eTransitionsMap; (s1, prob) <- curry; if prob > 0.0)
@@ -77,7 +77,7 @@ with StatesMixin[S, T] with UnindexedPFA[S, T, Z] {
     do action(s0, t, s1, prob)
 
   def transitionProb(s0: S, t: T, s1: S): Double =
-    transitionsMap.get(s0).map(_(t)).map(_(s1)).getOrElse(0.0)
+    transitionsMap.get(s0).flatMap(_.get(t)).flatMap(_.get(s1)).getOrElse(0.0)
 
   def initialStateProb(s: S): Double = initialProb.get(s) match {
     case Some(p) => p
