@@ -27,6 +27,10 @@
       in other libraries, but these classes are difficult to extend
       robustly.
 
+    At least for now, the FA extension with unlabelled hyperedges is
+    not included in the 0.2.* series.  The old code can be found in
+    the [[file:./src/main/hyperedge/][src/main/hyperedge directory]].
+
     Removes a number of classes, including simplifying the
     Graphviz/LaTeX output.
 
