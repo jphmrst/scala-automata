@@ -18,7 +18,7 @@ import org.maraist.fa.elements.{PFAelements,
   RemoveProbETransition}
 import org.maraist.fa.styles.ProbabilisticAutomatonStyle
 
-/** Implementation of [[org.maraist.fa.pfa.PFABuilder PFABuilder]]
+/** Implementation of [[org.maraist.fa.traits.PFABuilder PFABuilder]]
  *  using [[scala.collection.mutable.HashSet `HashSet`s]] and
  *  [[scala.collection.mutable.HashMap `HashMap`s]].
  * @param initialState The initial state of the automaton.  This builder must
