@@ -11,8 +11,11 @@
 package org.maraist.fa.full
 import scala.collection.mutable.HashMap
 import scala.collection.mutable.HashSet
-import org.maraist.fa.traits
-import org.maraist.fa.elements
+import org.maraist.fa.{traits,util}
+import org.maraist.fa.elements.{PFAelements,
+  AddState, RemoveState, AddProbFinalState, RemoveFinalState,
+  AddProbTransition, RemoveTransition, SetInitialState, AddProbETransition,
+  RemoveProbETransition}
 import org.maraist.fa.styles.ProbabilisticAutomatonStyle
 
 /** Implementation of [[org.maraist.fa.pfa.PFABuilder PFABuilder]]
@@ -25,13 +28,15 @@ import org.maraist.fa.styles.ProbabilisticAutomatonStyle
  *
  * @group DFA
  */
-abstract class PFABuilder[
+trait PFABuilder[
   S, T,
   +A[AS, AT] <: PFA[AS, AT, Z],
-  -K >: elements.PFAelements[S, T] <: Matchable,
+  -K >: PFAelements[S, T] <: Matchable,
   -Z[ZS, ZT] <: ProbabilisticAutomatonStyle[ZS, ZT]]
 
-extends traits.PFABuilder[S, T, A, K, Z] with StatesBuilder[S, T] {
+extends traits.PFABuilder[S, T, A, K, Z]
+
+with StatesMixin[S, T] with UnindexedPFA[S, T, Z] {
 
   protected val transitionsMap = new HashMap[S, HashMap[T, HashMap[S, Double]]]
   protected val eTransitionsMap = new HashMap[S, HashMap[S, Double]]
@@ -45,6 +50,34 @@ extends traits.PFABuilder[S, T, A, K, Z] with StatesBuilder[S, T] {
     initialProb.clear()
     finalProb.clear()
   }
+
+  def eTransitionProb(s0: S, s1: S): Double =
+    eTransitionsMap.get(s0).map(_(s1)).getOrElse(0.0)
+
+  def foreachETransition(action: (S, S, Double) => Unit): Unit =
+    for ((s0, curry) <- eTransitionsMap; (s1, prob) <- curry; if prob > 0.0)
+      do action(s0, s1, prob)
+
+  def foreachFinalState(action: (S, Double) => Unit): Unit =
+    for ((s, prob) <- finalProb; if prob > 0.0) do action(s, prob)
+
+  def foreachInitialState(action: (S, Double) => Unit): Unit =
+    for ((s, prob) <- initialProb; if prob > 0.0) do action(s, prob)
+
+  def foreachState(action: (S, Double) => Unit): Unit =
+    for (s <- states) do action(s, initialProb.getOrElse(s, 0.0))
+
+  def foreachTransition(action: (S, T, S, Double) => Unit): Unit =
+  for (
+    (s0, curry0) <- transitionsMap;
+    (t, curry1) <- curry0;
+    (s1, prob) <- curry1;
+    if prob > 0.0
+  )
+    do action(s0, t, s1, prob)
+
+  def transitionProb(s0: S, t: T, s1: S): Double =
+    transitionsMap.get(s0).map(_(t)).map(_(s1)).getOrElse(0.0)
 
   def initialStateProb(s: S): Double = initialProb.get(s) match {
     case Some(p) => p
@@ -223,6 +256,33 @@ extends traits.PFABuilder[S, T, A, K, Z] with StatesBuilder[S, T] {
         }
       }
     }
+  }
+
+  override def removeEpsilonTransitions: Unit =
+    new util.PFAEpsilonRemover(this).run()
+
+  override def addOne(builder: K): this.type = {
+    builder match {
+      case AddState(s): AddState[S, T] => addState(s)
+      case RemoveState(state): RemoveState[S, T] => removeState(state)
+      case AddProbFinalState(state, prob): AddProbFinalState[S, T] =>
+        addFinalState(state, prob)
+      case RemoveFinalState(state): RemoveFinalState[S, T] =>
+        removeFinalState(state)
+      case AddProbTransition(state1, trans, state2, prob):
+          AddProbTransition[S, T] =>
+        addTransition(state1, trans, state2, prob)
+      case RemoveTransition(state1, trans, state2): RemoveTransition[S, T] =>
+        removeTransition(state1, trans, state2)
+      case SetInitialState(state): SetInitialState[S] =>
+        SetInitialState(state)
+      case AddProbETransition(state1, state2, prob): AddProbETransition[S, T] =>
+        addETransition(state1, state2, prob)
+      case RemoveProbETransition(state1, state2, prob):
+          RemoveProbETransition[S, T] =>
+        removeETransition(state1, state2)
+    }
+    this
   }
 
   def result(): A[S, T] = { // scalastyle: ignore cyclomatic.complexity method.length

@@ -57,33 +57,9 @@ with UnindexedPFA[S, T, Z] {
    *  previous epsilon transition from `s1` to `s2`.
    */
   def addETransition(s1: S, s2: S, prob: Double): Unit
+
   /** Removes any epsilon transition from `s1` to `s2` */
   def removeETransition(s1: S, s2: S): Unit
 
   def removeEpsilonTransitions:Unit
-//   = new EpsilonRemover(this).run()
-
-//  override def addOne(builder: PFAelements[S,T]): this.type = {
-//    builder match {
-//      case AddState(s): AddState[S, T] => addState(s)
-//      case RemoveState(state) => removeState(state)
-//      case AddProbFinalState(state, prob) => addFinalState(state, prob)
-//      case RemoveFinalState(state) => removeFinalState(state)
-//      case AddProbTransition(state1, trans, state2, prob) =>
-//        addTransition(state1, trans, state2, prob)
-//      case RemoveTransition(state1, trans, state2): RemoveTransition[S, T] =>
-//        removeTransition(state1, trans, state2)
-//      case SetInitialState(state) => SetInitialState(state)
-//      case AddProbETransition(state1, state2, prob) =>
-//        addETransition(state1, state2, prob)
-//      case RemoveProbETransition(state1, state2, prob) =>
-//        removeETransition(state1, state2)
-//    }
-//    this
-//  }
-//
-//  /** This {@link scala.collection.mutable.Builder Builder} method
-//    * is not implemented at this time.
-//    */
-//  def clear(): Unit = throw new UnsupportedOperationException()
 }

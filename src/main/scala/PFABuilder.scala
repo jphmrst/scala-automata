@@ -8,10 +8,10 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.pfa.impl
-import scala.collection.mutable.HashSet
-import java.nio.file.attribute.PosixFileAttributes
-import org.maraist.fa.pfa.{PFA, IndexedPFA}
+package org.maraist.fa
+import org.maraist.fa.full
+import org.maraist.fa.elements
+import org.maraist.fa.styles.ProbabilisticAutomatonStyle
 
 /**
   * Concrete builder class for {@link org.maraist.fa.DFA DFAs} based
@@ -22,16 +22,19 @@ import org.maraist.fa.pfa.{PFA, IndexedPFA}
   *
   *  @group PFA
   */
-class HashPFABuilder[S,T] extends AbstractHashPFABuilder[S,T] {
-  type ThisPFA = ArrayPFA[S,T]
+class PFABuilder[S, T]
+
+extends full.PFABuilder[
+  S, T, PFA, elements.PFAelements[S, T], ProbabilisticAutomatonStyle] {
+
   protected def assemblePFA(statesSeq: IndexedSeq[S],
                             initialProbs: Array[Double],
                             finalProbs: Array[Double],
                             transitionsSeq: IndexedSeq[T],
                             transitionsMatrix: Array[Array[Array[Double]]],
                             eTransitionsMatrix: Array[Array[Double]]
-                          ): ArrayPFA[S,T] = {
-    new ArrayPFA[S,T](statesSeq, initialProbs, finalProbs,
-                      transitionsSeq, transitionsMatrix, eTransitionsMatrix)
-  }
+                          ): PFA[S, T] =
+    new PFA[S, T](
+      statesSeq, initialProbs, finalProbs,
+      transitionsSeq, transitionsMatrix, eTransitionsMatrix)
 }

@@ -18,7 +18,7 @@ import scala.collection.mutable.HashSet
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
   */
-trait StatesBuilder[S, T] {
+trait StatesMixin[S, T] {
 
   /** Storage for all state objects */
   protected val allStates: HashSet[S] = new HashSet[S]

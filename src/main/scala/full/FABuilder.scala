@@ -34,9 +34,7 @@ trait FABuilder[
 
 extends traits.FABuilder[S, T, A, K, Z]
 
-with UnindexedFA[S, T, Z]
-
-with StatesBuilder[S, T] {
+with UnindexedFA[S, T, Z] with StatesMixin[S, T] {
 
   /** Storage for all final state objects */
   protected val finalStatesSet: HashSet[S] = new HashSet[S]

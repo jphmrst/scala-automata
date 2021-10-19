@@ -8,8 +8,8 @@
 // implied, for NON-COMMERCIAL use.  See the License for the specific
 // language governing permissions and limitations under the License.
 
-package org.maraist.fa.pfa
-import scala.collection.mutable.HashMap
+package org.maraist.fa
+import scala.collection.mutable.{Builder, HashMap}
 import org.maraist.fa.styles.ProbabilisticAutomatonStyle
 import org.maraist.fa.full
 
@@ -34,3 +34,9 @@ class PFA[S, T](
 )
 
 extends full.PFA[S, T, ProbabilisticAutomatonStyle]
+
+object PFA {
+
+  def newBuilder[S, T] = new PFABuilder[S, T]
+
+}
