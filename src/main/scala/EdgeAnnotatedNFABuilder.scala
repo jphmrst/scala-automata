@@ -15,6 +15,8 @@ import org.maraist.fa.elements.EdgeAnnotatedNFAelements
 import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.full
 
+/** Builder for NFAs enriched with annotations on transitions.
+  */
 class EdgeAnnotatedNFABuilder[S, T, NA, DA](
   using EdgeAnnotationCombiner[NA, DA])
 
@@ -27,6 +29,9 @@ extends full.EdgeAnnotatedNFABuilder[
 with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA]
 
 
+/** Utilities for [[EdgeAnnotatedNFABuilder]]s for the standard
+  * top-level classes.
+  */
 object EdgeAnnotatedNFABuilder {
   /** Mixin providing a definition of [[#assembleNFA]] for the standard
     * top-level classes of this builder.
