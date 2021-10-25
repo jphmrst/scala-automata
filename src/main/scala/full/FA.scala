@@ -61,6 +61,7 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
       do throw IllegalStateException("Initial state index out of bounds")
   }
 
-  override protected def dumpHeader(): Unit =
-    println("---------- FA dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("---------- FA dump")
 }

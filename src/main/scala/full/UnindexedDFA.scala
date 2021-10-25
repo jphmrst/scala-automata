@@ -42,6 +42,7 @@ extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
     finalStates.contains(current)
   }
 
-  override protected def dumpHeader(): Unit =
-    println("----------  dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("----------  dump")
 }

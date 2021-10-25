@@ -188,44 +188,57 @@ extends traits.UnindexedFA[S, T, Z] {
 
   // =================================================================
 
-  def dump: Unit = {
-    dumpHeader()
-    dumpStates()
-    dumpTransitions()
-    dumpFooter()
+  def dump(out: java.io.PrintStream = Console.out): Unit = {
+    dumpHeader(out)
+    dumpStates(out)
+    dumpTransitions(out)
+    dumpFooter(out)
   }
 
-  protected def dumpHeader(): Unit = println("---------- FA dump")
-  protected def dumpFooter(): Unit = println("----------")
+  protected def dumpHeader(out: java.io.PrintStream = Console.out): Unit =
+    out.println("---------- FA dump")
+  protected def dumpFooter(out: java.io.PrintStream = Console.out): Unit =
+    out.println("----------")
 
-  protected def dumpStates(): Unit = {
-    println("States:")
+  protected def dumpStates(out: java.io.PrintStream = Console.out): Unit = {
+    out.println("States:")
     for(state <- states) {
-      dumpState(state)
+      dumpState(state, out)
     }
   }
 
-  protected def dumpState(s: S): Unit = {
-    print("- " + s)
-    if (isInitialState(s) || isFinalState(s)) print(" (")
-    if (isInitialState(s)) print("initial")
-    if (isInitialState(s) && isFinalState(s)) print(", ")
-    if (isFinalState(s)) print("final")
-    if (isInitialState(s) || isFinalState(s)) print(")")
-    println()
+  protected def dumpState(s: S, out: java.io.PrintStream = Console.out):
+      Unit = {
+    out.print("- " + s)
+    if (isInitialState(s) || isFinalState(s)) out.print(" (")
+    if (isInitialState(s)) out.print("initial")
+    if (isInitialState(s) && isFinalState(s)) out.print(", ")
+    if (isFinalState(s)) out.print("final")
+    if (isInitialState(s) || isFinalState(s)) out.print(")")
+    out.println()
   }
 
-  protected def dumpTransitions(): Unit = {
-    println("Transitions:")
-    foreachTransition((src, label, dest) => dumpTransition(src, label, dest))
-    foreachETransition((src, dest) => dumpTransition(src, dest))
+  protected def dumpTransitions(out: java.io.PrintStream = Console.out):
+      Unit = {
+    out.println("Transitions:")
+    foreachTransition((src, label, dest) =>
+      dumpTransition(src, label, dest, out))
+    foreachETransition((src, dest) => dumpETransition(src, dest, out))
   }
 
-  protected def dumpTransition(src: S, label: T, dest: S): Unit = {
-    println("- " + src + " -[ " + label + " ]-> " + dest)
+  protected def dumpTransition(
+    src: S, label: T, dest: S, out: java.io.PrintStream = Console.out
+  ): Unit = {
+    out.println("- " + src)
+    out.println("    -[ " + label + " ]-> ")
+    out.println("      " + dest)
   }
 
-  protected def dumpTransition(src: S, dest: S): Unit = {
-    println("- " + src + " --> " + dest)
+  protected def dumpETransition(
+    src: S, dest: S, out: java.io.PrintStream = Console.out):
+      Unit = {
+    out.println("- " + src)
+    out.println("    -->")
+    out.println("      " + dest)
   }
 }

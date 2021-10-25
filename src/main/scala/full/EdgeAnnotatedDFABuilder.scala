@@ -36,13 +36,15 @@ trait EdgeAnnotatedDFABuilder[
   -Z[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ]
 
-extends DFABuilder[
+extends traits.EdgeAnnotatedDFABuilder[S, T, A, D, K, Z]
+
+with UnindexedEdgeAnnotatedFA[S, T, A, Z]
+
+with DFABuilder[
   S, T,
   [DS, DT] =>> D[DS, DT, A],
   K,
-  [ZS, ZT] =>> Z[ZS, ZT, A]]
-
-with traits.EdgeAnnotatedDFABuilder[S, T, A, D, K, Z] {
+  [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   protected val edgeAnnotations: HashMap[S, HashMap[T, A]] =
     new HashMap[S, HashMap[T, A]]

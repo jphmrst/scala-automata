@@ -83,22 +83,27 @@ with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   // =================================================================
 
-  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
-    print("- " + src + " -[ " + label)
+  override protected def dumpTransition(
+    src: S, label: T, dest: S, out: java.io.PrintStream):
+      Unit = {
+    out.println("- " + src)
+    out.print("    -[ " + label + " ]->")
     annotation(src, label, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
+      case None => { out.println(" (unann.)") }
+      case Some(a) => { out.println(" : " + a) }
     }
-    print(" ]-> " + dest)
-    println()
+    out.println("      " + dest)
   }
 
-  override protected def dumpTransition(src: S, dest: S): Unit = {
-    println("- " + src + " -{ ")
+  override protected def dumpETransition(
+    src: S, dest: S, out: java.io.PrintStream):
+      Unit = {
+    out.println("- " + src)
+    out.print("    -->")
     eAnnotation(src, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
+      case None => { out.println("  (unann.)") }
+      case Some(a) => { out.println("  " + a) }
     }
-    print(" }-> " + dest)
+    out.println("      " + dest)
   }
 }

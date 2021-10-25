@@ -57,6 +57,7 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
       } else None
       else None
 
-  override protected def dumpHeader(): Unit =
-    println("---------- DFA dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("---------- DFA dump")
 }

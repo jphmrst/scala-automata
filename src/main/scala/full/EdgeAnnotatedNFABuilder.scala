@@ -37,7 +37,9 @@ trait EdgeAnnotatedNFABuilder[
   -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ](using combiner: EdgeAnnotationCombiner[NA, DA])
 
-extends NFABuilder[
+extends traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
+
+with NFABuilder[
   S, T, G,
   [DS, DT] =>> D[DS, DT, DA],
   [DS, DT] =>> N[DS, DT, NA, DA],
@@ -46,7 +48,7 @@ extends NFABuilder[
   [ZS, ZT] =>> DZ[ZS, ZT, DA]
 ]
 
-with traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
+with UnindexedEdgeAnnotatedFA[S, T, NA, NZ]
 
 with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
 

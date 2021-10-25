@@ -78,9 +78,21 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   override def isFinalState(s: S): Boolean =
     finalStateIndices.contains(indexOf(s))
 
-  override def transitions(s: S, t: T): Set[S] = transitionIndices(s,t).map(stateSeq)
-  override def transitionIndices(s: S, t: T): Set[Int] =
-    transitionsArray(indexOf(s))(transitionsSeq.indexOf(t))
+  override def transitions(s: S, t: T): Set[S] = {
+    //println(s"\n> transitions(\n  $s,\n  $t\n) --- ${transitionIndices(s,t)}")
+    //println(s">> stateSeq --- $stateSeq")
+    val result = transitionIndices(s,t).map(stateSeq)
+    //println(s">>> transitions(\n  $s,\n  $t\n) $result")
+    result
+  }
+  override def transitionIndices(s: S, t: T): Set[Int] = {
+    val si = indexOf(s)
+    val ti = labelIndex(t)
+    //println(s"    | transitionIndices($s, $t) [$si, $ti]")
+    val result = transitionsArray(si)(ti)
+    //println(s"    | transitionIndices($s, $t) [$si, $ti] = $result")
+    result
+  }
   override def eTransitions(s: S): Set[S] = {
     val eti = eTransitionIndices(s)
     // println(eti)
@@ -258,5 +270,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     bld.toString()
   }
 
-  override protected def dumpHeader(): Unit = println("---------- NDFA dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("---------- NDFA dump")
 }

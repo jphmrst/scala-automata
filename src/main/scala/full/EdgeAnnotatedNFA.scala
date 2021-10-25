@@ -64,23 +64,26 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
   def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
 
-  override protected def dumpTransition(src: S, label: T, dest: S): Unit = {
-    print("- " + src + " -[ " + label)
+  override protected def dumpTransition(
+    src: S, label: T, dest: S, out: java.io.PrintStream): Unit = {
+    out.print("- " + src + " -[ " + label)
     annotation(src, label, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
+      case None => { out.print(" (unann.)") }
+      case Some(a) => { out.print(" : " + a) }
     }
-    print(" ]-> " + dest)
-    println()
+    out.print(" ]-> " + dest)
+    out.println()
   }
 
-  override protected def dumpTransition(src: S, dest: S): Unit = {
-    println("- " + src + " -{ ")
+  override protected def dumpETransition(
+    src: S, dest: S, out: java.io.PrintStream):
+      Unit = {
+    out.println("- " + src + " -{ ")
     annotation(src, dest) match {
-      case None => { print(" (unann.)") }
-      case Some(a) => { print(" : " + a) }
+      case None => { out.print(" (unann.)") }
+      case Some(a) => { out.print(" : " + a) }
     }
-    print(" }-> " + dest)
+    out.print(" }-> " + dest)
   }
 
   protected def assembleDFA(

@@ -137,6 +137,18 @@ with FABuilder[S, T, N, K, NZ] {
     for(v <- epsilons.valuesIterator) v -= s
   }
 
+  private def slowFindIndex[X](seq: IndexedSeq[X], x: X): Int = {
+    import scala.util.control.NonLocalReturns.*
+      returning {
+        for(i <- 0 until seq.size) do {
+          println(s" && [&i]\n    ${seq(i)}\n    $x")
+
+          if seq(i) == x then throwReturn(i)
+        }
+        -1
+      }
+  }
+
   /** Creates an immutable [[NFA NFA]] corresponding to the automaton
     * described to this builder.  This method creates elements of the
     * internal state of the NFA, and passes them to the abstract
@@ -148,13 +160,15 @@ with FABuilder[S, T, N, K, NZ] {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val finals: HashSet[Int] = new HashSet[Int]
-    for(s <- finalStatesSet) finals += statesSeq.indexOf(s)
+    for(s <- finalStatesSet) finals += slowFindIndex(statesSeq, s) // statesSeq.indexOf(s)
     val empty = Set.empty[Int]
 
     // Allocate space for the NFA's array lookups.
     val labelsArray =
       Array.ofDim[Set[Int]](statesSeq.size, transitionsSeq.size)
     val epsilonsArray = Array.ofDim[Set[Int]](statesSeq.size)
+
+    statesSeq.map((s) => println(s"# " + s))
 
     // Fill out the arrays, starting with source state.
     for(si:Int <- 0 until statesSeq.length) {
@@ -165,17 +179,22 @@ with FABuilder[S, T, N, K, NZ] {
         val t:T = transitionsSeq(ti)
         labelsArray(si)(ti) =
           transitionsMap.get(s) match {
-            case Some(curry) =>
-              curry.get(t).fold(empty)(_.map(statesSeq.indexOf(_)).toSet)
+            case Some(curry) => {
+              // println(s" -- ($si)($ti) ==> $curry, ${curry.map(statesSeq.indexOf(_))}")
+              // curry.get(t).fold(empty)(_.map(statesSeq.indexOf(_)).toSet)
+              println(s" -- ($si)($ti) ==> $curry, ${curry.map(slowFindIndex(statesSeq, _))}")
+              val maybeDests: Option[HashSet[S]] = curry.get(t)
+              val dests: Set[S] = maybeDests.map(_.toSet).getOrElse(Set.empty)
+              dests.map(slowFindIndex(statesSeq, _))
+            }
             case None => empty
           }
         }
 
       epsilonsArray(si) =
-        epsilons.get(s).fold(empty)(_.map(statesSeq.indexOf(_)).toSet)
+        epsilons.get(s).fold(empty)(_.map(slowFindIndex(statesSeq, _)).toSet)
     }
 
-    // println(epsilonsArray)
     assembleNFA(
       statesSeq,
       initialStatesVar.map(statesSeq.indexOf(_)).toSet,
@@ -213,6 +232,7 @@ with FABuilder[S, T, N, K, NZ] {
     this
   }
 
-  override protected def dumpHeader(): Unit =
-    println("---------- NDFABuilder dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("---------- NDFABuilder dump")
 }

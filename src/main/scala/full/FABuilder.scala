@@ -71,6 +71,7 @@ with UnindexedFA[S, T, Z] with StatesMixin[S, T] {
     this
   }
 
-  override protected def dumpHeader(): Unit =
-    println("---------- FABuilder dump")
+  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
+      Unit =
+    out.println("---------- FABuilder dump")
 }
