@@ -165,27 +165,3 @@ with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
     unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
       N[S, T, NA, DA]
 }
-
-// object EdgeAnnotatedNFABuilder {
-//
-//   /** Mixin providing a definition of [[#assembleNFA]] for the standard
-//     * top-level classes of this builder.
-//     */
-//   trait Complete[S, T, NA, DA](using combiner: EdgeAnnotationCombiner[NA, DA]) {
-//     protected def assembleNFA(
-//       statesSeq: IndexedSeq[S],
-//       initials: Set[Int],
-//       finals: Set[Int],
-//       transitionsSeq: IndexedSeq[T],
-//       labelsArray: Array[Array[Set[Int]]],
-//       epsilonsArray: Array[Set[Int]],
-//       labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
-//       unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
-//         EdgeAnnotatedNFA[S, T, NA, DA, Set, fa.EdgeAnnotatedDFA, EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle] =
-//       new fa.EdgeAnnotatedNFA[S, T, NA, DA](
-//         statesSeq, initials, finals, transitionsSeq, labelsArray, epsilonsArray,
-//         labelledEdgeAnnotations, unlabelledEdgeAnnotations
-//       )
-//
-//   }
-// }

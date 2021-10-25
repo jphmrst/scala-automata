@@ -22,22 +22,31 @@ extends full.EdgeAnnotatedNFABuilder[
   S, T, NA, DA, Set, EdgeAnnotatedDFA, EdgeAnnotatedNFA,
   EdgeAnnotatedNFAelements[S, T, NA],
   EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle
-] {
+]
 
-  override protected def assembleNFA(
-    statesSeq: IndexedSeq[S],
-    initials: Set[Int],
-    finals: Set[Int],
-    transitionsSeq: IndexedSeq[T],
-    labelsArray: Array[Array[Set[Int]]],
-    epsilonsArray: Array[Set[Int]],
-    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
-    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
-      EdgeAnnotatedNFA[S, T, NA, DA] =
-    new EdgeAnnotatedNFA[S, T, NA, DA](
-      statesSeq, initials, finals, transitionsSeq, labelsArray, epsilonsArray,
-      labelledEdgeAnnotations, unlabelledEdgeAnnotations
-    )
+with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA]
 
+
+object EdgeAnnotatedNFABuilder {
+  /** Mixin providing a definition of [[#assembleNFA]] for the standard
+    * top-level classes of this builder.
+    */
+  trait Completer[S, T, NA, DA](
+    using combiner: EdgeAnnotationCombiner[NA, DA]) {
+
+    protected def assembleNFA(
+      statesSeq: IndexedSeq[S],
+      initials: Set[Int],
+      finals: Set[Int],
+      transitionsSeq: IndexedSeq[T],
+      labelsArray: Array[Array[Set[Int]]],
+      epsilonsArray: Array[Set[Int]],
+      labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+      unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
+        EdgeAnnotatedNFA[S, T, NA, DA] =
+      new EdgeAnnotatedNFA[S, T, NA, DA](
+        statesSeq, initials, finals, transitionsSeq, labelsArray, epsilonsArray,
+        labelledEdgeAnnotations, unlabelledEdgeAnnotations
+      )
+  }
 }
-
