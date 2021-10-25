@@ -5,7 +5,7 @@ val scala3Version = "3.0.2"
 name := "scala-automata"
 
 // library version
-version := "0.2.0"
+version := "0.2.1"
 
 /////////////////////////////////////////////////////////////////
 // begin maven etc. publishing information

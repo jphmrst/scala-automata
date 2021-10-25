@@ -2,6 +2,13 @@
 
 ** Versions 0.2.x
 
+*** Version 0.2.1
+    - Instrumenting the dump methods over a PrintBuffer.
+
+    - Some missing inheritence (especially for for dump methods) in
+      the edge-annotated full traits.
+
+
 *** Version 0.2.0
     Overhaul of organization of traits and classes.  There are now
     three main subdirectories in the source tree:
