@@ -57,7 +57,7 @@ with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
     new HashMap[S, HashMap[T, HashMap[S, NA]]]
 
   def annotation(src: S, label: T, dest: S): Option[NA] =
-    labelledEdgeAnnotations.get(src).map(_(label)).map(_(dest))
+    labelledEdgeAnnotations.get(src).flatMap(_.get(label)).flatMap(_.get(dest))
 
   def setAnnotation(src: S, label: T, dest: S, annotation: NA): Unit =
     labelledEdgeAnnotations.get(src) match {
