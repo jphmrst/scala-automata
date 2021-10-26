@@ -186,7 +186,7 @@ with FABuilder[S, T, N, K, NZ] {
       Array.ofDim[Set[Int]](statesSeq.size, transitionsSeq.size)
     val epsilonsArray = Array.ofDim[Set[Int]](statesSeq.size)
 
-    statesSeq.map((s) => println(s"# " + s))
+    // statesSeq.map((s) => println(s"# " + s))
 
     // Fill out the arrays, starting with source state.
     for(si:Int <- 0 until statesSeq.length) {
