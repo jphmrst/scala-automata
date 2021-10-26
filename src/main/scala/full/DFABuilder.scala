@@ -35,6 +35,7 @@ trait DFABuilder[
 extends traits.DFABuilder[S, T, D, K, Z]
     with UnindexedDFA[S, T, Z]
     with FABuilder[S, T, D, K, Z] {
+  addState(initState)
 
   protected var initialStateVar: S = initState
 
@@ -85,8 +86,15 @@ extends traits.DFABuilder[S, T, D, K, Z]
     initialStateVar.equals(s)
 
   override def addTransition(s1: S, t: T, s2: S): Unit = {
-    addState(s1)
-    addState(s2)
+    if !isState(s1) then {
+      throw new IllegalArgumentException(
+        s"Transition source $s1 is not a known state")
+    }
+    if !isState(s2) then {
+      throw new IllegalArgumentException(
+        s"Transition target $s2 is not a known state")
+    }
+
     if (!transitionsMap.contains(s1)) {
       transitionsMap += (s1 -> new HashMap[T,S])
     }

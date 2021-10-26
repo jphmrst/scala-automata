@@ -42,6 +42,15 @@ with FABuilder[S, T, N, K, NZ] {
   protected val epsilons = new HashMap[S, HashSet[S]]
 
   def addTransition(s1: S, t: T, s2: S): Unit = {
+    if !isState(s1) then {
+      throw new IllegalArgumentException(
+        s"Transition source $s1 is not a known state")
+    }
+    if !isState(s2) then {
+      throw new IllegalArgumentException(
+        s"Transition target $s2 is not a known state")
+    }
+
     val submap = transitionsMap.get(s1) match {
       case Some(m) => m
       case None => {
@@ -79,6 +88,16 @@ with FABuilder[S, T, N, K, NZ] {
     }
 
   def addETransition(s1: S, s2: S): Unit = {
+    if !isState(s1) then {
+      throw new IllegalArgumentException(
+        s"Transition source $s1 is not a known state")
+    }
+
+    if !isState(s2) then {
+      throw new IllegalArgumentException(
+        s"Transition target $s2 is not a known state")
+    }
+
     val set = epsilons.get(s1) match {
       case Some(s) => s
       case None => {
