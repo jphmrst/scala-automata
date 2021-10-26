@@ -251,7 +251,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   protected def dfaEdgeHook(
     dfaSrcIdx: Int, nfaSrcIndices: Set[Int],
     ti: Int, t: T,
-    dfaSrcIndices: Set[Int], dfaDestIdx: Int,
+    nfaSrcIndices: Set[Int], dfaDestIdx: Int,
     tracker: IndexSetsTracker):
       Unit = { }
 
