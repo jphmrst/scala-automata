@@ -27,7 +27,7 @@ extends UnindexedFA[S, T, Z] {
   def state(i: Int): S
 
   /** Return the index of a state. */
-  def indexOf: Map[S, Int] // (s: S): Int
+  def indexOf: Map[S, Int]
 
   /** Return the indices of the initial states. */
   def initialStateIndices: Set[Int]
@@ -36,7 +36,7 @@ extends UnindexedFA[S, T, Z] {
   def finalStateIndices: Set[Int]
 
   /** Index of a particular label. */
-  def labelIndex(t:T): Int
+  def labelIndex: Map[T, Int]
 
   /** Label at a particular index. */
   def label(i:Int): T

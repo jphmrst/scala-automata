@@ -43,13 +43,18 @@ with UnindexedPFA[S, T, Z] {
     builder.result
   }
 
+  override val labelIndex: Map[T, Int] = {
+    val builder = Map.newBuilder[T, Int]
+    for (i <- 0 until transitionsSeq.length)
+      do builder += ((transitionsSeq(i), i))
+    builder.result
+  }
+
   override def size: Int = stateSeq.length
 
   override def states: IndexedSeq[S] = stateSeq
 
   override def labels: IndexedSeq[T] = transitionsSeq
-
-  override def labelIndex(t: T): Int = transitionsSeq.indexOf(t)
 
   override def label(i: Int): T = transitionsSeq(i)
 

@@ -36,11 +36,17 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
     builder.result
   }
 
+  override val labelIndex: Map[T, Int] = {
+    val builder = Map.newBuilder[T, Int]
+    for (i <- 0 until transitionsSeq.length)
+      do builder += ((transitionsSeq(i), i))
+    builder.result
+  }
+
   override def size: Int = stateSeq.length
 
   override def states: IndexedSeq[S] = stateSeq
   override def state(i: Int): S = stateSeq(i)
-  // override def indexOf(s: S): Int = stateSeq.indexOf(s)
   override def isState(s: S): Boolean = indexOf.contains(s)
   override def isInitialState(s: S): Boolean =
     finalStateIndices.contains(indexOf(s))
@@ -51,7 +57,6 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   }
 
   override def labels: IndexedSeq[T] = transitionsSeq
-  override def labelIndex(t:T): Int = transitionsSeq.indexOf(t)
   override def label(i:Int): T = transitionsSeq(i)
 
   override def toDOT(using Z[S, T]): String = {
