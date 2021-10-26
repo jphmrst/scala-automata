@@ -37,6 +37,8 @@ open class EdgeAnnotatedAutomatonStyle[S, T, A](
   // Edge properties
   edgeLabel: (T, S, S, Graphable[S, T, ?]) => String =
     (t: T, _: S, _: S, _: Graphable[S, T, ?]) => t.toString(),
+  eEdgeLabel: (S, S, Graphable[S, T, ?]) => String =
+    (_: S, _: S, _: Graphable[S, T, ?]) => "&epsilon;",
 
   // Annotations
   var annotationLabel: (A, T, S, S) => String =
@@ -48,7 +50,7 @@ open class EdgeAnnotatedAutomatonStyle[S, T, A](
 extends AutomatonStyle[S, T](
   id, format, srcSuffix, executable, keepDOT, fontSize, margin,
   nodeShape, nodeLabel, finalNodeShape,
-  edgeLabel) {
+  edgeLabel, eEdgeLabel) {
 
 }
 
@@ -75,10 +77,12 @@ object EdgeAnnotatedAutomatonStyle {
       base.finalNodeShape,
     nodeLabel: (S, Graphable[S, T, ?]) => String = base.nodeLabel,
     edgeLabel: (T, S, S, Graphable[S, T, ?]) => String = base.edgeLabel,
+    eEdgeLabel: (S, S, Graphable[S, T, ?]) => String = base.eEdgeLabel,
     annotationLabel: (A, T, S, S) => String = base.annotationLabel,
     eAnnotationLabel: (A, S, S) => String = base.eAnnotationLabel
   ) =
     new EdgeAnnotatedAutomatonStyle[S, T, A](
       id, format, srcSuffix, executable, keepDOT, fontSize, margin, nodeShape,
-      finalNodeShape, nodeLabel, edgeLabel, annotationLabel, eAnnotationLabel)
+      finalNodeShape, nodeLabel,
+      edgeLabel, eEdgeLabel, annotationLabel, eAnnotationLabel)
 }

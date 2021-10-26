@@ -35,7 +35,9 @@ open class AutomatonStyle[S, T](
 
   // Edge properties
   edgeLabel: (T, S, S, Graphable[S, T, ?]) => String =
-    (t: T, _: S, _: S, _: Graphable[S, T, ?]) => t.toString())
+    (t: T, _: S, _: S, _: Graphable[S, T, ?]) => t.toString(),
+  var eEdgeLabel: (S, S, Graphable[S, T, ?]) => String =
+    (_: S, _: S, _: Graphable[S, T, ?]) => "")
 
 extends GraphStyle[S, T](id,
   format, srcSuffix, executable,
@@ -73,9 +75,10 @@ object AutomatonStyle {
     finalNodeShape: (S, Graphable[S, T, ?]) => String =
       base.finalNodeShape,
     nodeLabel: (S, Graphable[S, T, ?]) => String = base.nodeLabel,
-    edgeLabel: (T, S, S, Graphable[S, T, ?]) => String = base.edgeLabel
+    edgeLabel: (T, S, S, Graphable[S, T, ?]) => String = base.edgeLabel,
+    eEdgeLabel: (S, S, Graphable[S, T, ?]) => String = base.eEdgeLabel
   ) =
     new AutomatonStyle[S, T](
       id, format, srcSuffix, executable, keepDOT, fontSize, margin, nodeShape,
-      finalNodeShape, nodeLabel, edgeLabel)
+      finalNodeShape, nodeLabel, edgeLabel, eEdgeLabel)
 }

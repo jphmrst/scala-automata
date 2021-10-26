@@ -80,14 +80,20 @@ with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
     sb ++= Integer.toString(si0)
     sb ++= DOT.graphvizArrowToVmark
     sb ++= Integer.toString(si1)
-    eAnnotation(s0, s1) match {
+    val label = style.eEdgeLabel(s0, s1, this)
+    val showLabel = !label.equals("")
+    val ann = eAnnotation(s0, s1)
+    val showAnn = ann.isDefined
+    if showLabel || showAnn then sb ++= " [ label=< "
+    if showLabel then sb ++= label
+    ann match {
       case None => { }
       case Some(a) => {
-        sb ++= " [ label=< &epsilon;<br/>"
+        if showLabel then sb ++= "<br/>"
         sb ++= style.eAnnotationLabel(a, s0, s1)
-        sb ++= "> ]"
       }
     }
+    if showLabel || showAnn then sb ++= " > ]"
     sb ++= ";\n"
   }
 
