@@ -13,20 +13,27 @@ package org.maraist.fa.util
 import scala.collection.mutable.ListBuffer
 
 /**
- * Index a set of index subranges
+ * Index a set of index subranges for the Rabin-Scott algorithm.
  */
-class IndexSetsTracker(private val count:Int,
-                       private val setsBuf:ListBuffer[Set[Int]]) {
+class IndexSetsTracker(
+  private val count: Int,
+  private val setsBuf: ListBuffer[Set[Int]]
+) {
+
   private var root: TrackTree = Absent()
+
   override def toString(): String = root.toString()
+
   /** Return the index of the given set in the registry, adding
     * it if necessary.  Every member of `elements` must be in the
     * range [0,`count`), where `count` is the initialized number
     * of indices.
     */
   def apply(idx: Int): Set[Int] = setsBuf(idx)
+
   def size: Int = setsBuf.size
-  def getIndex(elements:Set[Int]): Int = {  // scalastyle:ignore
+
+  def getIndex(elements: Set[Int]): Int = {  // scalastyle:ignore
     var thisIdx = 0
     var toFile = elements.toSeq.sorted
     root match {

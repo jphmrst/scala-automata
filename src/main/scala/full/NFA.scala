@@ -152,78 +152,79 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   def seedAdditionalInitialStates(tracker: IndexSetsTracker): Unit = { }
 
   override def toDFA: D[G[S], T] = {// scalastyle:ignore cyclomatic.complexity method.length
+
     // Set up components of ArrayDFA.  We can't convert to a
     // transitions array until the end, so for now we build a map over
     // state/transition label indices.  Note that we just use the same
     // transitions as for this ArrayNDFA.
-    val dfaIndexSets:ListBuffer[Set[Int]] = new ListBuffer[Set[Int]]
-    val dfaFinals:HashSet[Int] = new HashSet[Int]
+    val dfaIndexSets: ListBuffer[Set[Int]] = new ListBuffer[Set[Int]]
+    val dfaFinals: HashSet[Int] = new HashSet[Int]
 
     // It will be useful to know the DFA states in which a particular
-    // NDFA state appears
+    // NDFA state appears.
     val appearsIn =
       Array.fill[HashSet[Int]](stateSeq.length)(new HashSet[Int]())
 
-    // Set up tracker for state sets
+    // Set up tracker for state sets.
     val tracker = new IndexSetsTracker(stateSeq.length, dfaIndexSets)
 
-    // Build initial state
-    val (initialClosure,initialIsFinal) =
+    // Build initial state.
+    val (initialClosure, initialIsFinal) =
       epsilonCloseIndices(initialStateIndices)
     val initialState = tracker.getIndex(initialClosure)
     if (initialState != 0)
       throw new Exception("Unexpected non-zero from first addition to tracker")
-    if (initialIsFinal) dfaFinals += initialState
-    for(initialNda <- initialClosure) {
-      appearsIn(initialNda) += initialState
-    }
+    if initialIsFinal then dfaFinals += initialState
+    for(initialNda <- initialClosure)
+      do appearsIn(initialNda) += initialState
 
-    // Later versions of the NDFA will have hyperedge annotations;
-    // we have a thunk here to add more states to the queue
+    // Later versions of the NDFA will have hyperedge annotations; we
+    // have a thunk here to add more states to the queue.
     seedAdditionalInitialStates(tracker)
 
     // Iterate through the DFA state list from beginning, adding new
-    // states to the end
+    // states to the end.
     val dfaTransitions = new ArrayBuffer[Array[Int]]
     var nextState = initialState
     val labelCount = transitionsSeq.size
     while(nextState < tracker.size) {
       val s = tracker(nextState)
-      val thisRow : Array[Int] = Array.ofDim[Int](labelCount)
+      val thisRow: Array[Int] = Array.ofDim[Int](labelCount)
       dfaTransitions.insert(nextState, thisRow)
 
       // The states are the rows of the transitions table; now iterate
-      // through the transitions label indices for the columns
-      for(ti:Int <- 0 until labelCount) {
-        val t:T = transitionsSeq(ti)
+      // through the transitions label indices for the columns.
+      for (ti:Int <- 0 until labelCount) do {
+        val t: T = transitionsSeq(ti)
 
         // We build the set of states to which this state
-        // set/transition pair could lead
+        // set/transition pair could lead.
         val destinationsBuilder = Set.newBuilder[Int]
         for(origIndex <- s) {
           val destIdxs = transitionsArray(origIndex)(ti)
-          for(destIdx:Int <- destIdxs) {
+          for (destIdx <- destIdxs) do {
             destinationsBuilder += destIdx
           }
         }
-
         val destinations = destinationsBuilder.result()
-        // If the destinations set is empty, then it's an error state
+
+        // If the destinations set is empty, then it's an error state.
         if (destinations.isEmpty) {
-          // Add an error transition
+          // Add an error transition.
           thisRow(ti) = -1
 
         } else {
 
           // Close the set under epsilon transitions, cache it, and
-          // possibly set it as final
+          // possibly set it as final.
           epsilonCloseIndices(destinations) match {
             case (closedSet, hasFinal) => {
               val newStateIdx = tracker.getIndex(closedSet)
-              for(state <- closedSet) appearsIn(state) += newStateIdx
-              if (hasFinal) dfaFinals += newStateIdx
+              dfaEdgeHook(nextState, s, ti, t, closedSet, newStateIdx, tracker)
+              for(state <- closedSet) do appearsIn(state) += newStateIdx
+              if hasFinal then dfaFinals += newStateIdx
 
-              // Add the new destination index to the action tables
+              // Add the new destination index to the action tables.
               thisRow(ti) = newStateIdx
             }
           }
@@ -240,6 +241,19 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
       IndexedSeq.from(dfaStates), 0, dfaFinals.toSet, transitionsSeq,
       dfaTransArray, tracker, appearsIn.map(_.toSet))
   }
+
+  /** This method serves as a hook into the Rabin-Scott implementation
+    * for variation by extensions of the classical NFA.  Does nothing
+    * by default, but can be overridden in subclasses.  This method is
+    * called at the point where an entry is added to the (under
+    * construction) array of DFA transitions.
+    */
+  protected def dfaEdgeHook(
+    dfaSrcIdx: Int, nfaSrcIndices: Set[Int],
+    ti: Int, t: T,
+    dfaSrcIndices: Set[Int], dfaDestIdx: Int,
+    tracker: IndexSetsTracker):
+      Unit = { }
 
   /**
     * This method is implemented by subclasses where `D[S, T]` is
