@@ -58,7 +58,11 @@ with UnindexedPFA[S, T, Z] {
 
   override def label(i: Int): T = transitionsSeq(i)
 
+  override def getLabelIndex(t: T): Option[Int] = labelIndex.get(t)
+
   override def state(i: Int): S = stateSeq(i)
+
+  override def getIndexOf(s: S): Option[Int] = indexOf.get(s)
 
   override def isState(s: S): Boolean = indexOf.contains(s)
 

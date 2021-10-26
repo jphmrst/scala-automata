@@ -26,8 +26,13 @@ extends UnindexedFA[S, T, Z] {
   /** Return the state at a particular index. */
   def state(i: Int): S
 
-  /** Return the index of a state. */
+  /** Return the index of a state.  Since this is a [[Map]], a call on a
+    * value which is not a state will throw an exception; use
+    * getIndexOf for a safe version. */
   def indexOf: Map[S, Int]
+
+  /** Return the index of a state, or None. */
+  def getIndexOf(s: S): Option[Int]
 
   /** Return the indices of the initial states. */
   def initialStateIndices: Set[Int]
@@ -35,8 +40,13 @@ extends UnindexedFA[S, T, Z] {
   /** Return the indices of the final states. */
   def finalStateIndices: Set[Int]
 
-  /** Index of a particular label. */
+  /** Index of a particular label.  Since this is a [[Map]], a call on a
+    * value which is not a label will throw an exception; use
+    * getIndexOf for a safe version. */
   def labelIndex: Map[T, Int]
+
+  /** Return the index of a label, or None. */
+  def getLabelIndex(t: T): Option[Int]
 
   /** Label at a particular index. */
   def label(i:Int): T

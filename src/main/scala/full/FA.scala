@@ -28,6 +28,7 @@ trait FA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
 
   protected val stateSeq: IndexedSeq[S]
+
   protected val transitionsSeq: IndexedSeq[T]
 
   override val indexOf: Map[S, Int] = {
@@ -46,17 +47,27 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   override def size: Int = stateSeq.length
 
   override def states: IndexedSeq[S] = stateSeq
+
   override def state(i: Int): S = stateSeq(i)
+
+  override def getIndexOf(s: S): Option[Int] = indexOf.get(s)
+
   override def isState(s: S): Boolean = indexOf.contains(s)
+
   override def isInitialState(s: S): Boolean =
     finalStateIndices.contains(indexOf(s))
+
   override def finalStates: Set[S] = finalStateIndices.map(stateSeq)
+
   override def isFinalState(s: S): Boolean = {
     val si = stateSeq.indexOf(s)
     finalStateIndices.contains(si)
   }
 
   override def labels: IndexedSeq[T] = transitionsSeq
+
+  override def getLabelIndex(t: T): Option[Int] = labelIndex.get(t)
+
   override def label(i:Int): T = transitionsSeq(i)
 
   override def toDOT(using Z[S, T]): String = {
