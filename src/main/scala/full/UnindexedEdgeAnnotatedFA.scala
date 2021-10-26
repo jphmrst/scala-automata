@@ -72,6 +72,8 @@ with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   override protected def plotPresentEdge(
     sb: StringBuilder, style: Z[S, T, A],
+    stateList: IndexedSeq[S],
+    stateMap: Map[S, Int],
     si0: Int, s0: S, si1: Int, s1: S):
       Unit = {
     sb ++= DOT.tabToVmark

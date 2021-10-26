@@ -95,7 +95,7 @@ extends traits.UnindexedFA[S, T, Z] {
         stateMap(s1), s1))
     foreachETransition((s0, s1) =>
       plotPresentEdge(
-        sb, style,
+        sb, style, stateList, stateMap,
         stateMap(s0), s0,
         stateMap(s1), s1))
   }
@@ -179,7 +179,10 @@ extends traits.UnindexedFA[S, T, Z] {
     style.edgeLabel(t, s0, s1, this)
 
   protected def plotPresentEdge(
-    sb: StringBuilder, style: Z[S, T],
+    sb: StringBuilder,
+    style: Z[S, T],
+    stateList: IndexedSeq[S],
+    stateMap: Map[S, Int],
     si0: Int, s0:S, si1: Int, s1:S):
       Unit = {
     sb ++= DOT.tabToVmark
