@@ -160,8 +160,7 @@ with FABuilder[S, T, N, K, NZ] {
     import scala.util.control.NonLocalReturns.*
       returning {
         for(i <- 0 until seq.size) do {
-          println(s" && [&i]\n    ${seq(i)}\n    $x")
-
+          // println(s" && [&i]\n    ${seq(i)}\n    $x")
           if seq(i) == x then throwReturn(i)
         }
         -1
@@ -201,7 +200,7 @@ with FABuilder[S, T, N, K, NZ] {
             case Some(curry) => {
               // println(s" -- ($si)($ti) ==> $curry, ${curry.map(statesSeq.indexOf(_))}")
               // curry.get(t).fold(empty)(_.map(statesSeq.indexOf(_)).toSet)
-              println(s" -- ($si)($ti) ==> $curry, ${curry.map(slowFindIndex(statesSeq, _))}")
+              // println(s" -- ($si)($ti) ==> $curry, ${curry.map(slowFindIndex(statesSeq, _))}")
               val maybeDests: Option[HashSet[S]] = curry.get(t)
               val dests: Set[S] = maybeDests.map(_.toSet).getOrElse(Set.empty)
               dests.map(slowFindIndex(statesSeq, _))
