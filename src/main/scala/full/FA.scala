@@ -30,12 +30,18 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   protected val stateSeq: IndexedSeq[S]
   protected val transitionsSeq: IndexedSeq[T]
 
+  override val indexOf: Map[S, Int] = {
+    val builder = Map.newBuilder[S, Int]
+    for (i <- 0 until stateSeq.length) do builder += ((stateSeq(i), i))
+    builder.result
+  }
+
   override def size: Int = stateSeq.length
 
   override def states: IndexedSeq[S] = stateSeq
   override def state(i: Int): S = stateSeq(i)
-  override def indexOf(s: S): Int = stateSeq.indexOf(s)
-  override def isState(s: S): Boolean = stateSeq.contains(s)
+  // override def indexOf(s: S): Int = stateSeq.indexOf(s)
+  override def isState(s: S): Boolean = indexOf.contains(s)
   override def isInitialState(s: S): Boolean =
     finalStateIndices.contains(indexOf(s))
   override def finalStates: Set[S] = finalStateIndices.map(stateSeq)
@@ -45,12 +51,12 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   }
 
   override def labels: IndexedSeq[T] = transitionsSeq
-  override def labelIndex(t:T):Int = transitionsSeq.indexOf(t)
-  override def label(i:Int):T = transitionsSeq(i)
+  override def labelIndex(t:T): Int = transitionsSeq.indexOf(t)
+  override def label(i:Int): T = transitionsSeq(i)
 
   override def toDOT(using Z[S, T]): String = {
     val sb = new StringBuilder()
-    internalsToDOT(states, labels, sb)
+    internalsToDOT(states, indexOf, labels, sb)
     sb.toString()
   }
 

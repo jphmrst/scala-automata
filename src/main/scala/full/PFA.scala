@@ -37,6 +37,12 @@ with UnindexedPFA[S, T, Z] {
   protected def transitionsMatrix: Array[Array[Array[Double]]]
   protected def eTransitionsMatrix: Array[Array[Double]]
 
+  override val indexOf: Map[S, Int] = {
+    val builder = Map.newBuilder[S, Int]
+    for (i <- 0 until stateSeq.length) do builder += ((stateSeq(i), i))
+    builder.result
+  }
+
   override def size: Int = stateSeq.length
 
   override def states: IndexedSeq[S] = stateSeq
@@ -49,9 +55,7 @@ with UnindexedPFA[S, T, Z] {
 
   override def state(i: Int): S = stateSeq(i)
 
-  override def indexOf(s: S): Int = stateSeq.indexOf(s)
-
-  override def isState(s: S): Boolean = stateSeq.contains(s)
+  override def isState(s: S): Boolean = indexOf.contains(s)
 
   override def initialStateIndexProb(s: Int): Double = initialProbs(s)
 

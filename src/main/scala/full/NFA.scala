@@ -65,14 +65,14 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     */
   val initialStateIndices: Set[Int]
 
-  override def state(i: Int): S = stateSeq(i)
-  override def label(i: Int): T = transitionsSeq(i)
-  override def labelIndex(t: T): Int = transitionsSeq.indexOf(t)
+  // override def state(i: Int): S = stateSeq(i)
+  // override def label(i: Int): T = transitionsSeq(i)
+  // override def labelIndex(t: T): Int = transitionsSeq.indexOf(t)
   /** Retrieve the index of state `s` */
-  override def indexOf(s: S): Int = stateSeq.indexOf(s)
+  // override def indexOf(s: S): Int = stateSeq.indexOf(s)
   override def initialStates: Set[S] = initialStateIndices.map(stateSeq).toSet
   override def finalStates: Set[S] = finalStateIndices.map(stateSeq).toSet
-  override def isState(s: S): Boolean = stateSeq.contains(indexOf(s))
+  // override def isState(s: S): Boolean = stateSeq.contains(indexOf(s))
   override def isInitialState(s: S): Boolean =
     initialStateIndices.contains(indexOf(s))
   override def isFinalState(s: S): Boolean =

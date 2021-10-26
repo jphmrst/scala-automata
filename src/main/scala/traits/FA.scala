@@ -27,7 +27,7 @@ extends UnindexedFA[S, T, Z] {
   def state(i: Int): S
 
   /** Return the index of a state. */
-  def indexOf(s: S): Int
+  def indexOf: Map[S, Int] // (s: S): Int
 
   /** Return the indices of the initial states. */
   def initialStateIndices: Set[Int]

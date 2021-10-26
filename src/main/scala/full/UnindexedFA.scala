@@ -42,13 +42,21 @@ extends traits.UnindexedFA[S, T, Z] {
     for (s0 <- states; t <- labels; s1 <- transitions(s0, t))
       do action(s0, t, s1)
 
+  // =================================================================
+  // Graphviz plots of the automaton
+
   override def toDOT(using Z[S, T]):
       String = {
     // println("       In DFA.toDOT with " + options)
     val stateList = IndexedSeq.from(states)
+    val stateMap = {
+      val builder = Map.newBuilder[S, Int]
+      for (i <- 0 until stateList.length) do builder += ((stateList(i), i))
+      builder.result
+    }
     val labelsList = IndexedSeq.from(labels)
     val sb = new StringBuilder()
-    internalsToDOT(stateList, labelsList, sb)
+    internalsToDOT(stateList, stateMap, labelsList, sb)
     sb.toString()
   }
 
@@ -57,6 +65,7 @@ extends traits.UnindexedFA[S, T, Z] {
    *  representation of a DFA.  */
   protected def internalsToDOT(
     stateList: IndexedSeq[S],
+    stateMap: Map[S, Int],
     theLabels: IndexedSeq[T],
     sb: StringBuilder
   )(using style: Z[S, T]):
@@ -66,28 +75,29 @@ extends traits.UnindexedFA[S, T, Z] {
       val s = stateList(si)
       plotState(sb, style, si, s, isInitialState(s), isFinalState(s))
     }
-    afterStatePlot(sb, stateList)
-    plotTransitions(stateList, theLabels, sb, style)
+    afterStatePlot(sb, stateList, stateMap)
+    plotTransitions(stateList, stateMap, theLabels, sb, style)
     finishPlot(sb)
   }
 
   protected def plotTransitions(
     stateList: IndexedSeq[S],
+    stateMap: Map[S, Int],
     theLabels: IndexedSeq[T],
     sb: StringBuilder,
     style: Z[S, T]):
       Unit = {
     foreachTransition((s0, t, s1) =>
       plotPresentEdge(
-        sb, style, stateList,
-        stateList.indexOf(s0), s0,
+        sb, style, stateList, stateMap,
+        stateMap(s0), s0,
         theLabels.indexOf(t), t,
-        stateList.indexOf(s1), s1))
+        stateMap(s1), s1))
     foreachETransition((s0, s1) =>
       plotPresentEdge(
         sb, style,
-        stateList.indexOf(s0), s0,
-        stateList.indexOf(s1), s1))
+        stateMap(s0), s0,
+        stateMap(s1), s1))
   }
 
   protected def initPlot(sb: StringBuilder, states: Int, labels: Int): Unit = {
@@ -119,11 +129,12 @@ extends traits.UnindexedFA[S, T, Z] {
 
   protected def afterStatePlot(
     sb: StringBuilder,
-    stateList: IndexedSeq[S]):
+    stateList: IndexedSeq[S],
+    stateMap: Map[S, Int]):
       Unit = {
     // Arrow for the initial state
     foreachInitialState((s) => {
-      plotInitialStateMarker(sb, s, stateList.indexOf(s))
+      plotInitialStateMarker(sb, s, stateMap(s))
     })
     sb ++= ";\n"
   }
@@ -149,6 +160,7 @@ extends traits.UnindexedFA[S, T, Z] {
   protected def plotPresentEdge(
     sb: StringBuilder, style: Z[S, T],
     stateList: IndexedSeq[S],
+    stateMap: Map[S, Int],
     si0: Int, s0:S, ti0: Int, t:T, si1: Int, s1:S):
       Unit = {
     sb ++= DOT.tabToVmark
