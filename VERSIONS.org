@@ -5,6 +5,14 @@
 *** Version 0.2.1
     - Instrumenting the dump methods over a PrintBuffer.
 
+    - Check when adding a transition that the endpoints are already
+      states.
+
+    - Bug: the initial state in a DFA builder was not added to the
+      state set.
+
+    - Bug fix in NFA annotation lookup.
+
     - Some missing inheritence (especially for for dump methods) in
       the edge-annotated full traits.
 
