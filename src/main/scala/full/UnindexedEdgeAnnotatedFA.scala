@@ -34,11 +34,28 @@ extends traits.UnindexedEdgeAnnotatedFA[S, T, A, Z]
 
 with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
+  /** {@inheritDoc} */
   override def annotated(src: S, label: T, dest: S): Boolean =
     annotation(src, label, dest).isDefined
 
+  /** {@inheritDoc} */
   override def eAnnotated(src: S, dest: S): Boolean =
     eAnnotation(src, dest).isDefined
+
+  /** {@inheritDoc} */
+  override def foreachEdgeAnnotation(action: (S, T, S, A) => Any): Unit =
+    foreachTransition(
+      (src: S, label: T, dest: S) => annotation(src, label, dest) match {
+        case None => { }
+        case Some(ann) => action(src, label, dest, ann)
+      })
+
+  /** {@inheritDoc} */
+  override def foreachEdgeAnnotation(action: (S, S, A) => Any): Unit =
+    foreachETransition((src: S, dest: S) => eAnnotation(src, dest) match {
+      case None => { }
+      case Some(ann) => action(src, dest, ann)
+    })
 
   // =================================================================
 

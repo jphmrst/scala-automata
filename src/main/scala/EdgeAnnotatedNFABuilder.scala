@@ -18,7 +18,7 @@ import org.maraist.fa.full
 /** Builder for NFAs enriched with annotations on transitions.
   */
 class EdgeAnnotatedNFABuilder[S, T, NA, DA](
-  using EdgeAnnotationCombiner[NA, DA])
+  override protected val combiner: EdgeAnnotationCombiner[NA, DA])
 
 extends full.EdgeAnnotatedNFABuilder[
   S, T, NA, DA, Set, EdgeAnnotatedDFA, EdgeAnnotatedNFA,
@@ -26,7 +26,7 @@ extends full.EdgeAnnotatedNFABuilder[
   EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle
 ]
 
-with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA]
+with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA](combiner)
 
 
 /** Utilities for [[EdgeAnnotatedNFABuilder]]s for the standard
@@ -36,8 +36,7 @@ object EdgeAnnotatedNFABuilder {
   /** Mixin providing a definition of [[#assembleNFA]] for the standard
     * top-level classes of this builder.
     */
-  trait Completer[S, T, NA, DA](
-    using combiner: EdgeAnnotationCombiner[NA, DA]) {
+  trait Completer[S, T, NA, DA](combiner: EdgeAnnotationCombiner[NA, DA]) {
 
     protected def assembleNFA(
       statesSeq: IndexedSeq[S],
@@ -51,7 +50,7 @@ object EdgeAnnotatedNFABuilder {
         EdgeAnnotatedNFA[S, T, NA, DA] =
       new EdgeAnnotatedNFA[S, T, NA, DA](
         statesSeq, initials, finals, transitionsSeq, labelsArray, epsilonsArray,
-        labelledEdgeAnnotations, unlabelledEdgeAnnotations
+        labelledEdgeAnnotations, unlabelledEdgeAnnotations, combiner
       )
   }
 }

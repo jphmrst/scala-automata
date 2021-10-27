@@ -49,4 +49,14 @@ extends UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
     * method will always return `false`.
     */
   def eAnnotated(src: S, dest: S): Boolean
+
+  /** Perform an action for every annotated labelled edge in this
+    * automaton.
+    */
+  def foreachEdgeAnnotation(action: (S, T, S, A) => Any): Unit
+
+  /** Perform an action for every annotated unlabelled edge in this
+    * automaton.
+    */
+  def foreachEdgeAnnotation(action: (S, S, A) => Any): Unit
 }

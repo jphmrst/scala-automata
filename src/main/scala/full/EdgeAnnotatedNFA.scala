@@ -19,7 +19,6 @@ trait EdgeAnnotatedNFA[
   +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
   -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
   -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
-  (using combiner: EdgeAnnotationCombiner[NA, DA])
 
 extends NFA[
   S, T, G,
@@ -33,6 +32,7 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
 
   protected def labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]]
   protected def unlabelledEdgeAnnotations: Array[Array[Option[NA]]]
+  protected def combiner: EdgeAnnotationCombiner[NA, DA]
 
   /** Return the annotation (if any) on the transition from `src` to
     * `dest` labelled `label`.

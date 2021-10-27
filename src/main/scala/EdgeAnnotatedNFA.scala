@@ -21,8 +21,8 @@ class EdgeAnnotatedNFA[S, T, NA, DA](
   override val transitionsArray: Array[Array[Set[Int]]],
   override val epsilonsArray: Array[Set[Int]],
   override val labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
-  override val unlabelledEdgeAnnotations: Array[Array[Option[NA]]])(
-  using combiner: EdgeAnnotationCombiner[NA, DA])
+  override val unlabelledEdgeAnnotations: Array[Array[Option[NA]]],
+  override protected val combiner: EdgeAnnotationCombiner[NA, DA])
 
 extends full.EdgeAnnotatedNFA[
   S, T, NA, DA, Set, EdgeAnnotatedDFA,
@@ -43,6 +43,6 @@ extends full.EdgeAnnotatedNFA[
 }
 
 object EdgeAnnotatedNFA {
-  def newBuilder[S, T, NA, DA](using EdgeAnnotationCombiner[NA, DA]) =
-    new EdgeAnnotatedNFABuilder[S, T, NA, DA]()
+  def newBuilder[S, T, NA, DA](combiner: EdgeAnnotationCombiner[NA, DA]) =
+    new EdgeAnnotatedNFABuilder[S, T, NA, DA](combiner)
 }

@@ -35,7 +35,7 @@ trait EdgeAnnotatedNFABuilder[
   -K >: EdgeAnnotatedNFAelements[S, T, NA] <: Matchable,
   -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
   -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
-](using combiner: EdgeAnnotationCombiner[NA, DA])
+]
 
 extends traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
 
@@ -51,6 +51,8 @@ with NFABuilder[
 with UnindexedEdgeAnnotatedFA[S, T, NA, NZ]
 
 with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
+
+  protected def combiner: EdgeAnnotationCombiner[NA, DA]
 
   protected val labelledEdgeAnnotations:
       HashMap[S, HashMap[T, HashMap[S, NA]]] =

@@ -204,7 +204,7 @@ object Samples extends Sampler {
     import org.maraist.fa.elements.*
 
     val builder =
-      EdgeAnnotatedNFA.newBuilder[String, Char, Int, Set[Int]](using g)
+      EdgeAnnotatedNFA.newBuilder[String, Char, Int, Set[Int]](g)
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2a")
@@ -247,7 +247,7 @@ object Samples extends Sampler {
       EdgeAnnotationCombiner.singleSetCombiner[A]
 
     val builder =
-      new EdgeAnnotatedNFABuilder[String, Char, Int, Set[Int]](using g)
+      new EdgeAnnotatedNFABuilder[String, Char, Int, Set[Int]](g)
     builder += AddInitialState("S")
     builder += AddState("S1")
     builder += AddState("S2")

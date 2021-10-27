@@ -149,7 +149,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     (result.result(), isFinal)
   }
 
-  def seedAdditionalInitialStates(tracker: IndexSetsTracker): Unit = { }
+  def seedAdditionalDfaStates(tracker: IndexSetsTracker): Unit = { }
 
   override def toDFA: D[G[S], T] = {// scalastyle:ignore cyclomatic.complexity method.length
 
@@ -180,7 +180,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
 
     // Later versions of the NDFA will have hyperedge annotations; we
     // have a thunk here to add more states to the queue.
-    seedAdditionalInitialStates(tracker)
+    seedAdditionalDfaStates(tracker)
 
     // Iterate through the DFA state list from beginning, adding new
     // states to the end.
