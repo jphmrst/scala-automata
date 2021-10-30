@@ -50,4 +50,8 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
   override def eAnnotation(src: S, dest: S): Option[A] = None
 
   override def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[A] = None
+
+  /** {@inheritDoc}
+    */
+  override def initialAnnotated: Boolean = initialAnnotation.isDefined
 }

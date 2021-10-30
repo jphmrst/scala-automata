@@ -87,12 +87,13 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
   }
 
   protected def assembleDFA(
-    dfaStates:IndexedSeq[Set[S]],
-    initialStateIdx:Int,
-    dfaFinals:Set[Int],
-    transitionsSeq:IndexedSeq[T],
-    dfaTransitions:Array[Array[Int]],
-    tracker:IndexSetsTracker,
+    dfaStates: IndexedSeq[Set[S]],
+    initialStateIdx: Int,
+    dfaFinals: Set[Int],
+    initialAnnotation: Option[DA],
+    transitionsSeq: IndexedSeq[T],
+    dfaTransitions: Array[Array[Int]],
+    tracker: IndexSetsTracker,
     appearsIn: Array[Set[Int]],
     edgeAnnotations: Array[Array[Option[DA]]]): D[G[S], T, DA]
 
@@ -111,11 +112,15 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
 
     // All annotations of unlabelled transitions emerging from an NDA
     // state X will be associated with any transition in the DFA *to*
-    // any state containing X.  This first loop reviews the unlabelled
-    // transitions, and compiles together the annotations assembled
-    // for each *source* NFA state.
+    // any state containing X.  If X is an initial state, then all
+    // annotations of unlabelled transitions emerging from an NDA
+    // state X will also be included in the inisial annotation of the
+    // DFA.  This first loop reviews the unlabelled transitions, and
+    // compiles together the annotations assembled for each *source*
+    // NFA state, and for the initial DFA annotation.
     val nfaUnlabelledCombined: Array[Option[DA]] =
       Array.fill(nfaStatesCount)(None)
+    var initialAnnotation: Option[DA] = None
 
     // Iterate through the NFA state indices as source state.
     for (srcIdx <- 0 until nfaStatesCount) {
@@ -142,13 +147,22 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
               // the destination NFA state.
               for (dfaDest <- appearsIn(destIdx)) {
 
-                // Calculate new annotation
+                // Calculate new annotation.
                 val updated: DA =
                   combiner.updated(nfaUnlabelledCombined(srcIdx), ann)
 
-                // Write it in
+                // Write it in.
                 nfaUnlabelledCombined(srcIdx) = Some(updated)
               }
+            }
+
+            // Now check whether the source edge is an initial state
+            // of the NFA.
+            if initialStateIndices.contains(srcIdx) then {
+              initialAnnotation = Some(initialAnnotation match {
+                case None => combiner.single(ann)
+                case Some(prevAnn) => combiner.include(prevAnn, ann)
+              })
             }
           }
         }
@@ -216,7 +230,6 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
               labelledEdgeAnnotations(srcIdx)(labelIdx)(destIdx) match {
                 case None => { }
                 case Some(ann) => {
-
                   // Find the new value to record against this DFA
                   // edge.
                   val newAnn = writingForDfaSrc(labelIdx) match {
@@ -249,7 +262,7 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
     }
 
     assembleDFA(
-      dfaStates, initialStateIdx, dfaFinals, transitionsSeq,
+      dfaStates, initialStateIdx, dfaFinals, initialAnnotation, transitionsSeq,
       dfaTransitions, tracker, appearsIn, edgeAnnotations
     )
   }

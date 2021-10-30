@@ -110,6 +110,25 @@ with DFABuilder[
       case None => { }
     }
 
+  /** {@inheritDoc} */
+  def initialAnnotation: Option[A] = initialAnn
+
+  protected var initialAnn: Option[A] = None
+
+  /** {@inheritDoc} */
+  override def addInitialAnnotation(annotation: A): Unit = {
+    initialAnn = Some(annotation)
+  }
+
+  /** {@inheritDoc} */
+  override def removeInitialAnnotation: Unit = {
+    initialAnn = None
+  }
+
+  /** {@inheritDoc}
+    */
+  override def initialAnnotated: Boolean = initialAnn.isDefined
+
   override protected final def assembleDFA(
     statesSeq: IndexedSeq[S],
     initialIdx: Int,

@@ -49,6 +49,7 @@ with full.EdgeAnnotatedDFABuilder[
       statesSeq,
       initialIdx,
       Set.from(finalStateIndices),
+      initialAnn,
       transitionsSeq,
       idxLabels,
       edgeAnnotationsArray

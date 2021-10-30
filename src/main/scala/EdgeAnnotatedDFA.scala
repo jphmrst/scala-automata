@@ -25,6 +25,7 @@ class EdgeAnnotatedDFA[S, T, A](
   protected val stateSeq: IndexedSeq[S],
   val initialStateIndex: Int,
   val finalStateIndices: Set[Int],
+  val initialAnnotation: Option[A],
   protected val transitionsSeq: IndexedSeq[T],
   protected val transitionsMatrix: Array[Array[Int]],
   protected val edgeAnnotations: Array[Array[Option[A]]]

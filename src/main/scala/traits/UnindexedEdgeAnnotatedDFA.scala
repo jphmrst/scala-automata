@@ -28,6 +28,15 @@ extends UnindexedEdgeAnnotatedFA[S, T, A, Z]
 
 with UnindexedDFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
+  /** Return any annotation associated "before" the initial state.
+    */
+  def initialAnnotation: Option[A]
+
+  /** Return whether there is an annotation associated "before" the
+    * initial state.
+    */
+  def initialAnnotated: Boolean
+
   /** Return the annotation (if any) on the transition from the given
     * state and with the given label.
     */

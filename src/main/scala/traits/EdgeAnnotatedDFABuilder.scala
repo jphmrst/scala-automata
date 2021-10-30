@@ -30,4 +30,12 @@ with UnindexedEdgeAnnotatedDFA[S, T, A, Z] {
     * `label`.
     */
   def removeAnnotation(src: S, label: T): Unit
+
+  /** Set the initial annotation "before" the initial state.
+    */
+  def addInitialAnnotation(annotation: A): Unit
+
+  /** Remove any initial annotation "before" the initial state.
+    */
+  def removeInitialAnnotation: Unit
 }
