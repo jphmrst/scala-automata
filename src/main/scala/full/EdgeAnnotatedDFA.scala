@@ -30,28 +30,34 @@ with DFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]]
 
 with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
+  /** {@inheritDoc} */
   protected def edgeAnnotations: Array[Array[Option[A]]]
 
+  /** {@inheritDoc} */
   override def annotation(src: S, label: T): Option[A] =
     annotationIndex(indexOf(src), labelIndex(label))
 
+  /** {@inheritDoc} */
   override def annotationIndex(srcIdx: Int, labelIdx: Int): Option[A] =
     edgeAnnotations(srcIdx)(labelIdx)
 
+  /** {@inheritDoc} */
   override def annotation(src: S, label: T, dest: S): Option[A] =
     annotationIndex(indexOf(src), labelIndex(label), indexOf(dest))
 
+  /** {@inheritDoc} */
   override def annotationIndex(srcIdx: Int, labelIdx: Int, destIdx: Int):
       Option[A] =
     transitionIndex(srcIdx, labelIdx).flatMap(
       ((d: Int) =>
         if d == destIdx then annotationIndex(srcIdx, labelIdx) else None))
 
+  /** {@inheritDoc} */
   override def eAnnotation(src: S, dest: S): Option[A] = None
 
+  /** {@inheritDoc} */
   override def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[A] = None
 
-  /** {@inheritDoc}
-    */
+  /** {@inheritDoc} */
   override def initialAnnotated: Boolean = initialAnnotation.isDefined
 }

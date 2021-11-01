@@ -92,7 +92,7 @@ with UnindexedFA[S, T, Z] {
   // =================================================================
 
   override protected def plotInitialStateMarker(
-    sb: StringBuilder, s: S, idx: Int):
+    sb: StringBuilder, style: Z[S, T], s: S, idx: Int):
       Unit =
     plotInitialStateMarker(sb, s, idx, initialStateProb(s))
 

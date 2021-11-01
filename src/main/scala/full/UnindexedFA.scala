@@ -75,7 +75,7 @@ extends traits.UnindexedFA[S, T, Z] {
       val s = stateList(si)
       plotState(sb, style, si, s, isInitialState(s), isFinalState(s))
     }
-    afterStatePlot(sb, stateList, stateMap)
+    afterStatePlot(sb, style, stateList, stateMap)
     plotTransitions(stateList, stateMap, theLabels, sb, style)
     finishPlot(sb)
   }
@@ -129,32 +129,31 @@ extends traits.UnindexedFA[S, T, Z] {
 
   protected def afterStatePlot(
     sb: StringBuilder,
+    style: Z[S, T],
     stateList: IndexedSeq[S],
     stateMap: Map[S, Int]):
       Unit = {
     // Arrow for the initial state
     foreachInitialState((s) => {
-      plotInitialStateMarker(sb, s, stateMap(s))
+      plotInitialStateMarker(sb, style, s, stateMap(s))
     })
-    sb ++= ";\n"
   }
 
-  protected def plotInitialStateMarker(sb: StringBuilder, s: S, idx: Int):
+  protected def plotInitialStateMarker(
+    sb: StringBuilder, style: Z[S, T], s: S, idx: Int):
       Unit = {
 
     // Dummy state for arrow base.
     sb ++= "\tinit"
     sb ++= idx.toString
-    sb ++= " [shape=none, margin=0, label=\"\"];"
-    // sb ++= " // "
-    // sb ++= (if s == null then "null" else s.toString())
-    // sb ++= "\n"
+    sb ++= " [shape=none, margin=0, label=\"\"];\n"
 
     // Arrow from the dummy state to the initial state.
     sb ++= "\tinit"
     sb ++= idx.toString
     sb ++= " -> V"
     sb ++= idx.toString
+    sb ++= ";\n"
   }
 
   protected def plotPresentEdge(
