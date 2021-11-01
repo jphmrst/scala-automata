@@ -60,4 +60,36 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
   /** {@inheritDoc} */
   override def initialAnnotated: Boolean = initialAnnotation.isDefined
+
+  /** {@inheritDoc} Overridden in the [[EdgeAnnotatedDFA]] for showing
+    * initial annotations.
+    */
+  override protected
+  def plotInitialStateMarker(
+    sb: StringBuilder, style: Z[S, T, A], s: S, idx: Int):
+      Unit = {
+
+    // Dummy state for arrow base.
+    sb ++= "\tinit"
+    sb ++= idx.toString
+    sb ++= " [shape=none, margin=0, label=\"\"];\n"
+
+    // Arrow from the dummy state to the initial state.
+    sb ++= "\tinit"
+    sb ++= idx.toString
+    sb ++= " -> V"
+    sb ++= idx.toString
+
+    // Render any initial annotation.
+    initialAnnotation match {
+      case None => { }
+      case Some(ann) => {
+        sb ++= " [label=<"
+        sb ++= style.initialAnnotationLabel(ann, s)
+        sb ++= ">]"
+      }
+    }
+
+    sb ++= ";\n"
+  }
 }
