@@ -86,4 +86,16 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   override protected def dumpHeader(out: java.io.PrintStream = Console.out):
       Unit =
     out.println("---------- FA dump")
+
+  override protected def dumpStateLeader(
+    s: S, out: java.io.PrintStream = Console.out):
+      Unit = {
+    out.print(indexOf(s).toString + ". ")
+  }
+
+  override protected def dumpStateInTransition(
+    state: S, out: java.io.PrintStream = Console.out):
+      Unit = {
+    out.print("[" + indexOf(state).toString() + "] " + state)
+  }
 }

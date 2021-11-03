@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import java.io.PrintStream
 import org.maraist.fa.util.EdgeAnnotationCombiner
 import org.maraist.fa.styles.{EdgeAnnotatedAutomatonStyle, DOT}
 import org.maraist.fa.traits
@@ -116,27 +117,29 @@ with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
 
   // =================================================================
 
-  override protected def dumpTransition(
-    src: S, label: T, dest: S, out: java.io.PrintStream):
+  override protected def dumpHeader(
+    out: java.io.PrintStream = Console.out): Unit =
+    out.println("---------- UnindexedEdgeAnnotatedFA dump")
+
+  override protected def dumpTransitionArrow(
+    src: S, label: T, dest: S, out: PrintStream = Console.out):
       Unit = {
-    out.println("- " + src)
     out.print("    -[ " + label + " ]->")
     annotation(src, label, dest) match {
       case None => { out.println(" (unann.)") }
       case Some(a) => { out.println(" : " + a) }
     }
-    out.println("      " + dest)
+    out.print("      ")
   }
 
-  override protected def dumpETransition(
-    src: S, dest: S, out: java.io.PrintStream):
+  override protected def dumpETransitionArrow(
+    src: S, dest: S, out: PrintStream = Console.out):
       Unit = {
-    out.println("- " + src)
     out.print("    -->")
     eAnnotation(src, dest) match {
       case None => { out.println("  (unann.)") }
       case Some(a) => { out.println("  " + a) }
     }
-    out.println("      " + dest)
+    out.print("      ")
   }
 }

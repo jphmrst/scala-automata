@@ -64,26 +64,31 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
   def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
 
+  override protected def dumpHeader(
+    out: java.io.PrintStream = Console.out): Unit =
+    out.println("---------- EdgeAnnotatedNFA dump")
+
   override protected def dumpTransition(
     src: S, label: T, dest: S, out: java.io.PrintStream): Unit = {
-    out.print("- " + src + " -[ " + label)
+    out.println("- " + src)
+    out.print("    -[ " + label)
     annotation(src, label, dest) match {
       case None => { out.print(" (unann.)") }
       case Some(a) => { out.print(" : " + a) }
     }
-    out.print(" ]-> " + dest)
-    out.println()
+    out.println(" ]->")
+    out.println("      " + dest)
   }
 
   override protected def dumpETransition(
     src: S, dest: S, out: java.io.PrintStream):
       Unit = {
-    out.println("- " + src + " -{ ")
+    out.println("- " + src)
     annotation(src, dest) match {
-      case None => { out.print(" (unann.)") }
-      case Some(a) => { out.print(" : " + a) }
+      case None => { out.println("    --> (unann.)") }
+      case Some(a) => { out.println("    -{ " + a + " }->") }
     }
-    out.print(" }-> " + dest)
+    out.println("      " + dest)
   }
 
   protected def assembleDFA(

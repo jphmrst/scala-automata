@@ -92,4 +92,19 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
     sb ++= ";\n"
   }
+
+  override protected def dumpHeader(
+    out: java.io.PrintStream = Console.out): Unit =
+    out.println("---------- EdgeAnnotatedDFA dump")
+
+  override protected def dumpTransitions(
+    out: java.io.PrintStream = Console.out):
+      Unit = {
+    super.dumpTransitions(out)
+    println("- " + (initialAnnotation match {
+      case None => "No initial annotation"
+      case Some(ann) => "Initial annotation" + ann.toString
+    }))
+  }
+
 }

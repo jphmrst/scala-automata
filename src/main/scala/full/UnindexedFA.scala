@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import java.io.PrintStream
 import org.maraist.fa.traits
 import org.maraist.fa.styles.{AutomatonStyle, DOT}
 
@@ -203,28 +204,29 @@ extends traits.UnindexedFA[S, T, Z] {
 
   // =================================================================
 
-  def dump(out: java.io.PrintStream = Console.out): Unit = {
+  def dump(out: PrintStream = Console.out): Unit = {
     dumpHeader(out)
     dumpStates(out)
     dumpTransitions(out)
     dumpFooter(out)
   }
 
-  protected def dumpHeader(out: java.io.PrintStream = Console.out): Unit =
+  protected def dumpHeader(out: PrintStream = Console.out): Unit =
     out.println("---------- FA dump")
-  protected def dumpFooter(out: java.io.PrintStream = Console.out): Unit =
+  protected def dumpFooter(out: PrintStream = Console.out): Unit =
     out.println("----------")
 
-  protected def dumpStates(out: java.io.PrintStream = Console.out): Unit = {
+  protected def dumpStates(out: PrintStream = Console.out): Unit = {
     out.println("States:")
     for(state <- states) {
       dumpState(state, out)
     }
   }
 
-  protected def dumpState(s: S, out: java.io.PrintStream = Console.out):
+  protected def dumpState(s: S, out: PrintStream = Console.out):
       Unit = {
-    out.print("- " + s)
+    dumpStateLeader(s, out)
+    out.print(s)
     if (isInitialState(s) || isFinalState(s)) out.print(" (")
     if (isInitialState(s)) out.print("initial")
     if (isInitialState(s) && isFinalState(s)) out.print(", ")
@@ -233,7 +235,12 @@ extends traits.UnindexedFA[S, T, Z] {
     out.println()
   }
 
-  protected def dumpTransitions(out: java.io.PrintStream = Console.out):
+  protected def dumpStateLeader(s: S, out: PrintStream = Console.out):
+      Unit = {
+    out.print("- ")
+  }
+
+  protected def dumpTransitions(out: PrintStream = Console.out):
       Unit = {
     out.println("Transitions:")
     foreachTransition((src, label, dest) =>
@@ -242,18 +249,37 @@ extends traits.UnindexedFA[S, T, Z] {
   }
 
   protected def dumpTransition(
-    src: S, label: T, dest: S, out: java.io.PrintStream = Console.out
-  ): Unit = {
-    out.println("- " + src)
-    out.println("    -[ " + label + " ]-> ")
-    out.println("      " + dest)
+    src: S, label: T, dest: S, out: PrintStream = Console.out):
+      Unit = {
+    out.print("- ")
+    dumpStateInTransition(src, out)
+    out.println()
+    dumpTransitionArrow(src, label, dest, out)
+    dumpStateInTransition(dest, out)
+    out.println()
   }
 
   protected def dumpETransition(
-    src: S, dest: S, out: java.io.PrintStream = Console.out):
+    src: S, dest: S, out: PrintStream = Console.out):
       Unit = {
-    out.println("- " + src)
-    out.println("    -->")
-    out.println("      " + dest)
+    out.println("- ")
+    dumpStateInTransition(src, out)
+    dumpETransitionArrow(src, dest, out)
+    dumpStateInTransition(dest, out)
+    out.println()
   }
+
+  protected def dumpTransitionArrow(
+    src: S, label: T, dest: S, out: PrintStream = Console.out):
+      Unit =
+    out.println("    -[ " + label + " ]-> ")
+
+  protected def dumpETransitionArrow(
+    src: S, dest: S, out: PrintStream = Console.out):
+      Unit =
+    out.print("    --> ")
+
+  protected def dumpStateInTransition(state: S, out: PrintStream = Console.out):
+      Unit =
+    out.print(state)
 }
