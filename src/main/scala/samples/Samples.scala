@@ -167,7 +167,7 @@ object Samples extends Sampler {
   }
    */
 
-  def dlhPfa57:PFABuilder[Int,String] = {
+  def dlhPfa57: PFABuilder[Int,String] = {
     val res = new PFABuilder[Int,String]
     res.addInitialState(1, 1.0)
     res.addFinalState(2, 0.4)
@@ -280,10 +280,8 @@ object Samples extends Sampler {
 
     graphable(guide,cleaner, dfa1B,    "dfa1B",    "dfa1B",     "3in")
 
-    println("dfa1")
     // dfa1.dump
     graphable(guide,cleaner,dfa1,     "dfa1",     "dfa1",      "3in")
-    // println(" - back")
     samplesFromNfaBuilder(guide,cleaner,ndfa2B, "ndfa2B", "5.5in")
 
 //    guide ++= "\\clearpage\n"
@@ -315,9 +313,7 @@ object Samples extends Sampler {
     guide.addPackage("multicol")
     guide.open()
     // guide ++= "\\begin{multicols}{2}"
-    println("Calling addSamples")
     val cleanup = addSamples(guide)
-    println("Back from addSamples")
     // guide ++= "\\end{multicols}"
     guide.close()
     cleanup.clean
