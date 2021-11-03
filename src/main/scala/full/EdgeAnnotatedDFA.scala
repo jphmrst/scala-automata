@@ -106,5 +106,4 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
       case Some(ann) => "Initial annotation" + ann.toString
     }))
   }
-
 }
