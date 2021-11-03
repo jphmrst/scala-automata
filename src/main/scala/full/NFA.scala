@@ -101,7 +101,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   override def eTransitionIndices(s: S): Set[Int] = {
     val index = indexOf(s)
     if (index<0) {
-      throw new IllegalArgumentException(s.toString() + " not a state in NDFA")
+      throw new IllegalArgumentException(s.toString() + " not a state in NFA")
     }
     epsilonsArray(index)
   }
@@ -156,12 +156,12 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     // Set up components of ArrayDFA.  We can't convert to a
     // transitions array until the end, so for now we build a map over
     // state/transition label indices.  Note that we just use the same
-    // transitions as for this ArrayNDFA.
+    // transitions as for this ArrayNFA.
     val dfaIndexSets: ListBuffer[Set[Int]] = new ListBuffer[Set[Int]]
     val dfaFinals: HashSet[Int] = new HashSet[Int]
 
     // It will be useful to know the DFA states in which a particular
-    // NDFA state appears.
+    // NFA state appears.
     val appearsIn =
       Array.fill[HashSet[Int]](stateSeq.length)(new HashSet[Int]())
 
@@ -178,7 +178,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     for(initialNda <- initialClosure)
       do appearsIn(initialNda) += initialState
 
-    // Later versions of the NDFA will have hyperedge annotations; we
+    // Later versions of the NFA will have hyperedge annotations; we
     // have a thunk here to add more states to the queue.
     seedAdditionalDfaStates(tracker)
 
@@ -286,5 +286,5 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
 
   override protected def dumpHeader(out: java.io.PrintStream = Console.out):
       Unit =
-    out.println("---------- NDFA dump")
+    out.println("---------- NFA dump")
 }

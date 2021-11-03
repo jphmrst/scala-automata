@@ -16,7 +16,7 @@ import org.maraist.fa.full
 
 /**
   *
-  *  @group NDFA
+  *  @group NFA
   */
 class NFABuilder[S,T]
 

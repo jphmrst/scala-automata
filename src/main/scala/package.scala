@@ -18,9 +18,9 @@ package org.maraist
   * @groupdesc DFA
   * @groupprio DFA 100
   *
-  * @groupname NDFA Nondeterministic finite automata (NFAs)
-  * @groupdesc NDFA
-  * @groupprio NDFA 110
+  * @groupname NFA Nondeterministic finite automata (NFAs)
+  * @groupdesc NFA
+  * @groupprio NFA 110
   *
   * @groupname PFA Probabilistic finite automata (PFAs)
   * @groupdesc PFA

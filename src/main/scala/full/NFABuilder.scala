@@ -21,7 +21,7 @@ import org.maraist.fa.elements.*
   * @tparam S The type of all states of the automaton
   * @tparam T The type of labels on (non-epsilon) transitions of the automaton
   *
-  * @group NDFA
+  * @group NFA
   */
 trait NFABuilder[
   S, T,
@@ -252,5 +252,5 @@ with FABuilder[S, T, N, K, NZ] {
 
   override protected def dumpHeader(out: java.io.PrintStream = Console.out):
       Unit =
-    out.println("---------- NDFABuilder dump")
+    out.println("---------- NFABuilder dump")
 }
