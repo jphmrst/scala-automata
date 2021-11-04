@@ -140,6 +140,7 @@ extends traits.UnindexedFA[S, T, Z] {
     })
   }
 
+  /** Add decorations for an initial state. */
   protected def plotInitialStateMarker(
     sb: StringBuilder, style: Z[S, T], s: S, idx: Int):
       Unit = {

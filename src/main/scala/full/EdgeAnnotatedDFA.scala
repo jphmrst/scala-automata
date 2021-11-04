@@ -30,7 +30,7 @@ with DFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]]
 
 with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
 
-  /** {@inheritDoc} */
+  /** Internal storage for the annotations on labelled edges. */
   protected def edgeAnnotations: Array[Array[Option[A]]]
 
   /** {@inheritDoc} */
@@ -61,8 +61,9 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
   /** {@inheritDoc} */
   override def initialAnnotated: Boolean = initialAnnotation.isDefined
 
-  /** {@inheritDoc} Overridden in the [[EdgeAnnotatedDFA]] for showing
-    * initial annotations.
+  /** {@inheritDoc} Overridden in the
+    * [[org.maraist.fa.full.EdgeAnnotatedDFA]] for showing initial
+    * annotations.
     */
   override protected
   def plotInitialStateMarker(
