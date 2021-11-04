@@ -230,7 +230,7 @@ extends traits.UnindexedFA[S, T, Z] {
       .foldLeft(Doc.text("States:"))(_ + _)
 
   protected def prettyState(s: S): Doc =
-    prettyStateLeader(s) + Doc.str(s) :+ {
+    prettyStateLeader(s) + toDoc(s.asInstanceOf[Matchable]) :+ {
       val sb = new StringBuilder
       if (isInitialState(s) || isFinalState(s))  sb ++= " ("
       if (isInitialState(s)) sb ++= "initial"
@@ -271,5 +271,5 @@ extends traits.UnindexedFA[S, T, Z] {
     Doc.text("    --> ")
 
   protected def prettyStateInTransition(state: S): Doc =
-    Doc.str(state)
+    toDoc(state.asInstanceOf[Matchable])
 }

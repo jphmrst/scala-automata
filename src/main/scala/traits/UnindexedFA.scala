@@ -19,7 +19,7 @@ import org.maraist.fa.styles.AutomatonStyle
   */
 trait UnindexedFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 
-extends Graphable[S, T, Z] {
+extends Graphable[S, T, Z] with org.maraist.fa.util.Pretty {
 
   /** The states themselves */
   def states: Iterable[S]

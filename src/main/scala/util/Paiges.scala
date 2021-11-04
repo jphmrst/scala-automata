@@ -11,12 +11,45 @@
 package org.maraist.fa.util
 import org.typelevel.paiges.Doc
 
+trait Pretty:
+    def pretty: Doc
+end Pretty
+
 object Paiges {
+
+  extension (obj: Matchable) {
+    def toDoc: Doc = obj match {
+      case pr: Pretty => pr.pretty
+      case doc: Doc => doc
+      case s: String => Doc.text(s)
+
+      // This cannot be the best way to do this.
+      case c: Set[? <: Matchable] => collectionToDoc("Set", c)
+      case c: List[? <: Matchable] => collectionToDoc("List", c)
+      case c: Array[? <: Matchable] => collectionToDoc("Array", c)
+      case c: Seq[? <: Matchable] => collectionToDoc("Seq", c)
+      case c: Iterable[? <: Matchable] => collectionToDoc("Iterable", c)
+
+      case _ => Doc.str(obj)
+    }
+  }
+
+  private def collectionToDoc[X <: Matchable, C[Y] <: Iterable[Y]](
+    name: String, coll: C[X]):
+      Doc =
+    ((coll.map(_.toDoc).fill(Doc.text(",") + Doc.space) + Doc.text(")"))
+      .tightPrefixBy(Doc.text(s"$name(")))
+      .grouped
+
   extension (doc: Doc) {
     def prefixBy(left: Doc, indent: Int = 2): Doc =
       (left + (Doc.line + doc).nested(indent)).grouped
+    def tightPrefixBy(left: Doc, indent: Int = 2): Doc =
+      (left + (Doc.lineOrEmpty + doc).nested(indent)).grouped
     def suffixBy(right: Doc, indent: Int = 2): Doc =
       (doc.nested(indent) + (Doc.line + right)).grouped
+    def tightSuffixBy(right: Doc, indent: Int = 2): Doc =
+      (doc.nested(indent) + (Doc.lineOrEmpty + right)).grouped
   }
 
   extension (docs: Iterable[Doc]) {
