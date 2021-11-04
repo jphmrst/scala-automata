@@ -60,8 +60,14 @@ extends Graphable[S, T, Z] {
   /** Perform some action for each final state in the automaton. */
   def foreachFinalState(action: (s: S) => Unit): Unit
 
+  /** Return the triples comprising all labelled transitions. */
+  def transitionTriples: Iterable[(S, T, S)]
+
   /** Perform some action for each transition in the automaton. */
   def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit
+
+  /** Return the pairs comprising all unlabelled transitions. */
+  def eTransitionPairs: Iterable[(S, S)]
 
   /** Perform some action for each epsilon transition in the
     * automaton. Note that in many (deterministic) automata, this

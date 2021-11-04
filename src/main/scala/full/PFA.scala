@@ -89,6 +89,14 @@ with UnindexedPFA[S, T, Z] {
       if prob > 0.0
     ) do action(states(i1), states(i2), prob)
 
+  override def eTransitionPairs: Iterable[(S, S)] =
+    for(
+      i1 <- 0 until size;
+      i2 <- 0 until size;
+      prob = eTransitionsMatrix(i1)(i2);
+      if prob > 0.0
+    ) yield (states(i1), states(i2))
+
   override def foreachFinalState(action: (S, Double) => Unit): Unit =
     for (i <- finalStateIndices) do action(states(i), finalStateIndexProb(i))
 

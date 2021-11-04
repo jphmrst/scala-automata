@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
@@ -83,19 +84,11 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
       do throw IllegalStateException("Initial state index out of bounds")
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- FA dump")
+  override protected def prettyHeader: Doc = Doc.text("---------- FA dump")
 
-  override protected def dumpStateLeader(
-    s: S, out: java.io.PrintStream = Console.out):
-      Unit = {
-    out.print(indexOf(s).toString + ". ")
-  }
+  override protected def prettyStateLeader(s: S): Doc =
+    Doc.str(indexOf(s)) + Doc.text(". ")
 
-  override protected def dumpStateInTransition(
-    state: S, out: java.io.PrintStream = Console.out):
-      Unit = {
-    out.print("[" + indexOf(state).toString() + "] " + state)
-  }
+  override protected def prettyStateInTransition(state: S): Doc =
+    Doc.text("[") + Doc.str(indexOf(state)) + Doc.text("]") space Doc.str(state)
 }

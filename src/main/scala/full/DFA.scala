@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
@@ -57,7 +58,5 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
       } else None
       else None
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- DFA dump")
+  override protected def prettyHeader: Doc = Doc.text("---------- DFA dump")
 }

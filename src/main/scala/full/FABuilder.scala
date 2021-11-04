@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import scala.collection.mutable.{HashMap,HashSet}
 import org.maraist.fa.elements.{FAelements,
   AddState, RemoveState, AddFinalState, RemoveFinalState}
@@ -71,7 +72,6 @@ with UnindexedFA[S, T, Z] with StatesMixin[S, T] {
     this
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- FABuilder dump")
+  override protected def prettyHeader: Doc =
+    Doc.text("---------- FABuilder dump")
 }

@@ -9,7 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
-import scala.collection.mutable.{HashMap,HashSet}
+import scala.collection.mutable.{HashMap, HashSet}
+import org.typelevel.paiges.Doc
 import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
 import org.maraist.fa.elements.*
@@ -132,6 +133,10 @@ with FABuilder[S, T, N, K, NZ] {
     for ((s1, s2s) <- epsilons; s2 <- s2s)
       do action(s1, s2)
 
+  override def eTransitionPairs: Iterable[(S, S)] =
+    for ((s1, s2s) <- epsilons; s2 <- s2s)
+      yield (s1, s2)
+
   def initialStates: Set[S] = initialStatesVar.toSet
 
   def isInitialState(s: S): Boolean = initialStatesVar.contains(s)
@@ -250,7 +255,6 @@ with FABuilder[S, T, N, K, NZ] {
     this
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- NFABuilder dump")
+  override protected def prettyHeader: Doc =
+    Doc.text("---------- NFABuilder dump")
 }

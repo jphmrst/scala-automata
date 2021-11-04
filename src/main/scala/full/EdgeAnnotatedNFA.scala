@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import org.maraist.fa.util.{EdgeAnnotationCombiner, IndexSetsTracker}
 import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
@@ -64,9 +65,8 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
   def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
 
-  override protected def dumpHeader(
-    out: java.io.PrintStream = Console.out): Unit =
-    out.println("---------- EdgeAnnotatedNFA dump")
+  override protected def prettyHeader: Doc =
+    Doc.text("---------- EdgeAnnotatedNFA dump")
 
   protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],

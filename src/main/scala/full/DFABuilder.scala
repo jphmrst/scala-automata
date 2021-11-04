@@ -21,6 +21,7 @@
   */
 package org.maraist.fa.full
 import scala.collection.mutable.{HashMap, HashSet}
+import org.typelevel.paiges.Doc
 import org.maraist.fa.elements.*
 import org.maraist.fa.styles.AutomatonStyle
 import org.maraist.fa.traits
@@ -140,7 +141,6 @@ extends traits.DFABuilder[S, T, D, K, Z]
     this
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- DFABuilder dump")
+  override protected def prettyHeader: Doc =
+    Doc.text("---------- DFABuilder dump")
 }

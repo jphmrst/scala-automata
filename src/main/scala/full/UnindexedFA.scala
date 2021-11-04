@@ -10,6 +10,7 @@
 
 package org.maraist.fa.full
 import java.io.PrintStream
+import org.typelevel.paiges.Doc
 import org.maraist.fa.traits
 import org.maraist.fa.styles.{AutomatonStyle, DOT}
 
@@ -40,8 +41,11 @@ extends traits.UnindexedFA[S, T, Z] {
     for(s <- finalStates) do action(s)
 
   override def foreachTransition(action: (s1: S, t: T, s2: S) => Unit): Unit =
+    for ((s0, t, s1) <- transitionTriples) do action(s0, t, s1)
+
+  override def transitionTriples: Iterable[(S, T, S)] =
     for (s0 <- states; t <- labels; s1 <- transitions(s0, t))
-      do action(s0, t, s1)
+    yield (s0, t, s1)
 
   // =================================================================
   // Graphviz plots of the automaton
@@ -205,82 +209,66 @@ extends traits.UnindexedFA[S, T, Z] {
 
   // =================================================================
 
-  def dump(out: PrintStream = Console.out): Unit = {
-    dumpHeader(out)
-    dumpStates(out)
-    dumpTransitions(out)
-    dumpFooter(out)
-  }
+  def dump(out: PrintStream = Console.out): Unit =
+    out.println(pretty.render(79))
 
-  protected def dumpHeader(out: PrintStream = Console.out): Unit =
-    out.println("---------- FA dump")
-  protected def dumpFooter(out: PrintStream = Console.out): Unit =
-    out.println("----------")
+  def pretty: Doc = (
+    prettyHeader
+      + prettyStates
+      / prettyTransitions
+      + prettyFooter
+  )
 
-  protected def dumpStates(out: PrintStream = Console.out): Unit = {
-    out.println("States:")
-    for(state <- states) {
-      dumpState(state, out)
+  protected def prettyHeader: Doc =
+    Doc.text("---------- FA dump") + Doc.line
+  protected def prettyFooter: Doc =
+    Doc.line + Doc.text("----------")
+
+  protected def prettyStates: Doc =
+    (for(state <- states) yield (Doc.line + prettyState(state)))
+      .foldLeft(Doc.text("States:"))(_ + _)
+
+  protected def prettyState(s: S): Doc =
+    prettyStateLeader(s) + Doc.str(s) :+ {
+      val sb = new StringBuilder
+      if (isInitialState(s) || isFinalState(s))  sb ++= " ("
+      if (isInitialState(s)) sb ++= "initial"
+      if (isInitialState(s) && isFinalState(s)) sb ++= ", "
+      if (isFinalState(s)) sb ++= "final"
+      if (isInitialState(s) || isFinalState(s)) sb ++= ")"
+      sb.toString
     }
+
+  protected def prettyStateLeader(s: S): Doc = Doc.text("- ")
+
+  protected def prettyTransitions: Doc =
+    Doc.text("Transitions:")
+      / (for ((src, label, dest) <- transitionTriples)
+         yield prettyTransition(src, label, dest)).foldLeft(Doc.empty)(_ / _)
+      / (for ((src, dest) <- eTransitionPairs)
+         yield prettyETransition(src, dest)).foldLeft(Doc.empty)(_ / _)
+
+  protected def prettyTransition(src: S, label: T, dest: S): Doc = (
+    Doc.text("- ")
+    + prettyStateInTransition(src)
+    + Doc.line
+    + prettyTransitionArrow(src, label, dest)
+    + prettyStateInTransition(dest)
+  )
+
+  protected def prettyETransition(src: S, dest: S): Doc = {
+    Doc.text("- ")
+    + prettyStateInTransition(src)
+    + prettyETransitionArrow(src, dest)
+    + prettyStateInTransition(dest)
   }
 
-  protected def dumpState(s: S, out: PrintStream = Console.out):
-      Unit = {
-    dumpStateLeader(s, out)
-    out.print(s)
-    if (isInitialState(s) || isFinalState(s)) out.print(" (")
-    if (isInitialState(s)) out.print("initial")
-    if (isInitialState(s) && isFinalState(s)) out.print(", ")
-    if (isFinalState(s)) out.print("final")
-    if (isInitialState(s) || isFinalState(s)) out.print(")")
-    out.println()
-  }
+  protected def prettyTransitionArrow(src: S, label: T, dest: S): Doc =
+    Doc.text("    -[ " + label + " ]-> ")
 
-  protected def dumpStateLeader(s: S, out: PrintStream = Console.out):
-      Unit = {
-    out.print("- ")
-  }
+  protected def prettyETransitionArrow(src: S, dest: S): Doc =
+    Doc.text("    --> ")
 
-  protected def dumpTransitions(out: PrintStream = Console.out):
-      Unit = {
-    out.println("Transitions:")
-    foreachTransition((src, label, dest) =>
-      dumpTransition(src, label, dest, out))
-    foreachETransition((src, dest) => dumpETransition(src, dest, out))
-  }
-
-  protected def dumpTransition(
-    src: S, label: T, dest: S, out: PrintStream = Console.out):
-      Unit = {
-    out.print("- ")
-    dumpStateInTransition(src, out)
-    out.println()
-    dumpTransitionArrow(src, label, dest, out)
-    dumpStateInTransition(dest, out)
-    out.println()
-  }
-
-  protected def dumpETransition(
-    src: S, dest: S, out: PrintStream = Console.out):
-      Unit = {
-    out.println("- ")
-    dumpStateInTransition(src, out)
-    dumpETransitionArrow(src, dest, out)
-    dumpStateInTransition(dest, out)
-    out.println()
-  }
-
-  protected def dumpTransitionArrow(
-    src: S, label: T, dest: S, out: PrintStream = Console.out):
-      Unit =
-    out.println("    -[ " + label + " ]-> ")
-
-  protected def dumpETransitionArrow(
-    src: S, dest: S, out: PrintStream = Console.out):
-      Unit =
-    out.print("    --> ")
-
-  protected def dumpStateInTransition(state: S, out: PrintStream = Console.out):
-      Unit =
-    out.print(state)
+  protected def prettyStateInTransition(state: S): Doc =
+    Doc.str(state)
 }

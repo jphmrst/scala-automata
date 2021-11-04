@@ -58,6 +58,10 @@ with StatesMixin[S, T] with UnindexedPFA[S, T, Z] {
     for ((s0, curry) <- eTransitionsMap; (s1, prob) <- curry; if prob > 0.0)
       do action(s0, s1, prob)
 
+  override def eTransitionPairs: Iterable[(S, S)] =
+    for ((s0, curry) <- eTransitionsMap; (s1, prob) <- curry; if prob > 0.0)
+      yield (s0, s1)
+
   def foreachFinalState(action: (S, Double) => Unit): Unit =
     for ((s, prob) <- finalProb; if prob > 0.0) do action(s, prob)
 

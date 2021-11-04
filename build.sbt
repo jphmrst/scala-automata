@@ -42,6 +42,7 @@ ThisBuild / versionScheme := Some("semver-spec")
 // end of maven etc. publishing section
 /////////////////////////////////////////////////////////////////
 
+libraryDependencies += "org.typelevel" %% "paiges-core" % "0.4.2"
 libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.9"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.9" % "test"
 libraryDependencies += "org.maraist" %% "scala-latex" % "2.0.0"

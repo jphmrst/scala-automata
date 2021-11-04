@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import org.maraist.fa.util.EdgeAnnotationCombiner
 import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
@@ -94,17 +95,12 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
     sb ++= ";\n"
   }
 
-  override protected def dumpHeader(
-    out: java.io.PrintStream = Console.out): Unit =
-    out.println("---------- EdgeAnnotatedDFA dump")
+  override protected def prettyHeader: Doc =
+    Doc.text("---------- EdgeAnnotatedDFA dump")
 
-  override protected def dumpTransitions(
-    out: java.io.PrintStream = Console.out):
-      Unit = {
-    super.dumpTransitions(out)
-    println("- " + (initialAnnotation match {
-      case None => "No initial annotation"
-      case Some(ann) => "Initial annotation" + ann.toString
-    }))
-  }
+  override protected def prettyTransitions: Doc =
+    super.prettyTransitions / Doc.text("- ") + (initialAnnotation match {
+      case None => Doc.text("No initial annotation")
+      case Some(ann) => Doc.text("Initial annotation") + Doc.str(ann)
+    })
 }

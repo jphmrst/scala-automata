@@ -9,6 +9,7 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
+import org.typelevel.paiges.Doc
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
 
@@ -30,6 +31,8 @@ extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
 
   override def foreachETransition(action: (s1: S, s2: S) => Unit): Unit = { }
 
+  override def eTransitionPairs: Iterable[(S, S)] = Iterable.empty
+
   import scala.util.control.NonLocalReturns.*
   override def accepts(string: Seq[T]): Boolean = returning {
     var current = initialState
@@ -42,7 +45,5 @@ extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
     finalStates.contains(current)
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("----------  dump")
+  override protected def prettyHeader: Doc = Doc.text("----------  dump")
 }

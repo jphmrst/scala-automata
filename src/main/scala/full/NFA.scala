@@ -9,7 +9,8 @@
 // language governing permissions and limitations under the License.
 
 package org.maraist.fa.full
-import scala.collection.mutable.{ArrayBuffer,ListBuffer,HashSet,Queue}
+import scala.collection.mutable.{ArrayBuffer, ListBuffer, HashSet, Queue}
+import org.typelevel.paiges.Doc
 import org.maraist.fa.util.IndexSetsTracker
 import org.maraist.fa.traits
 import org.maraist.fa.styles.AutomatonStyle
@@ -111,11 +112,12 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     * good. */
   override def accepts(string: Seq[T]): Boolean = toDFA.accepts(string)
 
-  /** Perform some action for each epsilon transition in the
-    * automaton. */
   override def foreachETransition(action: (s1: S, s2: S) => Unit): Unit =
     for(s1 <- states; s2 <- eTransitions(s1))
       do action(s1, s2)
+
+  override def eTransitionPairs: Iterable[(S, S)] =
+    for(s1 <- states; s2 <- eTransitions(s1)) yield (s1, s2)
 
   protected def epsilonCloseIndex(si: Int): (Set[Int], Boolean) =
     epsilonCloseIndices(Set(si))
@@ -284,7 +286,5 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     bld.toString()
   }
 
-  override protected def dumpHeader(out: java.io.PrintStream = Console.out):
-      Unit =
-    out.println("---------- NFA dump")
+  override protected def prettyHeader: Doc = Doc.text("---------- NFA dump")
 }
