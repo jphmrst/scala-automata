@@ -89,6 +89,9 @@ extends traits.FA[S, T, Z] with UnindexedFA[S, T, Z] {
   override protected def prettyStateLeader(s: S): Doc =
     Doc.str(indexOf(s)) + Doc.text(". ")
 
-  override protected def prettyStateInTransition(state: S): Doc =
-    Doc.text("[") + Doc.str(indexOf(state)) + Doc.text("]") space Doc.str(state)
+  override protected def prettyStateInTransition(state: S): Doc = (
+    Doc.text(s"${Console.MAGENTA}[")
+      + Doc.str(indexOf(state))
+      + Doc.text(s"]${Console.BLACK}")
+      space Doc.str(state))
 }
