@@ -11,6 +11,7 @@
 package org.maraist.fa.full
 import java.io.PrintStream
 import org.typelevel.paiges.Doc
+import org.maraist.fa.util.Paiges.*
 import org.maraist.fa.traits
 import org.maraist.fa.styles.{AutomatonStyle, DOT}
 
@@ -214,15 +215,15 @@ extends traits.UnindexedFA[S, T, Z] {
 
   def pretty: Doc = (
     prettyHeader
-      + prettyStates
+      / prettyStates
       / prettyTransitions
-      + prettyFooter
+      / prettyFooter
   )
 
   protected def prettyHeader: Doc =
-    Doc.text("---------- FA dump") + Doc.line
+    Doc.text("---------- FA dump")
   protected def prettyFooter: Doc =
-    Doc.line + Doc.text("----------")
+    Doc.text("----------")
 
   protected def prettyStates: Doc =
     (for(state <- states) yield (Doc.line + prettyState(state)))
@@ -244,24 +245,24 @@ extends traits.UnindexedFA[S, T, Z] {
   protected def prettyTransitions: Doc =
     Doc.text("Transitions:")
       / (for ((src, label, dest) <- transitionTriples)
-         yield prettyTransition(src, label, dest)).foldLeft(Doc.empty)(_ / _)
+         yield prettyTransition(src, label, dest)).stack
       / (for ((src, dest) <- eTransitionPairs)
-         yield prettyETransition(src, dest)).foldLeft(Doc.empty)(_ / _)
+         yield prettyETransition(src, dest)).stack
 
-  protected def prettyTransition(src: S, label: T, dest: S): Doc = (
-    Doc.text("- ")
-    + prettyStateInTransition(src)
-    + Doc.line
-    + prettyTransitionArrow(src, label, dest)
-    + prettyStateInTransition(dest)
-  )
+  protected def prettyTransition(src: S, label: T, dest: S): Doc =
+    assemblePrettyTransition(
+      prettyStateInTransition(src),
+      prettyTransitionArrow(src, label, dest),
+      prettyStateInTransition(dest))
 
-  protected def prettyETransition(src: S, dest: S): Doc = {
-    Doc.text("- ")
-    + prettyStateInTransition(src)
-    + prettyETransitionArrow(src, dest)
-    + prettyStateInTransition(dest)
-  }
+  protected def prettyETransition(src: S, dest: S): Doc =
+    assemblePrettyTransition(
+      prettyStateInTransition(src),
+      prettyETransitionArrow(src, dest),
+      prettyStateInTransition(dest))
+
+  protected def assemblePrettyTransition(before: Doc, arrow: Doc, after: Doc):
+      Doc = Doc.text("- ") + after.prefixBy(arrow).prefixBy(before)
 
   protected def prettyTransitionArrow(src: S, label: T, dest: S): Doc =
     Doc.text("    -[ " + label + " ]-> ")

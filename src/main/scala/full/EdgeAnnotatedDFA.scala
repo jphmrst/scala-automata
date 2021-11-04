@@ -99,8 +99,9 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
     Doc.text("---------- EdgeAnnotatedDFA dump")
 
   override protected def prettyTransitions: Doc =
-    super.prettyTransitions / Doc.text("- ") + (initialAnnotation match {
-      case None => Doc.text("No initial annotation")
-      case Some(ann) => Doc.text("Initial annotation") + Doc.str(ann)
-    })
+    super.prettyTransitions + (
+      Doc.text("- ") + (initialAnnotation match {
+        case None => Doc.text("No initial annotation")
+        case Some(ann) => Doc.text("Initial annotation") + Doc.str(ann)
+      })).grouped
 }

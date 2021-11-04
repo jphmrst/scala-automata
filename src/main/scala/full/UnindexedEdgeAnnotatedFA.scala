@@ -118,7 +118,7 @@ with UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
   // =================================================================
 
   override protected def prettyHeader: Doc =
-    Doc.text("---------- UnindexedEdgeAnnotatedFA dump") + Doc.line
+    Doc.text("---------- UnindexedEdgeAnnotatedFA dump")
 
   override protected
   def prettyTransitionArrow(src: S, label: T, dest: S): Doc =
