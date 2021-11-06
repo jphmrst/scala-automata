@@ -10,7 +10,8 @@
 
 package org.maraist.fa.full
 import org.typelevel.paiges.Doc
-import org.maraist.fa.util.{EdgeAnnotationCombiner, IndexSetsTracker}
+import org.maraist.fa.util.Paiges.toDoc
+import org.maraist.fa.util.{EdgeAnnotationCombiner, IndexSetsTracker, Grid}
 import org.maraist.fa.styles.EdgeAnnotatedAutomatonStyle
 import org.maraist.fa.traits
 
@@ -79,6 +80,7 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
     appearsIn: Array[Set[Int]],
     edgeAnnotations: Array[Array[Option[DA]]]): D[G[S], T, DA]
 
+  private final val debugEAassemble: Boolean = true
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],
     initialStateIdx: Int,
@@ -151,6 +153,13 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
       }
     }
 
+    if (debugEAassemble) {
+      println("nfaUnlabelledCombined")
+      for (i <- 0 until nfaUnlabelledCombined.size) {
+        println(s"${Console.MAGENTA}$i.${Console.BLACK} ${nfaUnlabelledCombined(i).toDoc.render(75)}")
+      }
+    }
+
     // This second loop calculates the annotation from unlabelled
     // transitions for each state of the DFA, by combining the
     // annotations for the related NFA states.
@@ -179,6 +188,15 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
       }
     }
 
+    if (debugEAassemble) {
+      println(" - - - - - -")
+      println("dfaUnlabelledCombined")
+      for (i <- 0 until dfaUnlabelledCombined.size) {
+        println(s"${Console.MAGENTA}$i.${Console.BLACK} ${dfaUnlabelledCombined(i).toDoc.render(75)}")
+      }
+      println(" - - - - - -")
+    }
+
     // Finally, the third loop is for the labelled transitions in the
     // DFA.
     val edgeAnnotations: Array[Array[Option[DA]]] =
@@ -203,15 +221,29 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
           if (dfaDestIdx > -1) {
             val dfaDest: Set[S] = dfaStates(dfaDestIdx)
 
+            // Initialize this annotation with the contents of
+            // dfaUnlabelledCombined for the destination DFA node
+            // index.
+            writingForDfaSrc(labelIdx) = dfaUnlabelledCombined(dfaDestIdx)
+
             // Iterate through the NFA state indices in this DFA
             // source state.
             for (dest <- dfaDest) {
               val destIdx = stateSeq.indexOf(dest)
 
+              if (debugEAassemble) {
+                print(s"${Console.MAGENTA}$srcIdx (in $srcDfaIdx) -[$labelIdx]-> $destIdx (in $dfaDestIdx)${Console.BLACK}  ")
+              }
+
               // Is there an annotation on this NFA edge?
               labelledEdgeAnnotations(srcIdx)(labelIdx)(destIdx) match {
-                case None => { }
+                case None => {
+                  if (debugEAassemble) {
+                    println(s"${Console.BLUE}no annotation${Console.BLACK}")
+                  }
+                }
                 case Some(ann) => {
+
                   // Find the new value to record against this DFA
                   // edge.
                   val newAnn = writingForDfaSrc(labelIdx) match {
@@ -235,12 +267,21 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
 
                   // Record the new value
                   writingForDfaSrc(labelIdx) = Some(newAnn)
+                  if (debugEAassemble) {
+                    println(s"")
+                  }
                 }
               }
             }
           }
         }
       }
+    }
+
+    if (debugEAassemble) {
+      println(" - - - - - -")
+      println("edgeAnnotations")
+      Grid.gridFormat(edgeAnnotations)
     }
 
     assembleDFA(

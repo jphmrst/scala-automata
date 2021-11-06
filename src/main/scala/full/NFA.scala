@@ -152,8 +152,9 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   }
 
   def seedAdditionalDfaStates(tracker: IndexSetsTracker): Unit = { }
-
-  override def toDFA: D[G[S], T] = {// scalastyle:ignore cyclomatic.complexity method.length
+  
+  override def toDFA: D[G[S], T] = {
+    // scalastyle:ignore cyclomatic.complexity method.length
 
     // Set up components of ArrayDFA.  We can't convert to a
     // transitions array until the end, so for now we build a map over

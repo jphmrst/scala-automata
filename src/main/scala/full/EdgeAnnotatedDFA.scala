@@ -102,6 +102,8 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
     super.prettyTransitions + (
       Doc.text("- ") + (initialAnnotation match {
         case None => Doc.text("No initial annotation")
-        case Some(ann) => Doc.text("Initial annotation") + Doc.str(ann)
+        case Some(ann) =>
+          Doc.text(s"${Console.MAGENTA}Initial annotation${Console.BLACK} ")
+          + Doc.str(ann)
       })).grouped
 }

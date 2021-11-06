@@ -22,6 +22,9 @@ object Paiges {
       case pr: Pretty => pr.pretty
       case doc: Doc => doc
       case s: String => Doc.text(s)
+      case opt: Option[? <: Matchable] => opt
+          .map(_.toDoc.tightBracketBy(Doc.text("Some("), Doc.text(")")))
+          .getOrElse(Doc.text("None"))
 
       // This cannot be the best way to do this.
       case c: Set[? <: Matchable] => collectionToDoc("Set", c)
