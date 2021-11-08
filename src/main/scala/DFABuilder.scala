@@ -28,6 +28,8 @@ class DFABuilder[S,T](init: S)
 
 extends full.DFABuilder[S, T, DFA, DFAelements[S, T], AutomatonStyle](init) {
 
+  // TODO MAP
+
   protected def assembleDFA(statesSeq: IndexedSeq[S],
                             initialIdx: Int,
                             finalStateIndices: HashSet[Int],

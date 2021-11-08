@@ -37,6 +37,8 @@ with full.EdgeAnnotatedDFABuilder[
   S, T, A, EdgeAnnotatedDFA, EdgeAnnotatedDFAelements[S, T, A], EdgeAnnotatedAutomatonStyle
 ] {
 
+  // TODO MAP
+
   override protected def assembleDFA(
     statesSeq: IndexedSeq[S],
     initialIdx: Int,

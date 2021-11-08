@@ -35,4 +35,6 @@ extends full.NFABuilder[
       statesSeq, transitionsSeq, initials, finals,
       epsilonsArray.map(_.toSet),
       labelsArray.map(_.map(_.toSet)))
+
+  // TODO MAP
 }

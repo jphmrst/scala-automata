@@ -33,7 +33,11 @@ class PFA[S, T](
   protected val eTransitionsMatrix: Array[Array[Double]]
 )
 
-extends full.PFA[S, T, ProbabilisticAutomatonStyle]
+extends full.PFA[S, T, ProbabilisticAutomatonStyle] {
+
+  // TODO MAP
+
+}
 
 object PFA {
 
