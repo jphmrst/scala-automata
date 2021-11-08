@@ -42,6 +42,22 @@ extends full.EdgeAnnotatedNFA[
     new EdgeAnnotatedDFA[Set[S], T, DA](
       dfaStates, initialStateIdx, dfaFinals, initialAnnotation,
       transitionsSeq, dfaTransitions, edgeAnnotations)
+
+  def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    finalStateIndices: Set[Int],
+    initialStateIndices: Set[Int],
+    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
+      EdgeAnnotatedNFA[S0, T0, NA, DA] =
+    new EdgeAnnotatedNFA[S0, T0, NA, DA](
+      stateSeq, initialStateIndices, finalStateIndices,
+      transitionsSeq, transitionsArray, epsilonsArray,
+      labelledEdgeAnnotations, unlabelledEdgeAnnotations,
+      combiner)
 }
 
 object EdgeAnnotatedNFA {

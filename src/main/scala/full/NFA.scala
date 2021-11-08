@@ -49,12 +49,12 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   /**
     * IndexedSeq of the actual objects used as transition labels
     */
-  protected val transitionsArray: Array[? <: Array[? <: Set[Int]]]
+  protected val transitionsArray: Array[Array[Set[Int]]]
 
   /**
     * IndexedSeq of the actual objects used as transition labels
     */
-  protected val epsilonsArray: Array[? <: Set[Int]]
+  protected val epsilonsArray: Array[Set[Int]]
 
   /**
     * IndexedSeq of the indices of final states.
@@ -66,16 +66,13 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     */
   val initialStateIndices: Set[Int]
 
-  // override def state(i: Int): S = stateSeq(i)
-  // override def label(i: Int): T = transitionsSeq(i)
-  // override def labelIndex(t: T): Int = transitionsSeq.indexOf(t)
-  /** Retrieve the index of state `s` */
-  // override def indexOf(s: S): Int = stateSeq.indexOf(s)
   override def initialStates: Set[S] = initialStateIndices.map(stateSeq).toSet
+
   override def finalStates: Set[S] = finalStateIndices.map(stateSeq).toSet
-  // override def isState(s: S): Boolean = stateSeq.contains(indexOf(s))
+
   override def isInitialState(s: S): Boolean =
     initialStateIndices.contains(indexOf(s))
+
   override def isFinalState(s: S): Boolean =
     finalStateIndices.contains(indexOf(s))
 
@@ -86,6 +83,7 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     //println(s">>> transitions(\n  $s,\n  $t\n) $result")
     result
   }
+
   override def transitionIndices(s: S, t: T): Set[Int] = {
     val si = indexOf(s)
     val ti = labelIndex(t)
@@ -94,11 +92,13 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
     //println(s"    | transitionIndices($s, $t) [$si, $ti] = $result")
     result
   }
+
   override def eTransitions(s: S): Set[S] = {
     val eti = eTransitionIndices(s)
     // println(eti)
     eti.map(stateSeq)
   }
+
   override def eTransitionIndices(s: S): Set[Int] = {
     val index = indexOf(s)
     if (index<0) {
@@ -288,4 +288,33 @@ extends traits.NFA[S, T, G, D, NZ, DZ]
   }
 
   override protected def prettyHeader: Doc = Doc.text("---------- NFA dump")
+
+  // TODO MAP override
+  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      NFA[S2, T2, G, D, NZ, DZ] =
+    derivedNFA(
+      stateSeq.map(stateMap), transitionsSeq.map(transitionMap),
+      transitionsArray, epsilonsArray,
+      finalStateIndices, initialStateIndices)
+
+  // TODO MAP override
+  def mapStates[S2](stateMap: S => S2): NFA[S2, T, G, D, NZ, DZ] =
+    map(stateMap, (t: T) => t)
+
+  // TODO MAP override
+  def mapTransitions[T2](transitionMap: T => T2):
+      NFA[S, T2, G, D, NZ, DZ] =
+    map((s: S) => s, transitionMap)
+
+  /** Internal method for instantiating an NFA of the appropriate
+    * runtime type.
+    */
+  def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    finalStateIndices: Set[Int],
+    initialStateIndices: Set[Int]):
+      NFA[S0, T0, G, D, NZ, DZ]
 }

@@ -31,7 +31,21 @@ class EdgeAnnotatedDFA[S, T, A](
   protected val edgeAnnotations: Array[Array[Option[A]]]
 )
 
-extends full.EdgeAnnotatedDFA[S, T, A, EdgeAnnotatedAutomatonStyle]
+extends full.EdgeAnnotatedDFA[S, T, A, EdgeAnnotatedAutomatonStyle] {
+
+  override def derivedDFA[S0, T0, A0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]],
+    initialAnnotation: Option[A0],
+    edgeAnnotations: Array[Array[Option[A0]]]
+  ): EdgeAnnotatedDFA[S0, T0, A0] = new EdgeAnnotatedDFA[S0, T0, A0](
+    stateSeq, initialStateIndex, finalStateIndices, initialAnnotation,
+    transitionsSeq, transitionsMatrix, edgeAnnotations)
+
+}
 
 object EdgeAnnotatedDFA {
   def newBuilder[S, T, A](initialState: S) =

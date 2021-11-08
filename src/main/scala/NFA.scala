@@ -46,6 +46,18 @@ extends full.NFA[S, T, Set, DFA, AutomatonStyle, AutomatonStyle] {
       DFA[Set[S], T] =
     new DFA(
       dfaStates, initialStateIdx, dfaFinals, transitionsSeq, dfaTransitions)
+
+  override def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    finalStateIndices: Set[Int],
+    initialStateIndices: Set[Int]):
+      NFA[S0, T0] =
+    new NFA[S0, T0](
+      stateSeq, transitionsSeq, initialStateIndices,
+      finalStateIndices, epsilonsArray, transitionsArray)
 }
 
 object NFA {

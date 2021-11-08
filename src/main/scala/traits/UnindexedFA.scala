@@ -76,4 +76,29 @@ extends Graphable[S, T, Z] with org.maraist.fa.util.Pretty {
 
   /** Returns `true` if this automaton accepts the given string. */
   def accepts(string: Seq[T]): Boolean
+
+// TODO MAP Put these back in
+
+//  /** Derive a new isomorphic automaton from this one by applying
+//    * transforms to the states and transitions.  This method does not
+//    * check that either map is injective: if they are not, then the
+//    * result may be unpredictable.
+//    */
+//  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+//      UnindexedFA[S2, T2, Z]
+//
+//  /** Derive a new isomorphic automaton from this one by applying
+//    * transforms to the states.  This method does not check that the
+//    * `stateMap` is injective: if it is not, then the result may have
+//    * separate states which cannot be distinguished.
+//    */
+//  def mapStates[S2](stateMap: S => S2): UnindexedFA[S2, T, Z]
+//
+//  /** Derive a new isomorphic automaton from this one by applying
+//    * transforms to the transitions.  This method does not check that the
+//    * `transitionMap` is injective: if it is not, then the result may have
+//    * separate transitions which cannot be distinguished.
+//    */
+//  def mapTransitions[T2](transitionMap: T => T2): UnindexedFA[S, T2, Z]
+
 }

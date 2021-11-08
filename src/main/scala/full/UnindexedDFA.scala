@@ -27,6 +27,7 @@ trait UnindexedDFA[S, T, -Z[S, T] <: AutomatonStyle[S, T]]
 extends traits.UnindexedDFA[S, T, Z] with UnindexedFA[S, T, Z] {
 
   override def initialStates: Set[S] = Set(initialState)
+
   override def transitions(s: S, t: T): Set[S] = Set.from(transition(s, t))
 
   override def foreachETransition(action: (s1: S, s2: S) => Unit): Unit = { }

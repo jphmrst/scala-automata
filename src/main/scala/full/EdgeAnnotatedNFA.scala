@@ -18,9 +18,9 @@ import org.maraist.fa.traits
 trait EdgeAnnotatedNFA[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
-  -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
-  -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
+  D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
+  NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
+  DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]]
 
 extends NFA[
   S, T, G,
@@ -65,6 +65,50 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
 
   def eAnnotationIndex(srcIdx: Int, destIdx: Int): Option[NA] =
     unlabelledEdgeAnnotations(srcIdx)(destIdx)
+
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      EdgeAnnotatedNFA[S2, T2, NA, DA, G, D, NZ, DZ] =
+    derivedNFA(
+      stateSeq.map(stateMap), transitionsSeq.map(transitionMap),
+      transitionsArray, epsilonsArray,
+      finalStateIndices, initialStateIndices,
+      labelledEdgeAnnotations, unlabelledEdgeAnnotations)
+
+  override def mapStates[S2](stateMap: S => S2):
+      EdgeAnnotatedNFA[S2, T, NA, DA, G, D, NZ, DZ] =
+    map(stateMap, (t: T) => t)
+
+  override def mapTransitions[T2](transitionMap: T => T2):
+      EdgeAnnotatedNFA[S, T2, NA, DA, G, D, NZ, DZ] =
+    map((s: S) => s, transitionMap)
+
+  override def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    finalStateIndices: Set[Int],
+    initialStateIndices: Set[Int]):
+      EdgeAnnotatedNFA[S0, T0, NA, DA, G, D, NZ, DZ] =
+    derivedNFA(
+      stateSeq, transitionsSeq,
+      transitionsArray, epsilonsArray,
+      finalStateIndices, initialStateIndices,
+      labelledEdgeAnnotations, unlabelledEdgeAnnotations)
+
+  /** Internal method for instantiating an NFA of the appropriate
+    * runtime type.
+    */
+  def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]],
+    finalStateIndices: Set[Int],
+    initialStateIndices: Set[Int],
+    labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
+    unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
+      EdgeAnnotatedNFA[S0, T0, NA, DA, G, D, NZ, DZ]
 
   override protected def prettyHeader: Doc =
     Doc.text("---------- EdgeAnnotatedNFA dump")

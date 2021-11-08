@@ -31,13 +31,13 @@ trait FABuilder[
   +A[AS, AT] <: FA[AS, AT, Z],
   -K >: FAelements[S, T] <: Matchable, // TODO revisit DFA vs. FA elements
   -Z[X, Y] <: AutomatonStyle[X, Y]
-]
+]()
 
 extends traits.FABuilder[S, T, A, K, Z]
 
 with UnindexedFA[S, T, Z] with StatesMixin[S, T] {
 
-  /** Storage for all final state objects */
+  /** Storage for all final state objects. */
   protected val finalStatesSet: HashSet[S] = new HashSet[S]
 
   /** Clear this builder.  When overriding this method, it is important

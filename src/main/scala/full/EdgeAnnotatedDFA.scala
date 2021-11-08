@@ -106,4 +106,24 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
           Doc.text(s"${Console.MAGENTA}Initial annotation${Console.BLACK} ")
           + Doc.str(ann)
       })).grouped
+
+  override def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]]
+  ): EdgeAnnotatedDFA[S0, T0, A, Z] = derivedDFA(
+    stateSeq, transitionsSeq, initialStateIndex,
+    finalStateIndices, transitionsMatrix, initialAnnotation, edgeAnnotations)
+
+  def derivedDFA[S0, T0, A0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]],
+    initialAnnotation: Option[A0],
+    edgeAnnotations: Array[Array[Option[A0]]]
+  ): EdgeAnnotatedDFA[S0, T0, A0, Z]
 }

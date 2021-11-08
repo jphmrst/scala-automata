@@ -29,7 +29,9 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
   protected val transitionsMatrix: Array[Array[Int]]
 
   override def initialStateIndices: Set[Int] = Set(initialStateIndex)
+
   override val initialState: S = state(initialStateIndex)
+
   override val initialStates: Set[S] = Set(initialState)
 
   import scala.util.control.NonLocalReturns.*
@@ -59,4 +61,32 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
       else None
 
   override protected def prettyHeader: Doc = Doc.text("---------- DFA dump")
+
+  // TODO MAP override
+  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      DFA[S2, T2, Z] =
+    derivedDFA(
+      stateSeq.map(stateMap),
+      transitionsSeq.map(transitionMap),
+      initialStateIndex, finalStateIndices, transitionsMatrix)
+
+  // TODO MAP override
+  def mapStates[S2](stateMap: S => S2): UnindexedFA[S2, T, Z] =
+    map(stateMap, (t: T) => t)
+
+  // TODO MAP override
+  def mapTransitions[T2](transitionMap: T => T2):
+      UnindexedFA[S, T2, Z] =
+    map((s: S) => s, transitionMap)
+
+  /** Internal method for instantiating a DFA of the appropriate runtime
+    * type.
+    */
+  def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]]
+  ): DFA[S0, T0, Z]
 }
