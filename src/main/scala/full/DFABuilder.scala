@@ -42,14 +42,15 @@ extends traits.DFABuilder[S, T, D, K, Z]
 
   protected val transitionsMap = new HashMap[S, HashMap[T, S]]
 
-  def result(): D[S, T] = {
+  protected def dfaComponents:
+      (IndexedSeq[S], IndexedSeq[T], Int, HashSet[Int], Array[Array[Int]]) = {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val initialIdx: Int = statesSeq.indexOf(initialState)
     val finalStateIndices: HashSet[Int] = new HashSet[Int]
     for(s <- finalStatesSet) finalStateIndices += statesSeq.indexOf(s)
 
-    val idxLabels:Array[Array[Int]] =
+    val idxLabels: Array[Array[Int]] =
       Array.ofDim[Int](statesSeq.length, transitionsSeq.length)
     for(si <- 0 until statesSeq.length) {
       val s:S = statesSeq(si)
@@ -66,6 +67,13 @@ extends traits.DFABuilder[S, T, D, K, Z]
         }
       }
     }
+
+    (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels)
+  }
+
+  def result(): D[S, T] = {
+    val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
+      dfaComponents
 
     assembleDFA(statesSeq, initialIdx, finalStateIndices, transitionsSeq,
                 idxLabels)
@@ -140,6 +148,36 @@ extends traits.DFABuilder[S, T, D, K, Z]
     }
     this
   }
+
+  // TODO MAP override
+  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      D[S2, T2] = {
+    val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
+      dfaComponents
+    derivedDFA(
+      statesSeq.map(stateMap), transitionsSeq.map(transitionMap),
+      initialIdx, finalStateIndices.toSet,
+      idxLabels)
+  }
+
+  // TODO MAP override
+  def mapStates[S2](stateMap: S => S2): D[S2, T] =
+    map(stateMap, (t: T) => t)
+
+  // TODO MAP override
+  def mapTransitions[T2](transitionMap: T => T2): D[S, T2] =
+    map((s: S) => s, transitionMap)
+
+  /** Internal method for instantiating a DFA of the appropriate runtime
+    * type which may not have the same type components as this DFA.
+    */
+  protected def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]]
+  ): D[S0, T0]
 
   override protected def prettyHeader: Doc =
     Doc.text("---------- DFABuilder dump")

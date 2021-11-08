@@ -37,7 +37,17 @@ with full.EdgeAnnotatedDFABuilder[
   S, T, A, EdgeAnnotatedDFA, EdgeAnnotatedDFAelements[S, T, A], EdgeAnnotatedAutomatonStyle
 ] {
 
-  // TODO MAP
+  protected def derivedDFA[S, T](
+    stateSeq: IndexedSeq[S],
+    transitionsSeq: IndexedSeq[T],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]],
+    edgeAnnotations: Array[Array[Option[A]]],
+    initialAnn: Option[A] = None
+  ): EdgeAnnotatedDFA[S, T, A] = new EdgeAnnotatedDFA[S, T, A](
+    stateSeq, initialStateIndex, finalStateIndices, initialAnn,
+    transitionsSeq, transitionsMatrix, edgeAnnotations)
 
   override protected def assembleDFA(
     statesSeq: IndexedSeq[S],

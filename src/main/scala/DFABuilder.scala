@@ -28,16 +28,25 @@ class DFABuilder[S,T](init: S)
 
 extends full.DFABuilder[S, T, DFA, DFAelements[S, T], AutomatonStyle](init) {
 
-  // TODO MAP
-
-  protected def assembleDFA(statesSeq: IndexedSeq[S],
-                            initialIdx: Int,
-                            finalStateIndices: HashSet[Int],
-                            transitionsSeq: IndexedSeq[T],
-                            idxLabels: Array[Array[Int]]): DFA[S, T] = {
+  override protected def assembleDFA(
+    statesSeq: IndexedSeq[S],
+    initialIdx: Int,
+    finalStateIndices: HashSet[Int],
+    transitionsSeq: IndexedSeq[T],
+    idxLabels: Array[Array[Int]]): DFA[S, T] = {
     val result = new DFA[S, T](
       statesSeq, initialIdx, finalStateIndices.toSet, transitionsSeq,
       idxLabels)
     result
   }
+
+  override protected def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]]
+  ): DFA[S0, T0] = new DFA[S0, T0](
+    stateSeq, initialStateIndex, finalStateIndices,
+    transitionsSeq, transitionsMatrix)
 }

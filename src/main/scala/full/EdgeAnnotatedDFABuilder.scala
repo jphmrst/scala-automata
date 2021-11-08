@@ -129,14 +129,19 @@ with DFABuilder[
     */
   override def initialAnnotated: Boolean = initialAnn.isDefined
 
-  override protected final def assembleDFA(
-    statesSeq: IndexedSeq[S],
-    initialIdx: Int,
-    finalStateIndices: HashSet[Int],
-    transitionsSeq: IndexedSeq[T],
-    idxLabels: Array[Array[Int]]
-  ): D[S, T, A] = {
+  protected def edgeAnnotatedDfaComponents: (
+    IndexedSeq[S], IndexedSeq[T], Int, HashSet[Int], Array[Array[Int]]
+  ) = {
+    val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
+      dfaComponents
 
+    (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels)
+  }
+
+  protected def getEdgeAnnotatedArray(
+    statesSeq: IndexedSeq[S],
+    transitionsSeq: IndexedSeq[T]
+  ): Array[Array[Option[A]]] = {
     val edgeAnnotationsArray: Array[Array[Option[A]]] =
       Array.fill[Option[A]](statesSeq.length, transitionsSeq.length)(None)
 
@@ -152,6 +157,57 @@ with DFABuilder[
         }
       }
     }
+
+    edgeAnnotationsArray
+  }
+
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      D[S2, T2, A] = {
+    val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
+      edgeAnnotatedDfaComponents
+    derivedDFA(
+      statesSeq.map(stateMap), transitionsSeq.map(transitionMap),
+      initialIdx, finalStateIndices.toSet, idxLabels,
+      getEdgeAnnotatedArray(statesSeq, transitionsSeq), initialAnn)
+  }
+
+  override def mapStates[S2](stateMap: S => S2): D[S2, T, A] =
+    map(stateMap, (t: T) => t)
+
+  override def mapTransitions[T2](transitionMap: T => T2): D[S, T2, A] =
+    map((s: S) => s, transitionMap)
+
+  override protected def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialIdx: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]]
+  ): D[S0, T0, A] = derivedDFA(
+    stateSeq, transitionsSeq,
+    initialIdx, finalStateIndices, transitionsMatrix,
+    Array.fill[Option[A]](stateSeq.length, transitionsSeq.length)(None),
+    initialAnn
+  )
+
+  protected def derivedDFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndex: Int,
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Int]],
+    edgeAnnotations: Array[Array[Option[A]]],
+    initialAnn: Option[A] = None
+  ): D[S0, T0, A]
+
+  override protected final def assembleDFA(
+    statesSeq: IndexedSeq[S],
+    initialIdx: Int,
+    finalStateIndices: HashSet[Int],
+    transitionsSeq: IndexedSeq[T],
+    idxLabels: Array[Array[Int]]
+  ): D[S, T, A] = {
+    val edgeAnnotationsArray = getEdgeAnnotatedArray(statesSeq, transitionsSeq)
 
     assembleDFA(
       statesSeq, initialIdx, finalStateIndices, transitionsSeq, idxLabels,

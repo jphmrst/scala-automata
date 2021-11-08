@@ -19,7 +19,7 @@ import org.maraist.fa.full
  *
  * @group DFA
  */
-class DFA[S,T](
+class DFA[S, T](
   protected val stateSeq: IndexedSeq[S],
   val initialStateIndex: Int,
   val finalStateIndices: Set[Int],

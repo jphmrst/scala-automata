@@ -71,12 +71,11 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
       initialStateIndex, finalStateIndices, transitionsMatrix)
 
   // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): UnindexedFA[S2, T, Z] =
+  def mapStates[S2](stateMap: S => S2): DFA[S2, T, Z] =
     map(stateMap, (t: T) => t)
 
   // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2):
-      UnindexedFA[S, T2, Z] =
+  def mapTransitions[T2](transitionMap: T => T2): DFA[S, T2, Z] =
     map((s: S) => s, transitionMap)
 
   /** Internal method for instantiating a DFA of the appropriate runtime
@@ -89,4 +88,5 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
     finalStateIndices: Set[Int],
     transitionsMatrix: Array[Array[Int]]
   ): DFA[S0, T0, Z]
+
 }
