@@ -59,4 +59,21 @@ extends UnindexedFA[S, T, [ZS, ZT] =>> Z[ZS, ZT, A]] {
     * automaton.
     */
   def foreachEdgeAnnotation(action: (S, S, A) => Any): Unit
+
+//  /** Derive a new isomorphic automaton from this one by applying
+//    * transforms to the states, transitions and annotations.  This method
+//    * does not check that either map is injective: if they are not, then the
+//    * result may be unpredictable.
+//    */
+//  def map[S2, T2, A2](
+//    stateMap: S => S2, transitionMap: T => T2, annMap: A => A2):
+//      UnindexedEdgeAnnotatedFA[S2, T2, A2, Z]
+//
+//  /** Derive a new isomorphic automaton from this one by applying
+//    * transforms to the states.  This method does not check that the
+//    * `stateMap` is injective: if it is not, then the result may have
+//    * separate states which cannot be distinguished.
+//    */
+//  def mapAnnotations[A2](annotationsMap: A => A2):
+//      UnindexedEdgeAnnotatedFA[S, T, A2, Z]
 }

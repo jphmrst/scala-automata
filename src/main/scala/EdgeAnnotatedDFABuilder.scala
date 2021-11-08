@@ -37,7 +37,7 @@ with full.EdgeAnnotatedDFABuilder[
   S, T, A, EdgeAnnotatedDFA, EdgeAnnotatedDFAelements[S, T, A], EdgeAnnotatedAutomatonStyle
 ] {
 
-  protected def derivedDFA[S, T](
+  protected def derivedDFA[S, T, A](
     stateSeq: IndexedSeq[S],
     transitionsSeq: IndexedSeq[T],
     initialStateIndex: Int,

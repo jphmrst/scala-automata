@@ -161,21 +161,37 @@ with DFABuilder[
     edgeAnnotationsArray
   }
 
-  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
-      D[S2, T2, A] = {
+  // TODO MAP override
+  def map[S2, T2, A2](
+    stateMap: S => S2, transitionMap: T => T2, annMap: A => A2):
+      D[S2, T2, A2] = {
     val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
       edgeAnnotatedDfaComponents
     derivedDFA(
-      statesSeq.map(stateMap), transitionsSeq.map(transitionMap),
-      initialIdx, finalStateIndices.toSet, idxLabels,
-      getEdgeAnnotatedArray(statesSeq, transitionsSeq), initialAnn)
+      statesSeq.map(stateMap),
+      transitionsSeq.map(transitionMap),
+      initialIdx,
+      finalStateIndices.toSet,
+      idxLabels,
+      getEdgeAnnotatedArray(statesSeq, transitionsSeq)
+        .map(_.map(_.map(annMap))),
+      initialAnn.map(annMap)
+    )
   }
 
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      D[S2, T2, A] =
+    map(stateMap, transitionMap, (a: A) => a)
+
+  // TODO MAP override
+  def mapAnnotations[A2](annMap: A => A2): D[S, T, A2] =
+    map((s: S) => s, (t: T) => t, annMap)
+
   override def mapStates[S2](stateMap: S => S2): D[S2, T, A] =
-    map(stateMap, (t: T) => t)
+    map(stateMap, (t: T) => t, (a: A) => a)
 
   override def mapTransitions[T2](transitionMap: T => T2): D[S, T2, A] =
-    map((s: S) => s, transitionMap)
+    map((s: S) => s, transitionMap, (a: A) => a)
 
   override protected def derivedDFA[S0, T0](
     stateSeq: IndexedSeq[S0],
@@ -190,15 +206,15 @@ with DFABuilder[
     initialAnn
   )
 
-  protected def derivedDFA[S0, T0](
+  protected def derivedDFA[S0, T0, A0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
     initialStateIndex: Int,
     finalStateIndices: Set[Int],
     transitionsMatrix: Array[Array[Int]],
-    edgeAnnotations: Array[Array[Option[A]]],
-    initialAnn: Option[A] = None
-  ): D[S0, T0, A]
+    edgeAnnotations: Array[Array[Option[A0]]],
+    initialAnn: Option[A0] = None
+  ): D[S0, T0, A0]
 
   override protected final def assembleDFA(
     statesSeq: IndexedSeq[S],

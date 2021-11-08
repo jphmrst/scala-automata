@@ -107,6 +107,24 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
           + Doc.str(ann)
       })).grouped
 
+  // TODO MAP override
+  def map[S2, T2, A2](
+    stateMap: S => S2, transitionMap: T => T2, annMap: A => A2):
+      EdgeAnnotatedDFA[S2, T2, A2, Z] =
+    derivedDFA(
+      stateSeq.map(stateMap),
+      transitionsSeq.map(transitionMap),
+      initialStateIndex,
+      finalStateIndices,
+      transitionsMatrix,
+      initialAnnotation.map(annMap),
+      edgeAnnotations.map(_.map(_.map(annMap)))
+    )
+
+  // TODO MAP override
+  def mapAnnotations[A2](annMap: A => A2): EdgeAnnotatedDFA[S, T, A2, Z] =
+    map((s: S) => s, (t: T) => t, annMap)
+
   override def derivedDFA[S0, T0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
