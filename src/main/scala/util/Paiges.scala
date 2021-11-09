@@ -58,8 +58,7 @@ object Paiges {
   extension (docs: Iterable[Doc]) {
     /**
       * Collapse a collection of documents into one document,
-      * delimited by a separator.  Simply calls the [[Doc#fill]]
-      * method.
+      * delimited by a separator.  Simply calls the `Doc.fill` method.
       *
       * For example:
       *
