@@ -172,14 +172,10 @@ with FABuilder[S, T, N, K, NZ] {
       }
   }
 
-  /** Creates an immutable [[NFA NFA]] corresponding to the automaton
-    * described to this builder.  This method creates elements of the
-    * internal state of the NFA, and passes them to the abstract
-    * method [[#assembleNFA]]: the actual definition of
-    * [[#assembleNFA]] is in the concrete classes (of package
-    * [[org.maraist.fa]]) implementing this trait.
-    */
-  def result(): N[S, T] = {
+  def nfaComponents: (
+    IndexedSeq[S], IndexedSeq[T], HashSet[Int],
+    Array[Array[Set[Int]]], Array[Set[Int]]
+  ) = {
     val statesSeq: IndexedSeq[S] = IndexedSeq.from(allStates)
     val transitionsSeq: IndexedSeq[T] = IndexedSeq.from(labels)
     val finals: HashSet[Int] = new HashSet[Int]
@@ -218,6 +214,20 @@ with FABuilder[S, T, N, K, NZ] {
         epsilons.get(s).fold(empty)(_.map(slowFindIndex(statesSeq, _)).toSet)
     }
 
+    (statesSeq, transitionsSeq, finals, labelsArray, epsilonsArray)
+  }
+
+  /** Creates an immutable [[NFA NFA]] corresponding to the automaton
+    * described to this builder.  This method creates elements of the
+    * internal state of the NFA, and passes them to the abstract
+    * method [[#assembleNFA]]: the actual definition of
+    * [[#assembleNFA]] is in the concrete classes (of package
+    * [[org.maraist.fa]]) implementing this trait.
+    */
+  def result(): N[S, T] = {
+    val (statesSeq, transitionsSeq, finals, labelsArray, epsilonsArray) =
+      nfaComponents
+
     assembleNFA(
       statesSeq,
       initialStatesVar.map(statesSeq.indexOf(_)).toSet,
@@ -254,6 +264,37 @@ with FABuilder[S, T, N, K, NZ] {
     }
     this
   }
+
+  // TODO MAP override
+  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      NFA[S2, T2, G, D, NZ, DZ] = {
+    val (statesSeq, transitionsSeq, finals, labelsArray, epsilonsArray) =
+      nfaComponents
+    derivedNFA(
+      statesSeq.map(stateMap), transitionsSeq.map(transitionMap),
+      initialStatesVar.map(statesSeq.indexOf(_)).toSet,
+      finals.toSet, labelsArray, epsilonsArray)
+  }
+
+  // TODO MAP override
+  def mapStates[S2](stateMap: S => S2): NFA[S2, T, G, D, NZ, DZ] =
+    map(stateMap, (t: T) => t)
+
+  // TODO MAP override
+  def mapTransitions[T2](transitionMap: T => T2): NFA[S, T2, G, D, NZ, DZ] =
+    map((s: S) => s, transitionMap)
+
+  /** Internal method for instantiating a DFA of the appropriate runtime
+    * type which may not have the same type components as this DFA.
+    */
+  protected def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initials: Set[Int],
+    finalStateIndices: Set[Int],
+    labelsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]]
+  ): N[S0, T0]
 
   override protected def prettyHeader: Doc =
     Doc.text("---------- NFABuilder dump")

@@ -33,7 +33,7 @@ class EdgeAnnotatedDFA[S, T, A](
 
 extends full.EdgeAnnotatedDFA[S, T, A, EdgeAnnotatedAutomatonStyle] {
 
-  override def derivedDFA[S0, T0, A0](
+  override def assembleDFA[S0, T0, A0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
     initialStateIndex: Int,

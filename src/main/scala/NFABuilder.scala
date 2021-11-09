@@ -33,8 +33,24 @@ extends full.NFABuilder[
   ): NFA[S, T] =
     new NFA[S, T](
       statesSeq, transitionsSeq, initials, finals,
-      epsilonsArray.map(_.toSet),
-      labelsArray.map(_.map(_.toSet)))
+      epsilonsArray,
+      labelsArray)
+
+  /** Internal method for instantiating a DFA of the appropriate runtime
+    * type which may not have the same type components as this DFA.
+    */
+  protected def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initials: Set[Int],
+    finalStateIndices: Set[Int],
+    labelsArray: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]]
+  ): NFA[S0, T0] =
+    new NFA[S0, T0](
+      stateSeq, transitionsSeq, initials, finalStateIndices,
+      epsilonsArray,
+      labelsArray)
 
   // TODO MAP
 }

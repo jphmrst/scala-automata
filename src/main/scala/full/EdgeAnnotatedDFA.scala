@@ -111,7 +111,7 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
   def map[S2, T2, A2](
     stateMap: S => S2, transitionMap: T => T2, annMap: A => A2):
       EdgeAnnotatedDFA[S2, T2, A2, Z] =
-    derivedDFA(
+    assembleDFA(
       stateSeq.map(stateMap),
       transitionsSeq.map(transitionMap),
       initialStateIndex,
@@ -125,17 +125,17 @@ with UnindexedEdgeAnnotatedFA[S, T, A, Z] {
   def mapAnnotations[A2](annMap: A => A2): EdgeAnnotatedDFA[S, T, A2, Z] =
     map((s: S) => s, (t: T) => t, annMap)
 
-  override def derivedDFA[S0, T0](
+  override def assembleDFA[S0, T0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
     initialStateIndex: Int,
     finalStateIndices: Set[Int],
     transitionsMatrix: Array[Array[Int]]
-  ): EdgeAnnotatedDFA[S0, T0, A, Z] = derivedDFA(
+  ): EdgeAnnotatedDFA[S0, T0, A, Z] = assembleDFA(
     stateSeq, transitionsSeq, initialStateIndex,
     finalStateIndices, transitionsMatrix, initialAnnotation, edgeAnnotations)
 
-  def derivedDFA[S0, T0, A0](
+  def assembleDFA[S0, T0, A0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
     initialStateIndex: Int,

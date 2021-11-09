@@ -30,7 +30,7 @@ class DFA[S, T](
 extends full.DFA[S, T, AutomatonStyle] {
   checkState
 
-  def derivedDFA[S0, T0](
+  def assembleDFA[S0, T0](
     stateSeq: IndexedSeq[S0],
     transitionsSeq: IndexedSeq[T0],
     initialStateIndex: Int,

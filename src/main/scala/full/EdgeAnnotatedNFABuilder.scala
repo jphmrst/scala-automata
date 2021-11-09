@@ -30,11 +30,11 @@ import org.maraist.fa.traits
 trait EdgeAnnotatedNFABuilder[
   S, T, NA, DA,
   G[X] <: Set[X],
-  +D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
+  D[DS, DT, DDA] <: EdgeAnnotatedDFA[DS, DT, DDA, DZ],
   +N[NS, NT, NNA, NDA] <: EdgeAnnotatedNFA[NS, NT, NNA, NDA, G, D, NZ, DZ],
   -K >: EdgeAnnotatedNFAelements[S, T, NA] <: Matchable,
-  -NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
-  -DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
+  NZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA],
+  DZ[ZS, ZT, ZA] <: EdgeAnnotatedAutomatonStyle[ZS, ZT, ZA]
 ]
 
 extends traits.UnindexedEdgeAnnotatedNFA[S, T, NA, DA, G, D, NZ, DZ]
@@ -168,4 +168,25 @@ with traits.EdgeAnnotatedNFABuilder[S, T, NA, DA, G, D, N, K, NZ, DZ] {
     labelledEdgeAnnotations: Array[Array[Array[Option[NA]]]],
     unlabelledEdgeAnnotations: Array[Array[Option[NA]]]):
       N[S, T, NA, DA]
+
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      EdgeAnnotatedNFA[S2, T2, NA, DA, G, D, NZ, DZ] =
+    result.map(stateMap, transitionMap)
+
+  override def mapStates[S2](stateMap: S => S2):
+      EdgeAnnotatedNFA[S2, T, NA, DA, G, D, NZ, DZ] =
+    map(stateMap, (t: T) => t)
+
+  override def mapTransitions[T2](transitionMap: T => T2):
+      EdgeAnnotatedNFA[S, T2, NA, DA, G, D, NZ, DZ] =
+    map((s: S) => s, transitionMap)
+
+  override protected final def derivedNFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    transitionsSeq: IndexedSeq[T0],
+    initialStateIndices: Set[Int],
+    finalStateIndices: Set[Int],
+    transitionsMatrix: Array[Array[Set[Int]]],
+    epsilonsArray: Array[Set[Int]]
+  ): N[S0, T0, NA, DA] = ???
 }

@@ -124,7 +124,7 @@ with UnindexedEdgeAnnotatedFA[S, T, NA, NZ] {
     appearsIn: Array[Set[Int]],
     edgeAnnotations: Array[Array[Option[DA]]]): D[G[S], T, DA]
 
-  private final val debugEAassemble: Boolean = true
+  private final val debugEAassemble: Boolean = false
   override protected def assembleDFA(
     dfaStates: IndexedSeq[Set[S]],
     initialStateIdx: Int,
