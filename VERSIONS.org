@@ -1,58 +1,59 @@
 #+TITLE: Scala-automata version history
 
-** Versions 0.2.x
+** Version 0.3.0
+   - Adding `map` methods.
 
-*** Version 0.2.1
-    - Instrumenting the dump methods over a PrintBuffer.
+   - Instrumenting the dump methods over a PrintBuffer.
 
-    - Check when adding a transition that the endpoints are already
-      states.
+   - Check when adding a transition that the endpoints are already
+     states.
 
-    - Bug: the initial state in a DFA builder was not added to the
-      state set.
+   - Bug: the initial state in a DFA builder was not added to the
+     state set.
 
-    - Bug fix in NFA annotation lookup.
+   - Bug fix in NFA annotation lookup.
 
-    - Edge combiners are no longer implicit in the edge-annotated
-      automata traits/classes.
+   - Edge combiners are no longer implicit in the edge-annotated
+     automata traits/classes.
 
-    - Some missing inheritence (especially for for dump methods) in
-      the edge-annotated full traits.
+   - Some missing inheritence (especially for for dump methods) in
+     the edge-annotated full traits.
 
-*** Version 0.2.0
-    Overhaul of organization of traits and classes.  There are now
-    three main subdirectories in the source tree:
+** Version 0.2.0
+   Overhaul of organization of traits and classes.  There are now
+   three main subdirectories in the source tree:
 
-    - =src/main/scala/traits= :: Contains traits with abstract methods
-      only, no mixin implementations.  When writing methods which
-      receive general automata, but do not locally extend
-      implementations, consider using these traits as formal parameter
-      types (caveat: there may be more type parameters in these traits
-      than you want to address).
+   - =src/main/scala/traits= :: Contains traits with abstract methods
+     only, no mixin implementations.  When writing methods which
+     receive general automata, but do not locally extend
+     implementations, consider using these traits as formal parameter
+     types (caveat: there may be more type parameters in these traits
+     than you want to address).
 
-    - =src/main/scala/full= :: Mixins traits providing mostly-complete
-      implementations of the abstract traits above.  These mixins
-      expect a rich specification of type variables, and some also
-      expect constructor arguments.
+   - =src/main/scala/full= :: Mixins traits providing mostly-complete
+     implementations of the abstract traits above.  These mixins
+     expect a rich specification of type variables, and some also
+     expect constructor arguments.
 
-      When writing subclasses of the automata in this library, these
-      traits are almost certainly the right ones to extend.
+     When writing subclasses of the automata in this library, these
+     traits are almost certainly the right ones to extend.
 
-    - =src/main/scala= :: Instantiable classes.  These classes have
-      significantly simpler signatures than the mixins in
-      =src/main/scala/full=, and as such are much easier to use as-is
-      in other libraries, but these classes are difficult to extend
-      robustly.
+   - =src/main/scala= :: Instantiable classes.  These classes have
+     significantly simpler signatures than the mixins in
+     =src/main/scala/full=, and as such are much easier to use as-is
+     in other libraries, but these classes are difficult to extend
+     robustly.
 
-    At least for now, the FA extension with unlabelled hyperedges is
-    not included in the 0.2.* series.  The old code can be found in
-    the [[file:./src/main/hyperedge/][src/main/hyperedge directory]].
+   At least for now, the FA extension with unlabelled hyperedges is
+   not included in the 0.2.* series.  The old code can be found in
+   the [[file:./src/main/hyperedge/][src/main/hyperedge directory]].
 
-    Removes a number of classes, including simplifying the
-    Graphviz/LaTeX output.
+   Removes a number of classes, including simplifying the
+   Graphviz/LaTeX output.
 
-    This version is the first in which this document appears, and the
-    first posted to the Scaladex.
+   This version is the first in which this document appears, and the
+   first posted to the Scaladex.
+
 
 ** Versions 0.1.x
    Original organization of classes
