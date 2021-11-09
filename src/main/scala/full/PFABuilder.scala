@@ -356,16 +356,13 @@ with StatesMixin[S, T] with UnindexedPFA[S, T, Z] {
                 idxLabels, eLabels)
   }
 
-  // TODO MAP override
-  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
       PFA[S2, T2, Z] = result.map(stateMap, transitionMap)
 
-  // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): PFA[S2, T, Z] =
+  override def mapStates[S2](stateMap: S => S2): PFA[S2, T, Z] =
     map(stateMap, (t: T) => t)
 
-  // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2): PFA[S, T2, Z] =
+  override def mapTransitions[T2](transitionMap: T => T2): PFA[S, T2, Z] =
     map((s: S) => s, transitionMap)
 
   protected def assemblePFA(statesSeq: IndexedSeq[S],

@@ -161,7 +161,6 @@ with DFABuilder[
     edgeAnnotationsArray
   }
 
-  // TODO MAP override
   def map[S2, T2, A2](
     stateMap: S => S2, transitionMap: T => T2, annMap: A => A2):
       D[S2, T2, A2] = {
@@ -183,7 +182,6 @@ with DFABuilder[
       D[S2, T2, A] =
     map(stateMap, transitionMap, (a: A) => a)
 
-  // TODO MAP override
   def mapAnnotations[A2](annMap: A => A2): D[S, T, A2] =
     map((s: S) => s, (t: T) => t, annMap)
 

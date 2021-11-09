@@ -177,8 +177,7 @@ with UnindexedPFA[S, T, Z] {
     result.toMap
   }
 
-  // TODO MAP override
-  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
       PFA[S2, T2, Z] =
     assemblePFA(
       stateSeq.map(stateMap),
@@ -188,12 +187,10 @@ with UnindexedPFA[S, T, Z] {
       transitionsMatrix,
       eTransitionsMatrix)
 
-  // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): PFA[S2, T, Z] =
+  override def mapStates[S2](stateMap: S => S2): PFA[S2, T, Z] =
     map(stateMap, (t: T) => t)
 
-  // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2): PFA[S, T2, Z] =
+  override def mapTransitions[T2](transitionMap: T => T2): PFA[S, T2, Z] =
     map((s: S) => s, transitionMap)
 
   /** Internal method for instantiating a PFA of the appropriate runtime

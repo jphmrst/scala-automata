@@ -265,8 +265,7 @@ with FABuilder[S, T, N, K, NZ] {
     this
   }
 
-  // TODO MAP override
-  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
       NFA[S2, T2, G, D, NZ, DZ] = {
     val (statesSeq, transitionsSeq, finals, labelsArray, epsilonsArray) =
       nfaComponents
@@ -276,12 +275,11 @@ with FABuilder[S, T, N, K, NZ] {
       finals.toSet, labelsArray, epsilonsArray)
   }
 
-  // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): NFA[S2, T, G, D, NZ, DZ] =
+  override def mapStates[S2](stateMap: S => S2): NFA[S2, T, G, D, NZ, DZ] =
     map(stateMap, (t: T) => t)
 
-  // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2): NFA[S, T2, G, D, NZ, DZ] =
+  override def mapTransitions[T2](transitionMap: T => T2):
+      NFA[S, T2, G, D, NZ, DZ] =
     map((s: S) => s, transitionMap)
 
   /** Internal method for instantiating a DFA of the appropriate runtime

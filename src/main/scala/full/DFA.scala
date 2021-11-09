@@ -62,20 +62,17 @@ extends traits.DFA[S, T, Z] with UnindexedDFA[S, T, Z] with FA[S, T, Z] {
 
   override protected def prettyHeader: Doc = Doc.text("---------- DFA dump")
 
-  // TODO MAP override
-  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
       DFA[S2, T2, Z] =
     assembleDFA(
       stateSeq.map(stateMap),
       transitionsSeq.map(transitionMap),
       initialStateIndex, finalStateIndices, transitionsMatrix)
 
-  // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): DFA[S2, T, Z] =
+  override def mapStates[S2](stateMap: S => S2): DFA[S2, T, Z] =
     map(stateMap, (t: T) => t)
 
-  // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2): DFA[S, T2, Z] =
+  override def mapTransitions[T2](transitionMap: T => T2): DFA[S, T2, Z] =
     map((s: S) => s, transitionMap)
 
   /** Internal method for instantiating a DFA of the appropriate runtime

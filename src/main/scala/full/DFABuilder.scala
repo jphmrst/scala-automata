@@ -149,8 +149,7 @@ extends traits.DFABuilder[S, T, D, K, Z]
     this
   }
 
-  // TODO MAP override
-  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+  override def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
       D[S2, T2] = {
     val (statesSeq, transitionsSeq, initialIdx, finalStateIndices, idxLabels) =
       dfaComponents
@@ -160,12 +159,10 @@ extends traits.DFABuilder[S, T, D, K, Z]
       idxLabels)
   }
 
-  // TODO MAP override
-  def mapStates[S2](stateMap: S => S2): D[S2, T] =
+  override def mapStates[S2](stateMap: S => S2): D[S2, T] =
     map(stateMap, (t: T) => t)
 
-  // TODO MAP override
-  def mapTransitions[T2](transitionMap: T => T2): D[S, T2] =
+  override def mapTransitions[T2](transitionMap: T => T2): D[S, T2] =
     map((s: S) => s, transitionMap)
 
   /** Internal method for instantiating a DFA of the appropriate runtime
