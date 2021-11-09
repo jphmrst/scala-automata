@@ -176,4 +176,35 @@ with UnindexedPFA[S, T, Z] {
     }
     result.toMap
   }
+
+  // TODO MAP override
+  def map[S2, T2](stateMap: S => S2, transitionMap: T => T2):
+      PFA[S2, T2, Z] =
+    assemblePFA(
+      stateSeq.map(stateMap),
+      initialProbs,
+      finalProbs,
+      transitionsSeq.map(transitionMap),
+      transitionsMatrix,
+      eTransitionsMatrix)
+
+  // TODO MAP override
+  def mapStates[S2](stateMap: S => S2): PFA[S2, T, Z] =
+    map(stateMap, (t: T) => t)
+
+  // TODO MAP override
+  def mapTransitions[T2](transitionMap: T => T2): PFA[S, T2, Z] =
+    map((s: S) => s, transitionMap)
+
+  /** Internal method for instantiating a PFA of the appropriate runtime
+    * type.
+    */
+  def assemblePFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    initialProbs: Array[Double],
+    finalProbs: Array[Double],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsMatrix: Array[Array[Array[Double]]],
+    eTransitionsMatrix: Array[Array[Double]]
+  ): PFA[S0, T0, Z]
 }

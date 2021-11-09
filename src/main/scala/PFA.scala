@@ -35,8 +35,16 @@ class PFA[S, T](
 
 extends full.PFA[S, T, ProbabilisticAutomatonStyle] {
 
-  // TODO MAP
-
+  def assemblePFA[S0, T0](
+    stateSeq: IndexedSeq[S0],
+    initialProbs: Array[Double],
+    finalProbs: Array[Double],
+    transitionsSeq: IndexedSeq[T0],
+    transitionsMatrix: Array[Array[Array[Double]]],
+    eTransitionsMatrix: Array[Array[Double]]
+  ): PFA[S0, T0] = new PFA[S0, T0](
+    stateSeq, initialProbs, finalProbs,
+    transitionsSeq, transitionsMatrix, eTransitionsMatrix)
 }
 
 object PFA {

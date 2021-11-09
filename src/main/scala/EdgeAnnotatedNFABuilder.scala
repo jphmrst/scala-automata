@@ -26,12 +26,7 @@ extends full.EdgeAnnotatedNFABuilder[
   EdgeAnnotatedAutomatonStyle, EdgeAnnotatedAutomatonStyle
 ]
 
-with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA](combiner) {
-
-  // TODO MAP
-
-}
-
+with EdgeAnnotatedNFABuilder.Completer[S, T, NA, DA](combiner)
 
 /** Utilities for [[EdgeAnnotatedNFABuilder]]s for the standard
   * top-level classes.

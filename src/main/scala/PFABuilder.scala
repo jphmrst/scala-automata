@@ -37,6 +37,4 @@ extends full.PFABuilder[
     new PFA[S, T](
       statesSeq, initialProbs, finalProbs,
       transitionsSeq, transitionsMatrix, eTransitionsMatrix)
-
-  // TODO MAP
 }

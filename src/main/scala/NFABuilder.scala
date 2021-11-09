@@ -51,6 +51,4 @@ extends full.NFABuilder[
       stateSeq, transitionsSeq, initials, finalStateIndices,
       epsilonsArray,
       labelsArray)
-
-  // TODO MAP
 }
